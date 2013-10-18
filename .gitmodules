@@ -1,0 +1,6 @@
+[submodule "External/objective-git"]
+	path = External/objective-git
+	url = https://github.com/libgit2/objective-git.git
+[submodule "External/xcconfigs"]
+	path = External/xcconfigs
+	url = https://github.com/jspahrsummers/xcconfigs.git
