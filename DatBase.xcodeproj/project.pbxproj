@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8851154B1811D78900E00B2B /* libFMDB.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 885115421811D77A00E00B2B /* libFMDB.a */; };
+		886D1997181240030044BD2F /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 886D1996181240030044BD2F /* libsqlite3.dylib */; };
 		8884947518063DDA00477836 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8884947418063DDA00477836 /* Cocoa.framework */; };
 		8884947F18063DDA00477836 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8884947D18063DDA00477836 /* InfoPlist.strings */; };
 		8884948118063DDA00477836 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884948018063DDA00477836 /* main.m */; };
@@ -25,6 +27,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		8851153F1811D77A00E00B2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8851153A1811D77A00E00B2B /* fmdb.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DD76FA10486AA7600D96B5E;
+			remoteInfo = fmdb;
+		};
+		885115411811D77A00E00B2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8851153A1811D77A00E00B2B /* fmdb.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EE4290EF12B42F870088BD94;
+			remoteInfo = FMDB;
+		};
+		885115491811D78400E00B2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8851153A1811D77A00E00B2B /* fmdb.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = EE4290EE12B42F870088BD94;
+			remoteInfo = FMDB;
+		};
 		8884949618063DDA00477836 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8884946918063DDA00477836 /* Project object */;
@@ -63,6 +86,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8851153A1811D77A00E00B2B /* fmdb.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = fmdb.xcodeproj; path = External/fmdb/fmdb.xcodeproj; sourceTree = "<group>"; };
+		886D1996181240030044BD2F /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		8884947118063DDA00477836 /* DatBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DatBase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8884947418063DDA00477836 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		8884947718063DDA00477836 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -115,6 +140,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				886D1997181240030044BD2F /* libsqlite3.dylib in Frameworks */,
+				8851154B1811D78900E00B2B /* libFMDB.a in Frameworks */,
 				8884950418063EC100477836 /* ObjectiveGit.framework in Frameworks */,
 				8884947518063DDA00477836 /* Cocoa.framework in Frameworks */,
 			);
@@ -132,6 +159,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8851153B1811D77A00E00B2B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				885115401811D77A00E00B2B /* fmdb */,
+				885115421811D77A00E00B2B /* libFMDB.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		8884946818063DDA00477836 = {
 			isa = PBXGroup;
 			children = (
@@ -155,6 +191,8 @@
 		8884947318063DDA00477836 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				886D1996181240030044BD2F /* libsqlite3.dylib */,
+				8851153A1811D77A00E00B2B /* fmdb.xcodeproj */,
 				888494F018063EAF00477836 /* ObjectiveGitFramework.xcodeproj */,
 				8884947418063DDA00477836 /* Cocoa.framework */,
 				8884949318063DDA00477836 /* XCTest.framework */,
@@ -312,6 +350,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				8851154A1811D78400E00B2B /* PBXTargetDependency */,
 				8884950318063EBC00477836 /* PBXTargetDependency */,
 			);
 			name = DatBase;
@@ -365,6 +404,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 8851153B1811D77A00E00B2B /* Products */;
+					ProjectRef = 8851153A1811D77A00E00B2B /* fmdb.xcodeproj */;
+				},
+				{
 					ProductGroup = 888494F118063EAF00477836 /* Products */;
 					ProjectRef = 888494F018063EAF00477836 /* ObjectiveGitFramework.xcodeproj */;
 				},
@@ -378,6 +421,20 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		885115401811D77A00E00B2B /* fmdb */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = fmdb;
+			remoteRef = 8851153F1811D77A00E00B2B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		885115421811D77A00E00B2B /* libFMDB.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libFMDB.a;
+			remoteRef = 885115411811D77A00E00B2B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		888494FD18063EB000477836 /* ObjectiveGit.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -447,6 +504,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8851154A1811D78400E00B2B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = FMDB;
+			targetProxy = 885115491811D78400E00B2B /* PBXContainerItemProxy */;
+		};
 		8884949718063DDA00477836 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8884947018063DDA00477836 /* DatBase */;
@@ -575,6 +637,7 @@
 				GCC_PREFIX_HEADER = "DatBase/DatBase-Prefix.pch";
 				INFOPLIST_FILE = "DatBase/DatBase-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = External/fmdb/src;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -589,6 +652,7 @@
 				GCC_PREFIX_HEADER = "DatBase/DatBase-Prefix.pch";
 				INFOPLIST_FILE = "DatBase/DatBase-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = External/fmdb/src;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

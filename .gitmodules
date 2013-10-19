@@ -4,3 +4,6 @@
 [submodule "External/xcconfigs"]
 	path = External/xcconfigs
 	url = https://github.com/jspahrsummers/xcconfigs.git
+[submodule "External/fmdb"]
+	path = External/fmdb
+	url = https://github.com/ccgus/fmdb.git

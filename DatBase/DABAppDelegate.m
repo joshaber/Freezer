@@ -15,7 +15,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
 	NSError *error;
-	DABCoordinator *coordinator = [DABCoordinator createDatabaseAtURL:[NSURL fileURLWithPath:@"/Users/joshaber/Desktop/DatBase/test.git"] error:&error];
+	DABCoordinator *coordinator = [[DABCoordinator alloc] initWithDatabaseAtURL:[NSURL fileURLWithPath:@"/Users/joshaber/Desktop/DatBase/test.sqlite"] error:&error];
 	NSAssert(coordinator != nil, @"Coordinator was nil: %@", error);
 
 	DABDatabase *originalDatabase = [coordinator currentDatabase:&error];
