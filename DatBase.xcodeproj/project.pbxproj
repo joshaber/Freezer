@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8851154B1811D78900E00B2B /* libFMDB.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 885115421811D77A00E00B2B /* libFMDB.a */; };
 		886D1997181240030044BD2F /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 886D1996181240030044BD2F /* libsqlite3.dylib */; };
+		886D19A818124EFF0044BD2F /* DABDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 886D19A718124EFF0044BD2F /* DABDatabasePool.m */; };
 		8884947518063DDA00477836 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8884947418063DDA00477836 /* Cocoa.framework */; };
 		8884947F18063DDA00477836 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8884947D18063DDA00477836 /* InfoPlist.strings */; };
 		8884948118063DDA00477836 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884948018063DDA00477836 /* main.m */; };
@@ -88,6 +89,8 @@
 /* Begin PBXFileReference section */
 		8851153A1811D77A00E00B2B /* fmdb.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = fmdb.xcodeproj; path = External/fmdb/fmdb.xcodeproj; sourceTree = "<group>"; };
 		886D1996181240030044BD2F /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		886D19A618124EFF0044BD2F /* DABDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DABDatabasePool.h; sourceTree = "<group>"; };
+		886D19A718124EFF0044BD2F /* DABDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DABDatabasePool.m; sourceTree = "<group>"; };
 		8884947118063DDA00477836 /* DatBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DatBase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8884947418063DDA00477836 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		8884947718063DDA00477836 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -225,6 +228,8 @@
 				8884953A18063F4600477836 /* DABDatabase.h */,
 				888495401806410700477836 /* DABDatabase+Private.h */,
 				8884953B18063F4600477836 /* DABDatabase.m */,
+				886D19A618124EFF0044BD2F /* DABDatabasePool.h */,
+				886D19A718124EFF0044BD2F /* DABDatabasePool.m */,
 				8884953D18063F5300477836 /* DABTransactor.h */,
 				888495411806431400477836 /* DABTransactor+Private.h */,
 				8884953E18063F5300477836 /* DABTransactor.m */,
@@ -487,6 +492,7 @@
 			files = (
 				8884953F18063F5300477836 /* DABTransactor.m in Sources */,
 				8884953C18063F4600477836 /* DABDatabase.m in Sources */,
+				886D19A818124EFF0044BD2F /* DABDatabasePool.m in Sources */,
 				8884953918063F4000477836 /* DABCoordinator.m in Sources */,
 				8884948818063DDA00477836 /* DABAppDelegate.m in Sources */,
 				8884948118063DDA00477836 /* main.m in Sources */,

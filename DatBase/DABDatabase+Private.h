@@ -8,10 +8,10 @@
 
 #import "DABDatabase.h"
 
-@class GTCommit;
+@class DABDatabasePool;
 
 @interface DABDatabase ()
 
-- (id)initWithCommit:(GTCommit *)commit;
+- (id)initWithDatabasePool:(DABDatabasePool *)databasePool transactionID:(long long int)transactionID;
 
 @end

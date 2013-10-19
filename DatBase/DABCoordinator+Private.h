@@ -8,6 +8,11 @@
 
 #import "DABCoordinator.h"
 
+extern NSString * const DABRefsTableName;
+extern NSString * const DABEntitiesTableName;
+extern NSString * const DABTransactionsTableName;
+extern NSString * const DABTransactionToEntityTableName;
+
 @class GTRepository;
 @class GTCommit;
 
