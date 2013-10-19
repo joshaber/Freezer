@@ -19,8 +19,6 @@
 @implementation DABDatabase
 
 - (id)initWithCommit:(GTCommit *)commit {
-	NSParameterAssert(commit != nil);
-
 	self = [super init];
 	if (self == nil) return nil;
 
