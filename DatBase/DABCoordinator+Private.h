@@ -13,15 +13,14 @@ extern NSString * const DABEntitiesTableName;
 extern NSString * const DABTransactionsTableName;
 extern NSString * const DABTransactionToEntityTableName;
 
-@class GTRepository;
-@class GTCommit;
+extern NSString * const DABHeadRefName;
+
+@class FMDatabase;
 
 @interface DABCoordinator ()
 
-- (GTCommit *)HEADCommit:(NSError **)error;
+- (void)performConcurrentBlock:(void (^)(FMDatabase *database))block;
 
-- (void)performBlock:(void (^)(GTRepository *repository))block;
-
-- (void)performAtomicBlock:(void (^)(GTRepository *repository))block;
+- (void)performExclusiveBlock:(void (^)(FMDatabase *database))block;
 
 @end

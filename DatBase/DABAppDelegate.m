@@ -23,7 +23,7 @@
 
 	DABTransactor *transactor = [coordinator transactor];
 
-	[self doABunchOfWrites:transactor];
+	[self doABunchOfWrites:transactor coordinator:coordinator];
 
 //	DABDatabase *originalDatabase = [coordinator currentDatabase:&error];
 //	NSAssert(originalDatabase != nil, @"Original database was nil: %@", error);
@@ -56,14 +56,20 @@
 //	NSLog(@"%@", database.allKeys);
 }
 
-- (void)doABunchOfWrites:(DABTransactor *)transactor {
+- (void)doABunchOfWrites:(DABTransactor *)transactor coordinator:(DABCoordinator *)coordinator {
 	NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 
-	static const NSUInteger count = 1000;
+	static const NSUInteger count = 10;
 	static NSString * const attribute = @"attribute";
 	for (NSUInteger i = 0; i < count; i++) {
 		NSString *newKey = [transactor generateNewKey];
-		[transactor addValue:@(i) forAttribute:attribute key:newKey error:NULL];
+		BOOL success = [transactor addValue:@(i) forAttribute:attribute key:newKey error:NULL];
+		if (!success) return;
+
+		DABDatabase *database = [coordinator currentDatabase:NULL];
+		id r = database[newKey];
+		NSMutableArray *b = [NSMutableArray new];
+		[b addObject:r];
 	}
 
 	NSTimeInterval end = [NSDate timeIntervalSinceReferenceDate];

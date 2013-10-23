@@ -9,12 +9,11 @@
 #import "DABDatabase.h"
 #import "DABDatabase+Private.h"
 #import "FMDatabase.h"
-#import "DABDatabasePool.h"
 #import "DABCoordinator+Private.h"
 
 @interface DABDatabase ()
 
-@property (nonatomic, readonly, strong) DABDatabasePool *databasePool;
+@property (nonatomic, readonly, strong) DABCoordinator *coordinator;
 
 @property (nonatomic, readonly, assign) long long int transactionID;
 
@@ -22,27 +21,27 @@
 
 @implementation DABDatabase
 
-- (id)initWithDatabasePool:(DABDatabasePool *)databasePool transactionID:(long long int)transactionID {
-	NSParameterAssert(databasePool != nil);
+- (id)initWithCoordinator:(DABCoordinator *)coordinator transactionID:(long long int)transactionID {
+	NSParameterAssert(coordinator != nil);
 
 	self = [super init];
 	if (self == nil) return nil;
 
-	_databasePool = databasePool;
+	_coordinator = coordinator;
 	_transactionID = transactionID;
 
 	return self;
 }
 
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
-//	FMDatabase *database = [self.databasePool databaseForCurrentThread:NULL];
-//	FMResultSet *set = [database executeQuery:@"SELECT * FROM ? WHERE tx_id <= ? ORDER BY tx_id DESC LIMIT 1", DABEntitiesTableName, @(self.transactionID)];
-//
-//	GTTreeEntry *entry = [self.commit.tree entryWithName:key];
-//	GTBlob *blob = (GTBlob *)[entry toObjectAndReturnError:NULL];
-//	if (blob == nil) return nil;
-//
-//	return [NSJSONSerialization JSONObjectWithData:blob.data options:0 error:NULL];
+	[self.coordinator performConcurrentBlock:^(FMDatabase *database) {
+		NSString *query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE tx_id <= ? ORDER BY tx_id DESC LIMIT 1", DABEntitiesTableName];
+		FMResultSet *set = [database executeQuery:query, @(self.transactionID)];
+		while ([set next]) {
+			NSLog(@"%@", set.resultDictionary);
+		}
+	}];
+
 	return @{};
 }
 

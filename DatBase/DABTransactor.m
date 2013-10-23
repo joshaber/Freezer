@@ -10,7 +10,7 @@
 #import "DABDatabase+Private.h"
 #import "DABCoordinator.h"
 #import "DABCoordinator+Private.h"
-#import <ObjectiveGit/ObjectiveGit.h>
+#import "FMDatabase.h"
 
 @interface DABTransactor ()
 
@@ -34,7 +34,7 @@
 - (void)runTransaction:(void (^)(void))block {
 	NSParameterAssert(block != NULL);
 
-	[self.coordinator performBlock:^(GTRepository *repository) {
+	[self.coordinator performExclusiveBlock:^(FMDatabase *database) {
 		block();
 	}];
 }
@@ -44,40 +44,61 @@
 	return [[NSUUID UUID] UUIDString];
 }
 
-- (NSString *)addValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error {
+- (BOOL)addValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error {
 	NSParameterAssert(value != nil);
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
-	__block NSString *ID;
-	[self.coordinator performBlock:^(GTRepository *repository) {
-		DABDatabase *database = [self.coordinator currentDatabase:error];
-		if (database == nil) return;
+	__block BOOL totalSuccess = NO;
+	[self.coordinator performExclusiveBlock:^(FMDatabase *database) {
+		NSString *query = [NSString stringWithFormat:@"INSERT INTO %@ (date) VALUES (?)", DABTransactionsTableName];
+		BOOL success = [database executeUpdate:query, [NSDate date]];
+		if (!success) {
+			if (error != NULL) *error = database.lastError;
+			return;
+		}
 
-		NSMutableDictionary *existingEntry = [database[key] mutableCopy] ?: [NSMutableDictionary dictionary];
-		existingEntry[attribute] = value;
-		NSData *data = [NSJSONSerialization dataWithJSONObject:existingEntry options:0 error:error];
-		if (data == nil) return;
+		// This is guaranteed to be accurate since we have an exclusive lock on
+		// the database while writing.
+		sqlite_int64 txID = database.lastInsertRowId;
 
-		GTCommit *commit = [self.coordinator HEADCommit:error];
-		GTTreeBuilder *builder = [[GTTreeBuilder alloc] initWithTree:commit.tree error:error];
-		if (builder == nil) return;
+		query = [NSString stringWithFormat:@"INSERT INTO %@ (attribute, value, key, tx_id) VALUES (?, ?, ?, ?)", DABEntitiesTableName];
+		NSData *valueData = [NSKeyedArchiver archivedDataWithRootObject:value];
+		success = [database executeUpdate:query, attribute, valueData, key, @(txID)];
+		if (!success) {
+			if (error != NULL) *error = database.lastError;
+			return;
+		}
 
-		GTTreeEntry *entry = [builder addEntryWithData:data fileName:key fileMode:GTFileModeBlob error:error];
-		if (entry == nil) return;
+		sqlite_int64 entityID = database.lastInsertRowId;
 
-		GTTree *tree = [builder writeTreeToRepository:repository error:error];
-		if (tree == nil) return;
+		query = [NSString stringWithFormat:@"INSERT INTO %@ (tx_id, entity_id) VALUES (?, ?)", DABTransactionToEntityTableName];
+		success = [database executeUpdate:query, @(txID), @(entityID)];
+		if (!success) {
+			if (error != NULL) *error = database.lastError;
+			return;
+		}
 
-		GTSignature *signature = [[GTSignature alloc] initWithName:@"DatBase" email:@"dat@base.com" time:[NSDate date]];
-		NSArray *parents = (commit != nil ? @[ commit ] : nil);
-		GTCommit *newCommit = [repository createCommitWithTree:tree message:@"" author:signature committer:signature parents:parents updatingReferenceNamed:@"HEAD" error:error];
-		if (newCommit == nil) return;
+		// We can get away with doing the two-step check since we have a lock on
+		// the database.
+		query = [NSString stringWithFormat:@"SELECT 1 FROM %@ WHERE name = ? LIMIT 1", DABRefsTableName];
+		FMResultSet *set = [database executeQuery:query, DABHeadRefName];
+		if (!set.hasAnotherRow) {
+			query = [NSString stringWithFormat:@"INSERT INTO %@ (tx_id, name) VALUES (?, ?)", DABRefsTableName];
+		} else {
+			query = [NSString stringWithFormat:@"UPDATE %@ SET tx_id = ? WHERE name = ?", DABRefsTableName];
+		}
 
-		ID = [key copy];
+		success = [database executeUpdate:query, @(txID), DABHeadRefName];
+		if (!success) {
+			if (error != NULL) *error = database.lastError;
+			return;
+		}
+
+		totalSuccess = YES;
 	}];
 
-	return ID;
+	return totalSuccess;
 }
 
 @end

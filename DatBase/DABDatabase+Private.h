@@ -8,10 +8,10 @@
 
 #import "DABDatabase.h"
 
-@class DABDatabasePool;
+@class DABCoordinator;
 
 @interface DABDatabase ()
 
-- (id)initWithDatabasePool:(DABDatabasePool *)databasePool transactionID:(long long int)transactionID;
+- (id)initWithCoordinator:(DABCoordinator *)coordinator transactionID:(long long int)transactionID;
 
 @end

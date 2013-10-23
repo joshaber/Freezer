@@ -8,14 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-@class DABObjectID;
-
 @interface DABTransactor : NSObject
 
 - (void)runTransaction:(void (^)(void))block;
 
 - (NSString *)generateNewKey;
 
-- (NSString *)addValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
+- (BOOL)addValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
 
 @end
