@@ -19,8 +19,8 @@ extern NSString * const DABHeadRefName;
 
 @interface DABCoordinator ()
 
-- (void)performConcurrentBlock:(void (^)(FMDatabase *database))block;
+- (BOOL)performWithError:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block;
 
-- (void)performExclusiveBlock:(void (^)(FMDatabase *database))block;
+- (long long int)headID:(NSError **)error;
 
 @end

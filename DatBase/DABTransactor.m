@@ -49,17 +49,24 @@
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
-	__block BOOL totalSuccess = NO;
-		NSString *query = [NSString stringWithFormat:@"INSERT INTO %@ (date) VALUES (?)", DABTransactionsTableName];
 	return [self.coordinator performWithError:error block:^(FMDatabase *database, NSError **error) {
+		long long int headID = [self.coordinator headID:error];
+
+		NSString *query = [NSString stringWithFormat:@"SELECT entity_id FROM %@ WHERE tx_id = ?", DABTransactionToEntityTableName];
+		FMResultSet *set = [database executeQuery:query, @(headID)];
+		NSMutableArray *IDs = [NSMutableArray array];
+		while ([set next]) {
+			long long int entityID = [set longLongIntForColumnIndex:0];
+			[IDs addObject:@(entityID)];
+		}
+
+		query = [NSString stringWithFormat:@"INSERT INTO %@ (date) VALUES (?)", DABTransactionsTableName];
 		BOOL success = [database executeUpdate:query, [NSDate date]];
 		if (!success) {
 			if (error != NULL) *error = database.lastError;
-			return;
+			return NO;
 		}
 
-		// This is guaranteed to be accurate since we have an exclusive lock on
-		// the database while writing.
 		sqlite_int64 txID = database.lastInsertRowId;
 
 		query = [NSString stringWithFormat:@"INSERT INTO %@ (attribute, value, key, tx_id) VALUES (?, ?, ?, ?)", DABEntitiesTableName];
@@ -67,23 +74,25 @@
 		success = [database executeUpdate:query, attribute, valueData, key, @(txID)];
 		if (!success) {
 			if (error != NULL) *error = database.lastError;
-			return;
+			return NO;
 		}
 
 		sqlite_int64 entityID = database.lastInsertRowId;
 
-		query = [NSString stringWithFormat:@"INSERT INTO %@ (tx_id, entity_id) VALUES (?, ?)", DABTransactionToEntityTableName];
-		success = [database executeUpdate:query, @(txID), @(entityID)];
-		if (!success) {
-			if (error != NULL) *error = database.lastError;
-			return;
+		NSNumber *transactionID = @(txID);
+		[IDs addObject:@(entityID)];
+		for (NSNumber *entityID in IDs) {
+			query = [NSString stringWithFormat:@"INSERT INTO %@ (tx_id, entity_id) VALUES (?, ?)", DABTransactionToEntityTableName];
+			success = [database executeUpdate:query, transactionID, entityID];
+			if (!success) {
+				if (error != NULL) *error = database.lastError;
+				return NO;
+			}
 		}
 
-		// We can get away with doing the two-step check since we have a lock on
-		// the database.
-		query = [NSString stringWithFormat:@"SELECT 1 FROM %@ WHERE name = ? LIMIT 1", DABRefsTableName];
-		FMResultSet *set = [database executeQuery:query, DABHeadRefName];
-		if (!set.hasAnotherRow) {
+		query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE name = ? LIMIT 1", DABRefsTableName];
+		set = [database executeQuery:query, DABHeadRefName];
+		if (![set next]) {
 			query = [NSString stringWithFormat:@"INSERT INTO %@ (tx_id, name) VALUES (?, ?)", DABRefsTableName];
 		} else {
 			query = [NSString stringWithFormat:@"UPDATE %@ SET tx_id = ? WHERE name = ?", DABRefsTableName];
@@ -92,13 +101,11 @@
 		success = [database executeUpdate:query, @(txID), DABHeadRefName];
 		if (!success) {
 			if (error != NULL) *error = database.lastError;
-			return;
+			return NO;
 		}
 
-		totalSuccess = YES;
+		return YES;
 	}];
-
-	return totalSuccess;
 }
 
 @end
