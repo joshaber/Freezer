@@ -157,7 +157,7 @@ NSString * const DABHeadRefName = @"head";
 }
 
 - (long long int)headID:(NSError **)error {
-	long long int headID = 0;
+	long long int headID = -1;
 	NSString *query = [NSString stringWithFormat:@"SELECT tx_id from %@ WHERE name = ? LIMIT 1", DABRefsTableName];
 	FMDatabase *database = [self databaseForCurrentThread:error];
 	if (database == nil) return -1;
