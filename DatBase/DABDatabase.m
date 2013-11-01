@@ -34,11 +34,11 @@
 }
 
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
-	[self.coordinator performConcurrentBlock:^(FMDatabase *database) {
 		NSString *query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE tx_id <= ? ORDER BY tx_id DESC LIMIT 1", DABEntitiesTableName];
 		FMResultSet *set = [database executeQuery:query, @(self.transactionID)];
 		while ([set next]) {
 			NSLog(@"%@", set.resultDictionary);
+	[self.coordinator performWithError:NULL block:^(FMDatabase *database, NSError **error) {
 		}
 	}];
 

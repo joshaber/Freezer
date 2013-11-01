@@ -50,8 +50,8 @@
 	NSParameterAssert(key != nil);
 
 	__block BOOL totalSuccess = NO;
-	[self.coordinator performExclusiveBlock:^(FMDatabase *database) {
 		NSString *query = [NSString stringWithFormat:@"INSERT INTO %@ (date) VALUES (?)", DABTransactionsTableName];
+	return [self.coordinator performWithError:error block:^(FMDatabase *database, NSError **error) {
 		BOOL success = [database executeUpdate:query, [NSDate date]];
 		if (!success) {
 			if (error != NULL) *error = database.lastError;

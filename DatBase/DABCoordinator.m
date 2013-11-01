@@ -159,7 +159,10 @@ NSString * const DABHeadRefName = @"head";
 - (long long int)headID:(NSError **)error {
 	long long int headID = 0;
 	NSString *query = [NSString stringWithFormat:@"SELECT tx_id from %@ WHERE name = ? LIMIT 1", DABRefsTableName];
-	FMResultSet *set = [self.database executeQuery:query, DABHeadRefName];
+	FMDatabase *database = [self databaseForCurrentThread:error];
+	if (database == nil) return -1;
+
+	FMResultSet *set = [database executeQuery:query, DABHeadRefName];
 	if ([set next]) {
 		headID = [set longLongIntForColumnIndex:0];
 	}
@@ -174,23 +177,21 @@ NSString * const DABHeadRefName = @"head";
 	return [[DABDatabase alloc] initWithCoordinator:self transactionID:headID];
 }
 
-- (void)performConcurrentBlock:(void (^)(FMDatabase *database))block {
+- (BOOL)performWithError:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block {
 	NSParameterAssert(block != NULL);
 
-	// TODO: Can this be concurrent? Sqlite docs are unclear about WAL mode. If
-	// not, we could use a thread-local db connection instead. For now we'll
-	// play it safe.
-	dispatch_barrier_sync(self.databaseQueue, ^{
-		block(self.database);
-	});
-}
+	FMDatabase *database = [self databaseForCurrentThread:error];
+	if (database == nil) return NO;
 
-- (void)performExclusiveBlock:(void (^)(FMDatabase *database))block {
-	NSParameterAssert(block != NULL);
+	[database beginTransaction];
+	BOOL success = block(database, error);
+	if (!success) {
+		[database rollback];
+	} else {
+		[database commit];
+	}
 
-	dispatch_barrier_sync(self.databaseQueue, ^{
-		block(self.database);
-	});
+	return success;
 }
 
 - (DABTransactor *)transactor {
