@@ -63,8 +63,12 @@
 	static NSString * const attribute = @"attribute";
 	for (NSUInteger i = 0; i < count; i++) {
 		NSString *newKey = [transactor generateNewKey];
-		BOOL success = [transactor addValue:@(i) forAttribute:attribute key:newKey error:NULL];
-		if (!success) return;
+		NSError *error;
+		BOOL success = [transactor addValue:@(i) forAttribute:attribute key:newKey error:&error];
+		if (!success) {
+			NSLog(@"Error: %@", error);
+			return;
+		}
 
 		DABDatabase *database = [coordinator currentDatabase:NULL];
 		id r = database[newKey];
