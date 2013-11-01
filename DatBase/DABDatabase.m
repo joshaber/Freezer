@@ -34,15 +34,23 @@
 }
 
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
-		NSString *query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE tx_id <= ? ORDER BY tx_id DESC LIMIT 1", DABEntitiesTableName];
-		FMResultSet *set = [database executeQuery:query, @(self.transactionID)];
-		while ([set next]) {
-			NSLog(@"%@", set.resultDictionary);
+	__block NSDictionary *result;
 	[self.coordinator performWithError:NULL block:^(FMDatabase *database, NSError **error) {
+		NSString *query = [NSString stringWithFormat:@"SELECT * FROM %@, %@ WHERE %@.tx_id = ? AND %@.entity_id = %@.id AND %@.key = ? LIMIT 1", DABEntitiesTableName, DABTransactionToEntityTableName, DABTransactionToEntityTableName, DABTransactionToEntityTableName, DABEntitiesTableName, DABEntitiesTableName];
+		FMResultSet *set = [database executeQuery:query, @(self.transactionID), key];
+		if (set == nil) {
+			if (error != NULL) *error = database.lastError;
+			return NO;
 		}
+
+		if (![set next]) return YES;
+
+		result = set.resultDictionary;
+
+		return YES;
 	}];
 
-	return @{};
+	return result;
 }
 
 - (NSArray *)allKeys {
