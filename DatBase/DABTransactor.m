@@ -93,7 +93,7 @@
 			}
 		}
 
-		query = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE name = ? LIMIT 1", DABRefsTableName];
+		query = [NSString stringWithFormat:@"SELECT name FROM %@ WHERE name = ? LIMIT 1", DABRefsTableName];
 		set = [database executeQuery:query, DABHeadRefName];
 		if (![set next]) {
 			query = [NSString stringWithFormat:@"INSERT INTO %@ (tx_id, name) VALUES (?, ?)", DABRefsTableName];
