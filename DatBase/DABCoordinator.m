@@ -12,6 +12,8 @@
 #import "DABTransactor+Private.h"
 #import "FMDatabase.h"
 
+static NSString * const DABCoordinatorDatabaseKey = @"DABCoordinatorDatabaseKey";
+
 NSString * const DABRefsTableName = @"refs";
 NSString * const DABEntitiesTableName = @"entities";
 NSString * const DABTransactionsTableName = @"txs";
@@ -21,34 +23,21 @@ NSString * const DABHeadRefName = @"head";
 
 @interface DABCoordinator ()
 
-@property (nonatomic, readonly, strong) dispatch_queue_t databaseQueue;
-
-@property (nonatomic, readonly, strong) FMDatabase *database;
+@property (nonatomic, readonly, copy) NSString *databasePath;
 
 @end
 
 @implementation DABCoordinator
 
-- (void)dealloc {
-	[_database close];
-}
-
 - (id)initWithPath:(NSString *)path error:(NSError **)error {
 	self = [super init];
 	if (self == nil) return nil;
 
-	_databaseQueue = dispatch_queue_create("com.DatBase.DABCoordinator", DISPATCH_QUEUE_CONCURRENT);
-	_database = [[FMDatabase alloc] initWithPath:path];
-	// No mutex, no cry.
-	BOOL success = [_database openWithFlags:SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX | SQLITE_OPEN_PRIVATECACHE];
+	_databasePath = [path copy];
 
-	if (!success) {
-		if (error != NULL) *error = _database.lastError;
-		return nil;
-	}
-
-	success = [self configureDatabase:error];
-	if (!success) return nil;
+	// Preflight the database so we get fatal errors earlier.
+	FMDatabase *database = [self createDatabase:error];
+	if (database == nil) return nil;
 
 	return self;
 }
@@ -63,19 +52,34 @@ NSString * const DABHeadRefName = @"head";
 	return [self initWithPath:URL.path error:error];
 }
 
-- (BOOL)configureDatabase:(NSError **)error {
-	self.database.shouldCacheStatements = YES;
-
-	BOOL success = [self.database executeUpdate:@"PRAGMA legacy_file_format = 0;"];
+- (FMDatabase *)createDatabase:(NSError **)error {
+	FMDatabase *database = [FMDatabase databaseWithPath:self.databasePath];
+	// No mutex, no cry.
+	BOOL success = [database openWithFlags:SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX | SQLITE_OPEN_PRIVATECACHE];
 	if (!success) {
-		if (error != NULL) *error = self.database.lastError;
-		return NO;
+		if (error != NULL) *error = database.lastError;
+		return nil;
 	}
 
-	success = [self.database executeUpdate:@"PRAGMA foreign_keys = ON;"];
+	return database;
+}
+
+- (FMDatabase *)createAndConfigureDatabase:(NSError **)error {
+	FMDatabase *database = [self createDatabase:error];
+	if (database == nil) return nil;
+
+	database.shouldCacheStatements = YES;
+
+	BOOL success = [database executeUpdate:@"PRAGMA legacy_file_format = 0;"];
 	if (!success) {
-		if (error != NULL) *error = self.database.lastError;
-		return NO;
+		if (error != NULL) *error = database.lastError;
+		return nil;
+	}
+
+	success = [database executeUpdate:@"PRAGMA foreign_keys = ON;"];
+	if (!success) {
+		if (error != NULL) *error = database.lastError;
+		return nil;
 	}
 
 	// Write-ahead logging lets us read and write concurrently.
@@ -83,10 +87,10 @@ NSString * const DABHeadRefName = @"head";
 	// Note that we're using -executeQuery: here, instead of -executeUpdate: The
 	// result of turning on WAL is a row, which really rustles FMDB's jimmies if
 	// done from -executeUpdate. So we pacify it by setting WAL in a "query."
-	FMResultSet *set = [self.database executeQuery:@"PRAGMA journal_mode = WAL;"];
+	FMResultSet *set = [database executeQuery:@"PRAGMA journal_mode = WAL;"];
 	if (set == nil) {
-		if (error != NULL) *error = self.database.lastError;
-		return NO;
+		if (error != NULL) *error = database.lastError;
+		return nil;
 	}
 
 	NSString *txsSchema = [NSString stringWithFormat:
@@ -95,10 +99,10 @@ NSString * const DABHeadRefName = @"head";
 			"date DATETIME NOT NULL"
 		");",
 		DABTransactionsTableName];
-	success = [self.database executeUpdate:txsSchema];
+	success = [database executeUpdate:txsSchema];
 	if (!success) {
-		if (error != NULL) *error = self.database.lastError;
-		return NO;
+		if (error != NULL) *error = database.lastError;
+		return nil;
 	}
 
 	NSString *refsSchema = [NSString stringWithFormat:
@@ -110,10 +114,10 @@ NSString * const DABHeadRefName = @"head";
 		");",
 		DABRefsTableName,
 		DABTransactionsTableName];
-	success = [self.database executeUpdate:refsSchema];
+	success = [database executeUpdate:refsSchema];
 	if (!success) {
-		if (error != NULL) *error = self.database.lastError;
-		return NO;
+		if (error != NULL) *error = database.lastError;
+		return nil;
 	}
 
 	NSString *entitiesSchema = [NSString stringWithFormat:
@@ -127,10 +131,10 @@ NSString * const DABHeadRefName = @"head";
 		");",
 		DABEntitiesTableName,
 		DABTransactionsTableName];
-	success = [self.database executeUpdate:entitiesSchema];
+	success = [database executeUpdate:entitiesSchema];
 	if (!success) {
-		if (error != NULL) *error = self.database.lastError;
-		return NO;
+		if (error != NULL) *error = database.lastError;
+		return nil;
 	}
 
 	NSString *txToEntitySchema = [NSString stringWithFormat:
@@ -143,13 +147,13 @@ NSString * const DABHeadRefName = @"head";
 		DABTransactionToEntityTableName,
 		DABTransactionsTableName,
 		DABEntitiesTableName];
-	success = [self.database executeUpdate:txToEntitySchema];
+	success = [database executeUpdate:txToEntitySchema];
 	if (!success) {
-		if (error != NULL) *error = self.database.lastError;
-		return NO;
+		if (error != NULL) *error = database.lastError;
+		return nil;
 	}
 
-	return YES;
+	return database;
 }
 
 - (long long int)headID:(NSError **)error {
@@ -191,6 +195,20 @@ NSString * const DABHeadRefName = @"head";
 
 - (DABTransactor *)transactor {
 	return [[DABTransactor alloc] initWithCoordinator:self];
+}
+
+- (FMDatabase *)databaseForCurrentThread:(NSError **)error {
+	@synchronized (self) {
+		FMDatabase *database = NSThread.currentThread.threadDictionary[DABCoordinatorDatabaseKey];
+		if (database == nil) {
+			database = [self createAndConfigureDatabase:error];
+			if (database == nil) return nil;
+
+			NSThread.currentThread.threadDictionary[DABCoordinatorDatabaseKey] = database;
+		}
+
+		return database;
+	}
 }
 
 @end
