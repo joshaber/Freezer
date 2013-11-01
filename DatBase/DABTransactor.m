@@ -31,14 +31,6 @@
 	return self;
 }
 
-- (void)runTransaction:(void (^)(void))block {
-	NSParameterAssert(block != NULL);
-
-	[self.coordinator performExclusiveBlock:^(FMDatabase *database) {
-		block();
-	}];
-}
-
 - (NSString *)generateNewKey {
 	// Problem?
 	return [[NSUUID UUID] UUIDString];
