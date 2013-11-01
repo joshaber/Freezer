@@ -71,9 +71,9 @@
 		}
 
 		DABDatabase *database = [coordinator currentDatabase:NULL];
-		id r = database[newKey];
-		NSMutableArray *b = [NSMutableArray new];
-		[b addObject:r];
+		NSDictionary *x = database[newKey];
+		NSAssert(x != nil, nil);
+		NSAssert([x[@"key"] isEqual:newKey], nil);
 	}
 
 	NSTimeInterval end = [NSDate timeIntervalSinceReferenceDate];
