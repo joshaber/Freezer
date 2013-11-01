@@ -142,6 +142,7 @@ NSString * const DABHeadRefName = @"head";
 	NSString *txToEntitySchema = [NSString stringWithFormat:
 		@"CREATE TABLE IF NOT EXISTS %@("
 			"tx_id INTEGER NOT NULL,"
+			"entity_key STRING NOT NULL,"
 			"entity_id INTEGER NOT NULL,"
 			"FOREIGN KEY(tx_id) REFERENCES %@(id),"
 			"FOREIGN KEY(entity_id) REFERENCES %@(id)"

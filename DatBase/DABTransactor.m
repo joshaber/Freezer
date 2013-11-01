@@ -41,19 +41,18 @@
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
-		long long int headID = [self.coordinator headID:error];
+	NSDate *currentDate = [NSDate date];
+	NSData *valueData = [NSKeyedArchiver archivedDataWithRootObject:value];
 
-		NSString *query = [NSString stringWithFormat:@"SELECT entity_id FROM %@ WHERE tx_id = ?", DABTransactionToEntityTableName];
-		FMResultSet *set = [database executeQuery:query, @(headID)];
-		NSMutableArray *IDs = [NSMutableArray array];
-		while ([set next]) {
-			long long int entityID = [set longLongIntForColumnIndex:0];
-			[IDs addObject:@(entityID)];
-		}
-
-		query = [NSString stringWithFormat:@"INSERT INTO %@ (date) VALUES (?)", DABTransactionsTableName];
-		BOOL success = [database executeUpdate:query, [NSDate date]];
+	// We could split some of this work out into a non-exclusive transaction,
+	// but by batching it all in a single transaction we get a much higher write
+	// speed. (~370 w/s vs. ~600 w/s on my computer).
+	//
+	// TODO: Test whether the write cost of splitting it up is made up in read
+	// speed.
 	return [self.coordinator performTransactionType:DABCoordinatorTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+		NSString *query = [NSString stringWithFormat:@"INSERT INTO %@ (date) VALUES (?)", DABTransactionsTableName];
+		BOOL success = [database executeUpdate:query, currentDate];
 		if (!success) {
 			if (error != NULL) *error = database.lastError;
 			return NO;
@@ -62,20 +61,32 @@
 		sqlite_int64 txID = database.lastInsertRowId;
 
 		query = [NSString stringWithFormat:@"INSERT INTO %@ (attribute, value, key, tx_id) VALUES (?, ?, ?, ?)", DABEntitiesTableName];
-		NSData *valueData = [NSKeyedArchiver archivedDataWithRootObject:value];
 		success = [database executeUpdate:query, attribute, valueData, key, @(txID)];
 		if (!success) {
 			if (error != NULL) *error = database.lastError;
 			return NO;
 		}
 
-		sqlite_int64 entityID = database.lastInsertRowId;
+		sqlite_int64 addedEntityID = database.lastInsertRowId;
 
-		NSNumber *transactionID = @(txID);
-		[IDs addObject:@(entityID)];
-		for (NSNumber *entityID in IDs) {
-			query = [NSString stringWithFormat:@"INSERT INTO %@ (tx_id, entity_id) VALUES (?, ?)", DABTransactionToEntityTableName];
-			success = [database executeUpdate:query, transactionID, entityID];
+		long long int headID = [self.coordinator headID:error];
+
+		// TODO: Surely there's a better way to do all this?
+		query = [NSString stringWithFormat:@"SELECT entity_id, entity_key FROM %@ WHERE tx_id = ?", DABTransactionToEntityTableName];
+		FMResultSet *set = [database executeQuery:query, @(headID)];
+		NSMutableDictionary *keysToIDs = [NSMutableDictionary dictionary];
+		while ([set next]) {
+			NSString *entityKey = [set stringForColumnIndex:1];
+			long long int entityID = [set longLongIntForColumnIndex:0];
+			keysToIDs[entityKey] = @(entityID);
+		}
+
+		NSNumber *transactionID = @(addedEntityID);
+		keysToIDs[key] = transactionID;
+		for (NSString *entityKey in keysToIDs) {
+			NSNumber *entityID = keysToIDs[entityKey];
+			query = [NSString stringWithFormat:@"INSERT INTO %@ (tx_id, entity_id, entity_key) VALUES (?, ?, ?)", DABTransactionToEntityTableName];
+			BOOL success = [database executeUpdate:query, transactionID, entityID, entityKey];
 			if (!success) {
 				if (error != NULL) *error = database.lastError;
 				return NO;
