@@ -59,12 +59,13 @@
 - (void)doABunchOfWrites:(DABTransactor *)transactor coordinator:(DABCoordinator *)coordinator {
 	NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 
-	static const NSUInteger count = 10;
+	static const NSUInteger count = 1000;
 	static NSString * const attribute = @"attribute";
+	NSString *newKey = [transactor generateNewKey];
 	for (NSUInteger i = 0; i < count; i++) {
-		NSString *newKey = [transactor generateNewKey];
 		NSError *error;
-		BOOL success = [transactor addValue:@(i) forAttribute:attribute key:newKey error:&error];
+		id valueToInsert = @(i);
+		BOOL success = [transactor addValue:valueToInsert forAttribute:attribute key:newKey error:&error];
 		if (!success) {
 			NSLog(@"Error: %@", error);
 			return;
@@ -74,10 +75,13 @@
 		NSDictionary *x = database[newKey];
 		NSAssert(x != nil, nil);
 		NSAssert([x[@"key"] isEqual:newKey], nil);
+		id value = [NSKeyedUnarchiver unarchiveObjectWithData:x[@"value"]];
+		NSAssert([value isEqual:valueToInsert], nil);
 	}
 
 	NSTimeInterval end = [NSDate timeIntervalSinceReferenceDate];
-	NSLog(@"Took %f secs.", end - start);
+	NSTimeInterval totalTime = end - start;
+	NSLog(@"%f adds/sec", count / totalTime);
 }
 
 @end
