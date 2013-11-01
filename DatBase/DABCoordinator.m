@@ -23,6 +23,8 @@ NSString * const DABHeadRefName = @"head";
 
 @interface DABCoordinator ()
 
+@property (atomic, assign) BOOL inTransaction;
+
 @property (nonatomic, readonly, copy) NSString *databasePath;
 
 @end
@@ -177,19 +179,32 @@ NSString * const DABHeadRefName = @"head";
 	return [[DABDatabase alloc] initWithCoordinator:self transactionID:headID];
 }
 
-- (BOOL)performWithError:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block {
+- (BOOL)performTransactionType:(DABCoordinatorTransactionType)transactionType error:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block {
 	NSParameterAssert(block != NULL);
 
 	FMDatabase *database = [self databaseForCurrentThread:error];
 	if (database == nil) return NO;
 
-	[database beginTransaction];
+	NSDictionary *transactionTypeToName = @{
+		@(DABCoordinatorTransactionTypeDeferred): @"deferred",
+		@(DABCoordinatorTransactionTypeImmediate): @"immediate",
+		@(DABCoordinatorTransactionTypeExclusive): @"exclusive",
+	};
+
+	NSString *transactionTypeName = transactionTypeToName[@(transactionType)];
+	NSAssert(transactionTypeName != nil, @"Unrecognized transaction type: %ld", transactionType);
+	[database executeUpdate:[NSString stringWithFormat:@"begin %@ transaction", transactionTypeName]];
+
+	self.inTransaction = YES;
+
 	BOOL success = block(database, error);
 	if (!success) {
 		[database rollback];
 	} else {
 		[database commit];
 	}
+
+	self.inTransaction = NO;
 
 	return success;
 }

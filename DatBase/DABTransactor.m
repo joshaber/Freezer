@@ -41,7 +41,6 @@
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
-	return [self.coordinator performWithError:error block:^(FMDatabase *database, NSError **error) {
 		long long int headID = [self.coordinator headID:error];
 
 		NSString *query = [NSString stringWithFormat:@"SELECT entity_id FROM %@ WHERE tx_id = ?", DABTransactionToEntityTableName];
@@ -54,6 +53,7 @@
 
 		query = [NSString stringWithFormat:@"INSERT INTO %@ (date) VALUES (?)", DABTransactionsTableName];
 		BOOL success = [database executeUpdate:query, [NSDate date]];
+	return [self.coordinator performTransactionType:DABCoordinatorTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
 		if (!success) {
 			if (error != NULL) *error = database.lastError;
 			return NO;

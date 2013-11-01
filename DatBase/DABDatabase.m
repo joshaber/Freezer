@@ -35,7 +35,7 @@
 
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
 	__block NSDictionary *result;
-	[self.coordinator performWithError:NULL block:^(FMDatabase *database, NSError **error) {
+	[self.coordinator performTransactionType:DABCoordinatorTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
 		NSString *query = [NSString stringWithFormat:@"SELECT * FROM %@, %@ WHERE %@.tx_id = ? AND %@.entity_id = %@.id AND %@.key = ? LIMIT 1", DABEntitiesTableName, DABTransactionToEntityTableName, DABTransactionToEntityTableName, DABTransactionToEntityTableName, DABEntitiesTableName, DABEntitiesTableName];
 		FMResultSet *set = [database executeQuery:query, @(self.transactionID), key];
 		if (set == nil) {

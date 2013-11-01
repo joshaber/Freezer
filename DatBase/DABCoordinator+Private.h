@@ -8,6 +8,23 @@
 
 #import "DABCoordinator.h"
 
+// The type of transaction to use.
+//
+//   DABCoordinatorTransactionTypeDeferred  - Defer lock acquisition until it is
+//                                            needed.
+//   DABCoordinatorTransactionTypeImmediate - Immediately acquire a write lock
+//                                            on the database, but allow reads
+//                                            to continue.
+//   DABCoordinatorTransactionTypeExclusive - Immediately acquire an exclusive
+//                                            lock on the database. No other
+//                                            reads or writes will be allowed.
+//
+typedef enum : NSInteger {
+	DABCoordinatorTransactionTypeDeferred,
+	DABCoordinatorTransactionTypeImmediate,
+	DABCoordinatorTransactionTypeExclusive,
+} DABCoordinatorTransactionType;
+
 extern NSString * const DABRefsTableName;
 extern NSString * const DABEntitiesTableName;
 extern NSString * const DABTransactionsTableName;
@@ -19,7 +36,7 @@ extern NSString * const DABHeadRefName;
 
 @interface DABCoordinator ()
 
-- (BOOL)performWithError:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block;
+- (BOOL)performTransactionType:(DABCoordinatorTransactionType)transactionType error:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block;
 
 - (long long int)headID:(NSError **)error;
 
