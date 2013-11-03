@@ -67,7 +67,8 @@
 	}
 
 	NSTimeInterval end = [NSDate timeIntervalSinceReferenceDate];
-	NSLog(@"Took %f secs.", end - start);
+	NSTimeInterval totalTime = end - start;
+	NSLog(@"%f adds/sec", count / totalTime);
 }
 
 @end
