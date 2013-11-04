@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8851154B1811D78900E00B2B /* libFMDB.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 885115421811D77A00E00B2B /* libFMDB.a */; };
+		8859765B18178B0000A8FC72 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8859764C18178AE500A8FC72 /* ReactiveCocoa.framework */; };
+		886D1997181240030044BD2F /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 886D1996181240030044BD2F /* libsqlite3.dylib */; };
 		8884947518063DDA00477836 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8884947418063DDA00477836 /* Cocoa.framework */; };
 		8884947F18063DDA00477836 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8884947D18063DDA00477836 /* InfoPlist.strings */; };
 		8884948118063DDA00477836 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884948018063DDA00477836 /* main.m */; };
@@ -18,13 +21,89 @@
 		8884949518063DDA00477836 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8884947418063DDA00477836 /* Cocoa.framework */; };
 		8884949D18063DDA00477836 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8884949B18063DDA00477836 /* InfoPlist.strings */; };
 		8884949F18063DDA00477836 /* DatBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884949E18063DDA00477836 /* DatBaseTests.m */; };
-		8884950418063EC100477836 /* ObjectiveGit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 888494FD18063EB000477836 /* ObjectiveGit.framework */; };
 		8884953918063F4000477836 /* DABCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953818063F4000477836 /* DABCoordinator.m */; };
 		8884953C18063F4600477836 /* DABDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953B18063F4600477836 /* DABDatabase.m */; };
 		8884953F18063F5300477836 /* DABTransactor.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953E18063F5300477836 /* DABTransactor.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		8851153F1811D77A00E00B2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8851153A1811D77A00E00B2B /* fmdb.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DD76FA10486AA7600D96B5E;
+			remoteInfo = fmdb;
+		};
+		885115411811D77A00E00B2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8851153A1811D77A00E00B2B /* fmdb.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EE4290EF12B42F870088BD94;
+			remoteInfo = FMDB;
+		};
+		885115491811D78400E00B2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8851153A1811D77A00E00B2B /* fmdb.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = EE4290EE12B42F870088BD94;
+			remoteInfo = FMDB;
+		};
+		8859764B18178AE500A8FC72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 88037F8315056328001A5B19;
+			remoteInfo = ReactiveCocoa;
+		};
+		8859764D18178AE500A8FC72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 88F440AB153DAC820097B4C3;
+			remoteInfo = "ReactiveCocoa-iOS";
+		};
+		8859764F18178AE500A8FC72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 88CDF7DC15000FCF00163A9F;
+			remoteInfo = ReactiveCocoaTests;
+		};
+		8859765118178AE500A8FC72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5FAF5223174D4C2000CAC810;
+			remoteInfo = "ReactiveCocoaTests-iOS";
+		};
+		8859765318178AE500A8FC72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1860F412177C91B500C7B3C9;
+			remoteInfo = "ReactiveCocoa-iOS-UIKitTestHost";
+		};
+		8859765518178AE500A8FC72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1860F430177C91B500C7B3C9;
+			remoteInfo = "ReactiveCocoa-iOS-UIKitTestHostTests";
+		};
+		8859765718178AE500A8FC72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D05AD39417F2D56F0080895B;
+			remoteInfo = "ReactiveCocoa-Mac";
+		};
+		8859765918178AEF00A8FC72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 88037F8215056328001A5B19;
+			remoteInfo = ReactiveCocoa;
+		};
 		8884949618063DDA00477836 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8884946918063DDA00477836 /* Project object */;
@@ -32,37 +111,12 @@
 			remoteGlobalIDString = 8884947018063DDA00477836;
 			remoteInfo = DatBase;
 		};
-		888494FC18063EB000477836 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 888494F018063EAF00477836 /* ObjectiveGitFramework.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
-			remoteInfo = ObjectiveGit;
-		};
-		888494FE18063EB000477836 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 888494F018063EAF00477836 /* ObjectiveGitFramework.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 88F05A6B16011E5400B7AD1D;
-			remoteInfo = ObjectiveGitTests;
-		};
-		8884950018063EB000477836 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 888494F018063EAF00477836 /* ObjectiveGitFramework.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 04DB4645133AB57600D9C624;
-			remoteInfo = "ObjectiveGit-iOS";
-		};
-		8884950218063EBC00477836 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 888494F018063EAF00477836 /* ObjectiveGitFramework.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
-			remoteInfo = ObjectiveGit;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8851153A1811D77A00E00B2B /* fmdb.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = fmdb.xcodeproj; path = External/fmdb/fmdb.xcodeproj; sourceTree = "<group>"; };
+		8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactiveCocoa.xcodeproj; path = External/ReactiveCocoa/ReactiveCocoaFramework/ReactiveCocoa.xcodeproj; sourceTree = "<group>"; };
+		886D1996181240030044BD2F /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		8884947118063DDA00477836 /* DatBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DatBase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8884947418063DDA00477836 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		8884947718063DDA00477836 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -98,7 +152,6 @@
 		888494BB18063E6100477836 /* Mac-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-Framework.xcconfig"; sourceTree = "<group>"; };
 		888494BC18063E6100477836 /* Mac-StaticLibrary.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
 		888494BD18063E6100477836 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
-		888494F018063EAF00477836 /* ObjectiveGitFramework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ObjectiveGitFramework.xcodeproj; path = "External/objective-git/ObjectiveGitFramework.xcodeproj"; sourceTree = "<group>"; };
 		8884953718063F4000477836 /* DABCoordinator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DABCoordinator.h; sourceTree = "<group>"; };
 		8884953818063F4000477836 /* DABCoordinator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DABCoordinator.m; sourceTree = "<group>"; };
 		8884953A18063F4600477836 /* DABDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DABDatabase.h; sourceTree = "<group>"; };
@@ -115,7 +168,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8884950418063EC100477836 /* ObjectiveGit.framework in Frameworks */,
+				8859765B18178B0000A8FC72 /* ReactiveCocoa.framework in Frameworks */,
+				886D1997181240030044BD2F /* libsqlite3.dylib in Frameworks */,
+				8851154B1811D78900E00B2B /* libFMDB.a in Frameworks */,
 				8884947518063DDA00477836 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -132,6 +187,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8851153B1811D77A00E00B2B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				885115401811D77A00E00B2B /* fmdb */,
+				885115421811D77A00E00B2B /* libFMDB.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8859763918178AE500A8FC72 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8859764C18178AE500A8FC72 /* ReactiveCocoa.framework */,
+				8859764E18178AE500A8FC72 /* libReactiveCocoa-iOS.a */,
+				8859765018178AE500A8FC72 /* ReactiveCocoaTests.octest */,
+				8859765218178AE500A8FC72 /* ReactiveCocoaTests-iOS.octest */,
+				8859765418178AE500A8FC72 /* ReactiveCocoa-iOS-UIKitTestHost.app */,
+				8859765618178AE500A8FC72 /* ReactiveCocoa-iOS-UIKitTestHostTests.octest */,
+				8859765818178AE500A8FC72 /* libReactiveCocoa-Mac.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		8884946818063DDA00477836 = {
 			isa = PBXGroup;
 			children = (
@@ -155,7 +233,9 @@
 		8884947318063DDA00477836 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				888494F018063EAF00477836 /* ObjectiveGitFramework.xcodeproj */,
+				886D1996181240030044BD2F /* libsqlite3.dylib */,
+				8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */,
+				8851153A1811D77A00E00B2B /* fmdb.xcodeproj */,
 				8884947418063DDA00477836 /* Cocoa.framework */,
 				8884949318063DDA00477836 /* XCTest.framework */,
 				8884947618063DDA00477836 /* Other Frameworks */,
@@ -288,16 +368,6 @@
 			path = "Mac OS X";
 			sourceTree = "<group>";
 		};
-		888494F118063EAF00477836 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				888494FD18063EB000477836 /* ObjectiveGit.framework */,
-				888494FF18063EB000477836 /* ObjectiveGitTests.octest */,
-				8884950118063EB000477836 /* libObjectiveGit-iOS.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -312,7 +382,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				8884950318063EBC00477836 /* PBXTargetDependency */,
+				8859765A18178AEF00A8FC72 /* PBXTargetDependency */,
+				8851154A1811D78400E00B2B /* PBXTargetDependency */,
 			);
 			name = DatBase;
 			productName = DatBase;
@@ -365,8 +436,12 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 888494F118063EAF00477836 /* Products */;
-					ProjectRef = 888494F018063EAF00477836 /* ObjectiveGitFramework.xcodeproj */;
+					ProductGroup = 8851153B1811D77A00E00B2B /* Products */;
+					ProjectRef = 8851153A1811D77A00E00B2B /* fmdb.xcodeproj */;
+				},
+				{
+					ProductGroup = 8859763918178AE500A8FC72 /* Products */;
+					ProjectRef = 8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -378,25 +453,67 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		888494FD18063EB000477836 /* ObjectiveGit.framework */ = {
+		885115401811D77A00E00B2B /* fmdb */ = {
 			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ObjectiveGit.framework;
-			remoteRef = 888494FC18063EB000477836 /* PBXContainerItemProxy */;
+			fileType = "compiled.mach-o.executable";
+			path = fmdb;
+			remoteRef = 8851153F1811D77A00E00B2B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		888494FF18063EB000477836 /* ObjectiveGitTests.octest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = ObjectiveGitTests.octest;
-			remoteRef = 888494FE18063EB000477836 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		8884950118063EB000477836 /* libObjectiveGit-iOS.a */ = {
+		885115421811D77A00E00B2B /* libFMDB.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = "libObjectiveGit-iOS.a";
-			remoteRef = 8884950018063EB000477836 /* PBXContainerItemProxy */;
+			path = libFMDB.a;
+			remoteRef = 885115411811D77A00E00B2B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8859764C18178AE500A8FC72 /* ReactiveCocoa.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ReactiveCocoa.framework;
+			remoteRef = 8859764B18178AE500A8FC72 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8859764E18178AE500A8FC72 /* libReactiveCocoa-iOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libReactiveCocoa-iOS.a";
+			remoteRef = 8859764D18178AE500A8FC72 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8859765018178AE500A8FC72 /* ReactiveCocoaTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ReactiveCocoaTests.octest;
+			remoteRef = 8859764F18178AE500A8FC72 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8859765218178AE500A8FC72 /* ReactiveCocoaTests-iOS.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "ReactiveCocoaTests-iOS.octest";
+			remoteRef = 8859765118178AE500A8FC72 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8859765418178AE500A8FC72 /* ReactiveCocoa-iOS-UIKitTestHost.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "ReactiveCocoa-iOS-UIKitTestHost.app";
+			remoteRef = 8859765318178AE500A8FC72 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8859765618178AE500A8FC72 /* ReactiveCocoa-iOS-UIKitTestHostTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "ReactiveCocoa-iOS-UIKitTestHostTests.octest";
+			remoteRef = 8859765518178AE500A8FC72 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8859765818178AE500A8FC72 /* libReactiveCocoa-Mac.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libReactiveCocoa-Mac.a";
+			remoteRef = 8859765718178AE500A8FC72 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -447,15 +564,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8851154A1811D78400E00B2B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = FMDB;
+			targetProxy = 885115491811D78400E00B2B /* PBXContainerItemProxy */;
+		};
+		8859765A18178AEF00A8FC72 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ReactiveCocoa;
+			targetProxy = 8859765918178AEF00A8FC72 /* PBXContainerItemProxy */;
+		};
 		8884949718063DDA00477836 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8884947018063DDA00477836 /* DatBase */;
 			targetProxy = 8884949618063DDA00477836 /* PBXContainerItemProxy */;
-		};
-		8884950318063EBC00477836 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = ObjectiveGit;
-			targetProxy = 8884950218063EBC00477836 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -575,6 +697,7 @@
 				GCC_PREFIX_HEADER = "DatBase/DatBase-Prefix.pch";
 				INFOPLIST_FILE = "DatBase/DatBase-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = External/fmdb/src;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -589,6 +712,7 @@
 				GCC_PREFIX_HEADER = "DatBase/DatBase-Prefix.pch";
 				INFOPLIST_FILE = "DatBase/DatBase-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = External/fmdb/src;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

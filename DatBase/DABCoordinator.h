@@ -13,7 +13,7 @@
 
 @interface DABCoordinator : NSObject
 
-+ (instancetype)createDatabaseAtURL:(NSURL *)URL error:(NSError **)error;
+- (id)initInMemory:(NSError **)error;
 
 - (id)initWithDatabaseAtURL:(NSURL *)URL error:(NSError **)error;
 

@@ -15,15 +15,15 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
 	NSError *error;
-	NSURL *URL = [NSURL fileURLWithPath:@"/Users/joshaber/Desktop/DatBase/test.git"];
+	NSURL *URL = [NSURL fileURLWithPath:@"/Users/joshaber/Desktop/DatBase/test.sqlite"];
 	[NSFileManager.defaultManager removeItemAtURL:URL error:NULL];
 
-	DABCoordinator *coordinator = [DABCoordinator createDatabaseAtURL:URL error:&error];
+	DABCoordinator *coordinator = [[DABCoordinator alloc] initWithDatabaseAtURL:URL error:&error];
 	NSAssert(coordinator != nil, @"Coordinator was nil: %@", error);
 
 	DABTransactor *transactor = [coordinator transactor];
 
-	[self doABunchOfWrites:transactor];
+	[self doABunchOfWrites:transactor coordinator:coordinator];
 
 //	DABDatabase *originalDatabase = [coordinator currentDatabase:&error];
 //	NSAssert(originalDatabase != nil, @"Original database was nil: %@", error);
@@ -56,14 +56,27 @@
 //	NSLog(@"%@", database.allKeys);
 }
 
-- (void)doABunchOfWrites:(DABTransactor *)transactor {
+- (void)doABunchOfWrites:(DABTransactor *)transactor coordinator:(DABCoordinator *)coordinator {
 	NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 
 	static const NSUInteger count = 1000;
 	static NSString * const attribute = @"attribute";
+	NSString *newKey = [transactor generateNewKey];
 	for (NSUInteger i = 0; i < count; i++) {
-		NSString *newKey = [transactor generateNewKey];
-		[transactor addValue:@(i) forAttribute:attribute key:newKey error:NULL];
+		NSError *error;
+		id valueToInsert = @(i);
+		BOOL success = [transactor addValue:valueToInsert forAttribute:attribute key:newKey error:&error];
+		if (!success) {
+			NSLog(@"Error: %@", error);
+			return;
+		}
+
+		DABDatabase *database = [coordinator currentDatabase:NULL];
+		NSDictionary *x = database[newKey];
+		NSAssert(x != nil, nil);
+		NSAssert([x[@"key"] isEqual:newKey], nil);
+		id value = [NSKeyedUnarchiver unarchiveObjectWithData:x[@"value"]];
+		NSAssert([value isEqual:valueToInsert], nil);
 	}
 
 	NSTimeInterval end = [NSDate timeIntervalSinceReferenceDate];

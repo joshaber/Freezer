@@ -8,41 +8,60 @@
 
 #import "DABDatabase.h"
 #import "DABDatabase+Private.h"
-#import <ObjectiveGit/ObjectiveGit.h>
+#import "FMDatabase.h"
+#import "DABCoordinator+Private.h"
 
 @interface DABDatabase ()
 
-@property (nonatomic, readonly, strong) GTCommit *commit;
+@property (nonatomic, readonly, strong) DABCoordinator *coordinator;
+
+@property (nonatomic, readonly, assign) long long int transactionID;
 
 @end
 
 @implementation DABDatabase
 
-- (id)initWithCommit:(GTCommit *)commit {
+- (id)initWithCoordinator:(DABCoordinator *)coordinator transactionID:(long long int)transactionID {
+	NSParameterAssert(coordinator != nil);
+
 	self = [super init];
 	if (self == nil) return nil;
 
-	_commit = commit;
+	_coordinator = coordinator;
+	_transactionID = transactionID;
 
 	return self;
 }
 
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
-	GTTreeEntry *entry = [self.commit.tree entryWithName:key];
-	GTBlob *blob = (GTBlob *)[entry toObjectAndReturnError:NULL];
-	if (blob == nil) return nil;
+	__block NSDictionary *result;
+	[self.coordinator performTransactionType:DABCoordinatorTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
+		NSString *query = [NSString stringWithFormat:@"SELECT * FROM %@, %@ WHERE %@.tx_id = ? AND %@.entity_id = %@.id AND %@.key = ? LIMIT 1", DABEntitiesTableName, DABTransactionToEntityTableName, DABTransactionToEntityTableName, DABTransactionToEntityTableName, DABEntitiesTableName, DABEntitiesTableName];
+		FMResultSet *set = [database executeQuery:query, @(self.transactionID), key];
+		if (set == nil) {
+			if (error != NULL) *error = database.lastError;
+			return NO;
+		}
 
-	return [NSJSONSerialization JSONObjectWithData:blob.data options:0 error:NULL];
+		if (![set next]) return YES;
+
+		result = set.resultDictionary;
+
+		return YES;
+	}];
+
+	return result;
 }
 
 - (NSArray *)allKeys {
-	NSArray *contents = self.commit.tree.contents;
-	NSMutableArray *keys = [NSMutableArray arrayWithCapacity:contents.count];
-	for (GTTreeEntry *entry in contents) {
-		[keys addObject:entry.name];
-	}
-
-	return keys;
+	return @[];
+//	NSArray *contents = self.commit.tree.contents;
+//	NSMutableArray *keys = [NSMutableArray arrayWithCapacity:contents.count];
+//	for (GTTreeEntry *entry in contents) {
+//		[keys addObject:entry.name];
+//	}
+//
+//	return keys;
 }
 
 @end

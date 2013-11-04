@@ -10,7 +10,7 @@
 #import "DABDatabase+Private.h"
 #import "DABCoordinator.h"
 #import "DABCoordinator+Private.h"
-#import <ObjectiveGit/ObjectiveGit.h>
+#import "FMDatabase.h"
 
 @interface DABTransactor ()
 
@@ -31,53 +31,84 @@
 	return self;
 }
 
-- (void)runTransaction:(void (^)(void))block {
-	NSParameterAssert(block != NULL);
-
-	[self.coordinator performBlock:^(GTRepository *repository) {
-		block();
-	}];
-}
-
 - (NSString *)generateNewKey {
 	// Problem?
 	return [[NSUUID UUID] UUIDString];
 }
 
-- (NSString *)addValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error {
+- (BOOL)addValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error {
 	NSParameterAssert(value != nil);
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
-	__block NSString *ID;
-	[self.coordinator performBlock:^(GTRepository *repository) {
-		DABDatabase *database = [self.coordinator currentDatabase:error];
-		if (database == nil) return;
+	NSDate *currentDate = [NSDate date];
+	NSData *valueData = [NSKeyedArchiver archivedDataWithRootObject:value];
 
-		NSMutableDictionary *existingEntry = [database[key] mutableCopy] ?: [NSMutableDictionary dictionary];
-		existingEntry[attribute] = value;
-		NSData *data = [NSJSONSerialization dataWithJSONObject:existingEntry options:0 error:error];
-		if (data == nil) return;
+	// We could split some of this work out into a non-exclusive transaction,
+	// but by batching it all in a single transaction we get a much higher write
+	// speed. (~370 w/s vs. ~600 w/s on my computer).
+	//
+	// TODO: Test whether the write cost of splitting it up is made up in read
+	// speed.
+	return [self.coordinator performTransactionType:DABCoordinatorTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+		NSString *query = [NSString stringWithFormat:@"INSERT INTO %@ (date) VALUES (?)", DABTransactionsTableName];
+		BOOL success = [database executeUpdate:query, currentDate];
+		if (!success) {
+			if (error != NULL) *error = database.lastError;
+			return NO;
+		}
 
-		GTCommit *commit = [self.coordinator HEADCommit:error];
-		GTTreeBuilder *builder = [[GTTreeBuilder alloc] initWithTree:commit.tree error:error];
-		if (builder == nil) return;
+		sqlite_int64 txID = database.lastInsertRowId;
 
-		GTTreeEntry *entry = [builder addEntryWithData:data fileName:key fileMode:GTFileModeBlob error:error];
-		if (entry == nil) return;
+		query = [NSString stringWithFormat:@"INSERT INTO %@ (attribute, value, key, tx_id) VALUES (?, ?, ?, ?)", DABEntitiesTableName];
+		success = [database executeUpdate:query, attribute, valueData, key, @(txID)];
+		if (!success) {
+			if (error != NULL) *error = database.lastError;
+			return NO;
+		}
 
-		GTTree *tree = [builder writeTreeToRepository:repository error:error];
-		if (tree == nil) return;
+		sqlite_int64 addedEntityID = database.lastInsertRowId;
 
-		GTSignature *signature = [[GTSignature alloc] initWithName:@"DatBase" email:@"dat@base.com" time:[NSDate date]];
-		NSArray *parents = (commit != nil ? @[ commit ] : nil);
-		GTCommit *newCommit = [repository createCommitWithTree:tree message:@"" author:signature committer:signature parents:parents updatingReferenceNamed:@"HEAD" error:error];
-		if (newCommit == nil) return;
+		long long int headID = [self.coordinator headID:error];
 
-		ID = [key copy];
+		// TODO: Surely there's a better way to do all this?
+		query = [NSString stringWithFormat:@"SELECT entity_id, entity_key FROM %@ WHERE tx_id = ?", DABTransactionToEntityTableName];
+		FMResultSet *set = [database executeQuery:query, @(headID)];
+		NSMutableDictionary *keysToIDs = [NSMutableDictionary dictionary];
+		while ([set next]) {
+			NSString *entityKey = [set stringForColumnIndex:1];
+			long long int entityID = [set longLongIntForColumnIndex:0];
+			keysToIDs[entityKey] = @(entityID);
+		}
+
+		NSNumber *transactionID = @(addedEntityID);
+		keysToIDs[key] = transactionID;
+		for (NSString *entityKey in keysToIDs) {
+			NSNumber *entityID = keysToIDs[entityKey];
+			query = [NSString stringWithFormat:@"INSERT INTO %@ (tx_id, entity_id, entity_key) VALUES (?, ?, ?)", DABTransactionToEntityTableName];
+			BOOL success = [database executeUpdate:query, transactionID, entityID, entityKey];
+			if (!success) {
+				if (error != NULL) *error = database.lastError;
+				return NO;
+			}
+		}
+
+		query = [NSString stringWithFormat:@"SELECT name FROM %@ WHERE name = ? LIMIT 1", DABRefsTableName];
+		set = [database executeQuery:query, DABHeadRefName];
+		if (![set next]) {
+			query = [NSString stringWithFormat:@"INSERT INTO %@ (tx_id, name) VALUES (?, ?)", DABRefsTableName];
+		} else {
+			query = [NSString stringWithFormat:@"UPDATE %@ SET tx_id = ? WHERE name = ?", DABRefsTableName];
+		}
+
+		success = [database executeUpdate:query, @(txID), DABHeadRefName];
+		if (!success) {
+			if (error != NULL) *error = database.lastError;
+			return NO;
+		}
+
+		return YES;
 	}];
-
-	return ID;
 }
 
 @end

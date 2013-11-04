@@ -8,15 +8,36 @@
 
 #import "DABCoordinator.h"
 
-@class GTRepository;
-@class GTCommit;
+// The type of transaction to use.
+//
+//   DABCoordinatorTransactionTypeDeferred  - Defer lock acquisition until it is
+//                                            needed.
+//   DABCoordinatorTransactionTypeImmediate - Immediately acquire a write lock
+//                                            on the database, but allow reads
+//                                            to continue.
+//   DABCoordinatorTransactionTypeExclusive - Immediately acquire an exclusive
+//                                            lock on the database. No other
+//                                            reads or writes will be allowed.
+//
+typedef enum : NSInteger {
+	DABCoordinatorTransactionTypeDeferred,
+	DABCoordinatorTransactionTypeImmediate,
+	DABCoordinatorTransactionTypeExclusive,
+} DABCoordinatorTransactionType;
+
+extern NSString * const DABRefsTableName;
+extern NSString * const DABEntitiesTableName;
+extern NSString * const DABTransactionsTableName;
+extern NSString * const DABTransactionToEntityTableName;
+
+extern NSString * const DABHeadRefName;
+
+@class FMDatabase;
 
 @interface DABCoordinator ()
 
-- (GTCommit *)HEADCommit:(NSError **)error;
+- (BOOL)performTransactionType:(DABCoordinatorTransactionType)transactionType error:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block;
 
-- (void)performBlock:(void (^)(GTRepository *repository))block;
-
-- (void)performAtomicBlock:(void (^)(GTRepository *repository))block;
+- (long long int)headID:(NSError **)error;
 
 @end

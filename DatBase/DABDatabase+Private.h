@@ -8,10 +8,10 @@
 
 #import "DABDatabase.h"
 
-@class GTCommit;
+@class DABCoordinator;
 
 @interface DABDatabase ()
 
-- (id)initWithCommit:(GTCommit *)commit;
+- (id)initWithCoordinator:(DABCoordinator *)coordinator transactionID:(long long int)transactionID;
 
 @end
