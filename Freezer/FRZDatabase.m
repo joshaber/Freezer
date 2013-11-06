@@ -36,6 +36,14 @@
 	return self;
 }
 
+#pragma mark NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+	return self;
+}
+
+#pragma mark Lookup
+
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
 	NSParameterAssert(key != nil);
 

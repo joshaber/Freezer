@@ -24,6 +24,7 @@
 		8884953918063F4000477836 /* FRZStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953818063F4000477836 /* FRZStore.m */; };
 		8884953C18063F4600477836 /* FRZDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953B18063F4600477836 /* FRZDatabase.m */; };
 		8884953F18063F5300477836 /* FRZTransactor.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953E18063F5300477836 /* FRZTransactor.m */; };
+		88B3F8EE182AE14B00C0415E /* FRZChange.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B3F8ED182AE14B00C0415E /* FRZChange.m */; };
 		88DA81B81829E29300F26EAD /* Mantle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88DA81A71829E27F00F26EAD /* Mantle.framework */; };
 /* End PBXBuildFile section */
 
@@ -204,6 +205,9 @@
 		888495401806410700477836 /* FRZDatabase+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZDatabase+Private.h"; sourceTree = "<group>"; };
 		888495411806431400477836 /* FRZTransactor+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZTransactor+Private.h"; sourceTree = "<group>"; };
 		888495421806437D00477836 /* FRZStore+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZStore+Private.h"; sourceTree = "<group>"; };
+		88B3F8EC182AE14B00C0415E /* FRZChange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZChange.h; sourceTree = "<group>"; };
+		88B3F8ED182AE14B00C0415E /* FRZChange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZChange.m; sourceTree = "<group>"; };
+		88B3F8EF182AE1B700C0415E /* FRZChange+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZChange+Private.h"; sourceTree = "<group>"; };
 		88DA819B1829E27F00F26EAD /* Mantle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Mantle.xcodeproj; path = "../../Documents/Development/GitHub/write-mac/External/Mantle/Mantle.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -316,6 +320,9 @@
 				8884953D18063F5300477836 /* FRZTransactor.h */,
 				888495411806431400477836 /* FRZTransactor+Private.h */,
 				8884953E18063F5300477836 /* FRZTransactor.m */,
+				88B3F8EC182AE14B00C0415E /* FRZChange.h */,
+				88B3F8EF182AE1B700C0415E /* FRZChange+Private.h */,
+				88B3F8ED182AE14B00C0415E /* FRZChange.m */,
 			);
 			path = Freezer;
 			sourceTree = "<group>";
@@ -473,7 +480,7 @@
 		8884946918063DDA00477836 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				CLASSPREFIX = DAB;
+				CLASSPREFIX = FRZ;
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Josh Abernathy";
 				TargetAttributes = {
@@ -645,6 +652,7 @@
 			files = (
 				8884953F18063F5300477836 /* FRZTransactor.m in Sources */,
 				8884953C18063F4600477836 /* FRZDatabase.m in Sources */,
+				88B3F8EE182AE14B00C0415E /* FRZChange.m in Sources */,
 				8884953918063F4000477836 /* FRZStore.m in Sources */,
 				8884948818063DDA00477836 /* DABAppDelegate.m in Sources */,
 				8884948118063DDA00477836 /* main.m in Sources */,

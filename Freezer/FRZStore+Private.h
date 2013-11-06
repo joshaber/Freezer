@@ -29,6 +29,10 @@ typedef enum : NSInteger {
 
 @interface FRZStore ()
 
+// An array of changes which will be delivered after the current transaction has
+// been committed.
+- (NSMutableArray *)queuedChanges;
+
 // Perform a transaction of the given type.
 //
 // Transactions may be nested. If an error occurs, then the entire and all

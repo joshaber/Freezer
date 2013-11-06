@@ -11,6 +11,7 @@
 #import "FRZStore.h"
 #import "FRZStore+Private.h"
 #import "FMDatabase.h"
+#import "FRZChange+Private.h"
 
 @interface FRZTransactor ()
 
@@ -97,6 +98,10 @@
 		BOOL success = [self insertIntoDatabase:database value:value forAttribute:attribute key:key transactionID:txID error:error];
 		if (!success) return NO;
 
+		FRZDatabase *previousDatabase = [self.store currentDatabase:NULL];
+		FRZDatabase *changedDatabase = [[FRZDatabase alloc] initWithStore:self.store headID:txID];
+		[self.store.queuedChanges addObject:[[FRZChange alloc] initWithType:FRZChangeTypeAdd key:key attribute:attribute delta:value previousDatabase:previousDatabase changedDatabase:changedDatabase]];
+
 		return [self updateHeadInDatabase:database toID:txID error:error];
 	}];
 }
@@ -111,6 +116,10 @@
 
 		BOOL success = [self insertIntoDatabase:database value:NSNull.null forAttribute:attribute key:key transactionID:txID error:error];
 		if (!success) return NO;
+
+		FRZDatabase *previousDatabase = [self.store currentDatabase:NULL];
+		FRZDatabase *changedDatabase = [[FRZDatabase alloc] initWithStore:self.store headID:txID];
+		[self.store.queuedChanges addObject:[[FRZChange alloc] initWithType:FRZChangeTypeRemove key:key attribute:attribute delta:nil previousDatabase:previousDatabase changedDatabase:changedDatabase]];
 
 		return [self updateHeadInDatabase:database toID:txID error:error];
 	}];

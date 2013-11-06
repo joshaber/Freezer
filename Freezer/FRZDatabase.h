@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 // A database as retrieved from a store.
-@interface FRZDatabase : NSObject
+@interface FRZDatabase : NSObject <NSCopying>
 
 // Look up all the attributes and values for the given key.
 //

@@ -11,11 +11,16 @@
 #import "FRZDatabase+Private.h"
 #import "FRZTransactor+Private.h"
 #import "FMDatabase.h"
+#import "FRZChange.h"
 
 static NSString * const FRZStoreDatabaseKey = @"FRZStoreDatabaseKey";
 static NSString * const FRZStoreActiveTransactionCountKey = @"FRZStoreActiveTransactionCountKey";
 
+static NSString * const FRZStoreQueuedChangesKey = @"FRZStoreQueuedChangesKey";
+
 @interface FRZStore ()
+
+@property (nonatomic, readonly, strong) RACSubject *changesSubject;
 
 @property (nonatomic, readonly, copy) NSString *databasePath;
 
@@ -24,6 +29,10 @@ static NSString * const FRZStoreActiveTransactionCountKey = @"FRZStoreActiveTran
 @implementation FRZStore
 
 #pragma mark Lifecycle
+
+- (void)dealloc {
+	[_changesSubject sendCompleted];
+}
 
 - (id)initWithPath:(NSString *)path error:(NSError **)error {
 	self = [super init];
@@ -34,6 +43,8 @@ static NSString * const FRZStoreActiveTransactionCountKey = @"FRZStoreActiveTran
 	// Preflight the database so we get fatal errors earlier.
 	FMDatabase *database = [self createDatabase:error];
 	if (database == nil) return nil;
+
+	_changesSubject = [RACSubject subject];
 
 	return self;
 }
@@ -185,10 +196,29 @@ static NSString * const FRZStoreActiveTransactionCountKey = @"FRZStoreActiveTran
 	} else {
 		if ([self deccrementTransactionCount] == 0) {
 			[database commit];
+
+			for (FRZChange *change in self.queuedChanges) {
+				[self.changesSubject sendNext:change];
+			}
+
+			[self.queuedChanges removeAllObjects];
 		}
 	}
 
 	return success;
+}
+
+- (NSMutableArray *)queuedChanges {
+	NSMutableArray *array = NSThread.currentThread.threadDictionary[FRZStoreQueuedChangesKey];
+	if (array != nil) return array;
+
+	array = [NSMutableArray array];
+	NSThread.currentThread.threadDictionary[FRZStoreQueuedChangesKey] = array;
+	return array;
+}
+
+- (RACSignal *)changes {
+	return self.changesSubject;
 }
 
 @end

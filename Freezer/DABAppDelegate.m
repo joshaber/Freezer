@@ -21,6 +21,10 @@
 	FRZStore *coordinator = [[FRZStore alloc] initWithURL:URL error:&error];
 	NSAssert(coordinator != nil, @"Coordinator was nil: %@", error);
 
+	[coordinator.changes subscribeNext:^(id x) {
+		NSLog(@"%@", x);
+	}];
+
 	FRZTransactor *transactor = [coordinator transactor];
 
 	NSString *UUID = [[NSUUID UUID] UUIDString];

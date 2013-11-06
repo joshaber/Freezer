@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <ReactiveCocoa/ReactiveCocoa.h>
 
 @class FRZDatabase;
 @class FRZTransactor;
@@ -14,6 +15,10 @@
 // A Freezer store. This contains both the database, for reading values, and the
 // transactor, for effecting change to the store.
 @interface FRZStore : NSObject
+
+// A signal of FRZChange items, one for each change done by a transactor. These
+// will be sent on a private scheduler.
+@property (nonatomic, readonly, strong) RACSignal *changes;
 
 // Initializes the store to exist in memory only.
 //
