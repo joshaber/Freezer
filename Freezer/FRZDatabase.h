@@ -29,4 +29,7 @@
 // Returns an array of NSString keys.
 - (NSArray *)keysWithAttribute:(NSString *)attribute error:(NSError **)error;
 
+// 
+- (NSArray *)keysAndValuesWithAttribute:(NSString *)attribute error:(NSError **)error;
+
 @end

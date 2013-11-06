@@ -113,4 +113,30 @@
 	return results;
 }
 
+- (NSArray *)keysAndValuesWithAttribute:(NSString *)attribute error:(NSError **)error {
+	NSParameterAssert(attribute != nil);
+
+	NSMutableArray *results = [NSMutableArray array];
+	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:error block:^(FMDatabase *database, NSError **error) {
+		FMResultSet *set = [database executeQuery:@"SELECT key, value FROM entities WHERE attribute = ? AND value IS NOT NULL AND tx_id <= ? ORDER BY id DESC", attribute, @(self.headID)];
+		if (set == nil) {
+			if (error != NULL) *error = database.lastError;
+			return NO;
+		}
+
+		while ([set next]) {
+			id valueData = set[@"value"];
+			if (valueData == NSNull.null) continue;
+
+			id value = [NSKeyedUnarchiver unarchiveObjectWithData:valueData];
+			NSString *key = set[@"key"];
+			[results addObject:@{ key: value }];
+		}
+
+		return YES;
+	}];
+
+	return results;
+}
+
 @end
