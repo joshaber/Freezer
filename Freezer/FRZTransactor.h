@@ -41,4 +41,26 @@
 // Returns whether the removal was successful.
 - (BOOL)removeValueForAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
 
+// Adds the given values to the collection in the attribute on the key. Note
+// the value of attribute must be an array (or non-existent).
+//
+// values    - The values to add. Cannot be nil.
+// attribute - The attribute whose value will be added as `value`. Cannot be nil.
+// key       - The key to associate with the attribute and value. Cannot be nil.
+// error     - The error if one occurs.
+//
+// Returns whether the add was successful.
+- (BOOL)addValues:(NSArray *)values forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
+
+// Removes the given values from the collection in the attribute on the key.
+// Note the value of attribute must be an array (or non-existent).
+//
+// values    - The values to remove. Cannot be nil.
+// attribute - The attribute whose value should be removed. Cannot be nil.
+// key       - The key whose associated attribute will be removed. Cannot be nil.
+// error     - The error if one occurs.
+//
+// Returns whether the removal was successful.
+- (BOOL)removeValues:(NSArray *)values forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
+
 @end

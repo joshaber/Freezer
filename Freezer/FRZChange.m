@@ -36,7 +36,14 @@
 #pragma mark NSObject
 
 - (NSString *)description {
-	NSString *typeName = (self.type == FRZChangeTypeAdd ? @"add" : @"remove" );
+	NSDictionary *typeToTypeName = @{
+		@(FRZChangeTypeAdd): @"add",
+		@(FRZChangeTypeAddMany): @"add many",
+		@(FRZChangeTypeRemove): @"remove",
+		@(FRZChangeTypeRemoveMany): @"remove many",
+	};
+	NSString *typeName = typeToTypeName[@(self.type)];
+
 	return [NSString stringWithFormat:@"<%@: %p> type: %@, key: %@, attribute: %@, delta: %@", self.class, self, typeName, self.key, self.attribute, self.delta];
 }
 

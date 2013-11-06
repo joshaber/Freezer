@@ -9,11 +9,15 @@
 @class FRZDatabase;
 
 // The type of change made.
-//   FRZChangeTypeAdd    - A new value was added.
-//   FRZChangeTypeRemove - An existing value was removed.
+//   FRZChangeTypeAdd        - A new value was added.
+//   FRZChangeTypeAddMany    - Values were added to a collection.
+//   FRZChangeTypeRemove     - An existing value was removed.
+//   FRZChangeTypeRemoveMany - Values were removed from a collection.
 typedef enum : NSInteger {
 	FRZChangeTypeAdd,
+	FRZChangeTypeAddMany,
 	FRZChangeTypeRemove,
+	FRZChangeTypeRemoveMany,
 } FRZChangeType;
 
 // A change that was applied to a store.
@@ -28,8 +32,11 @@ typedef enum : NSInteger {
 // The attribute which was changed.
 @property (nonatomic, readonly, copy) NSString *attribute;
 
-// The delta of the change. This is context-dependent. For adds, this is the new
-// value. For removes, this is nil.
+// The delta of the change. This is change type-dependent.
+//   FRZChangeTypeAdd        - The value added.
+//   FRZChangeTypeAddMany    - The NSArray added.
+//   FRZChangeTypeRemove     - nil.
+//   FRZChangeTypeRemoveMany - The NSArray removed.
 @property (nonatomic, readonly, strong) id delta;
 
 // The database before the change was applied.
