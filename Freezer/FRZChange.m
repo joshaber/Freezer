@@ -17,7 +17,6 @@
 - (id)initWithType:(FRZChangeType)type key:(NSString *)key attribute:(NSString *)attribute delta:(id)delta previousDatabase:(FRZDatabase *)previousDatabase changedDatabase:(FRZDatabase *)changedDatabase {
 	NSParameterAssert(key != nil);
 	NSParameterAssert(attribute != nil);
-	NSParameterAssert(previousDatabase != nil);
 	NSParameterAssert(changedDatabase != nil);
 
 	self = [super init];

@@ -17,7 +17,7 @@
 //                    nil.
 // attribute        - The attribute whose value was changed. Cannot be nil.
 // delta            - The delta for the change. May be nil.
-// previousDatabase - The database before the change was affected. Cannot be nil.
+// previousDatabase - The database before the change was affected. May be nil.
 // changedDatabase  - The database after the change was affected. Cannot be nil.
 //
 // Returns the initialized object.
