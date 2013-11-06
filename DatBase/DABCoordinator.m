@@ -89,11 +89,12 @@ static NSString * const DABCoordinatorDatabaseKey = @"DABCoordinatorDatabaseKey"
 	}
 
 	NSString *txsSchema =
-		@"CREATE TABLE IF NOT EXISTS entries("
+		@"CREATE TABLE IF NOT EXISTS entities("
 			"id INTEGER PRIMARY KEY AUTOINCREMENT,"
-			"entity STRING NOT NULL,"
+			"key STRING NOT NULL,"
+			"attribute STRING NOT NULL,"
 			"value BLOB NOT NULL,"
-			"tx_id INTEGER NOT NULL"
+			"tx_id INTEGER"
 		");";
 	success = [database executeUpdate:txsSchema];
 	if (!success) {
@@ -106,11 +107,10 @@ static NSString * const DABCoordinatorDatabaseKey = @"DABCoordinatorDatabaseKey"
 
 - (long long int)headID:(NSError **)error {
 	long long int headID = -1;
-	NSString *query = [NSString stringWithFormat:@"SELECT tx_id from %@ WHERE name = ? LIMIT 1", DABRefsTableName];
 	FMDatabase *database = [self databaseForCurrentThread:error];
 	if (database == nil) return -1;
 
-	FMResultSet *set = [database executeQuery:query, DABHeadRefName];
+	FMResultSet *set = [database executeQuery:@"SELECT id FROM entities WHERE key = ? LIMIT 1", @"head"];
 	if ([set next]) {
 		headID = [set longLongIntForColumnIndex:0];
 	}

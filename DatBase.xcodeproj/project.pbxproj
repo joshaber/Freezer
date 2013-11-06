@@ -24,6 +24,8 @@
 		8884953918063F4000477836 /* DABCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953818063F4000477836 /* DABCoordinator.m */; };
 		8884953C18063F4600477836 /* DABDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953B18063F4600477836 /* DABDatabase.m */; };
 		8884953F18063F5300477836 /* DABTransactor.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953E18063F5300477836 /* DABTransactor.m */; };
+		88DA81B81829E29300F26EAD /* Mantle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88DA81A71829E27F00F26EAD /* Mantle.framework */; };
+		88DA81BB1829E31700F26EAD /* DABSimpleObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 88DA81BA1829E31700F26EAD /* DABSimpleObject.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +113,48 @@
 			remoteGlobalIDString = 8884947018063DDA00477836;
 			remoteInfo = DatBase;
 		};
+		88DA81A61829E27F00F26EAD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88DA819B1829E27F00F26EAD /* Mantle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D042FC3C15F72B23004E8054;
+			remoteInfo = Mantle;
+		};
+		88DA81A81829E27F00F26EAD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88DA819B1829E27F00F26EAD /* Mantle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D042FC5415F72B23004E8054;
+			remoteInfo = "Mantle Tests";
+		};
+		88DA81AA1829E27F00F26EAD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88DA819B1829E27F00F26EAD /* Mantle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D042FC7915F72BC7004E8054;
+			remoteInfo = "Mantle-iOS";
+		};
+		88DA81AC1829E27F00F26EAD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88DA819B1829E27F00F26EAD /* Mantle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D042FC8715F72BC7004E8054;
+			remoteInfo = "Mantle-iOS Tests";
+		};
+		88DA81AE1829E27F00F26EAD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88DA819B1829E27F00F26EAD /* Mantle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D0A56B461804B04900A84EDC;
+			remoteInfo = "Mantle-Mac";
+		};
+		88DA81B61829E28F00F26EAD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88DA819B1829E27F00F26EAD /* Mantle.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D042FC3B15F72B23004E8054;
+			remoteInfo = Mantle;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -161,6 +205,9 @@
 		888495401806410700477836 /* DABDatabase+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DABDatabase+Private.h"; sourceTree = "<group>"; };
 		888495411806431400477836 /* DABTransactor+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DABTransactor+Private.h"; sourceTree = "<group>"; };
 		888495421806437D00477836 /* DABCoordinator+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DABCoordinator+Private.h"; sourceTree = "<group>"; };
+		88DA819B1829E27F00F26EAD /* Mantle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Mantle.xcodeproj; path = "../../Documents/Development/GitHub/write-mac/External/Mantle/Mantle.xcodeproj"; sourceTree = "<group>"; };
+		88DA81B91829E31700F26EAD /* DABSimpleObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DABSimpleObject.h; sourceTree = "<group>"; };
+		88DA81BA1829E31700F26EAD /* DABSimpleObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DABSimpleObject.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +215,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88DA81B81829E29300F26EAD /* Mantle.framework in Frameworks */,
 				8859765B18178B0000A8FC72 /* ReactiveCocoa.framework in Frameworks */,
 				886D1997181240030044BD2F /* libsqlite3.dylib in Frameworks */,
 				8851154B1811D78900E00B2B /* libFMDB.a in Frameworks */,
@@ -233,6 +281,7 @@
 		8884947318063DDA00477836 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				88DA819B1829E27F00F26EAD /* Mantle.xcodeproj */,
 				886D1996181240030044BD2F /* libsqlite3.dylib */,
 				8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */,
 				8851153A1811D77A00E00B2B /* fmdb.xcodeproj */,
@@ -270,6 +319,8 @@
 				8884953D18063F5300477836 /* DABTransactor.h */,
 				888495411806431400477836 /* DABTransactor+Private.h */,
 				8884953E18063F5300477836 /* DABTransactor.m */,
+				88DA81B91829E31700F26EAD /* DABSimpleObject.h */,
+				88DA81BA1829E31700F26EAD /* DABSimpleObject.m */,
 			);
 			path = DatBase;
 			sourceTree = "<group>";
@@ -368,6 +419,18 @@
 			path = "Mac OS X";
 			sourceTree = "<group>";
 		};
+		88DA819C1829E27F00F26EAD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				88DA81A71829E27F00F26EAD /* Mantle.framework */,
+				88DA81A91829E27F00F26EAD /* Mantle Tests.octest */,
+				88DA81AB1829E27F00F26EAD /* libMantle-iOS.a */,
+				88DA81AD1829E27F00F26EAD /* Mantle-iOS Tests.octest */,
+				88DA81AF1829E27F00F26EAD /* libMantle-Mac.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -382,6 +445,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				88DA81B71829E28F00F26EAD /* PBXTargetDependency */,
 				8859765A18178AEF00A8FC72 /* PBXTargetDependency */,
 				8851154A1811D78400E00B2B /* PBXTargetDependency */,
 			);
@@ -438,6 +502,10 @@
 				{
 					ProductGroup = 8851153B1811D77A00E00B2B /* Products */;
 					ProjectRef = 8851153A1811D77A00E00B2B /* fmdb.xcodeproj */;
+				},
+				{
+					ProductGroup = 88DA819C1829E27F00F26EAD /* Products */;
+					ProjectRef = 88DA819B1829E27F00F26EAD /* Mantle.xcodeproj */;
 				},
 				{
 					ProductGroup = 8859763918178AE500A8FC72 /* Products */;
@@ -516,6 +584,41 @@
 			remoteRef = 8859765718178AE500A8FC72 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		88DA81A71829E27F00F26EAD /* Mantle.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Mantle.framework;
+			remoteRef = 88DA81A61829E27F00F26EAD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		88DA81A91829E27F00F26EAD /* Mantle Tests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Mantle Tests.octest";
+			remoteRef = 88DA81A81829E27F00F26EAD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		88DA81AB1829E27F00F26EAD /* libMantle-iOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libMantle-iOS.a";
+			remoteRef = 88DA81AA1829E27F00F26EAD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		88DA81AD1829E27F00F26EAD /* Mantle-iOS Tests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Mantle-iOS Tests.octest";
+			remoteRef = 88DA81AC1829E27F00F26EAD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		88DA81AF1829E27F00F26EAD /* libMantle-Mac.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libMantle-Mac.a";
+			remoteRef = 88DA81AE1829E27F00F26EAD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -549,6 +652,7 @@
 				8884953C18063F4600477836 /* DABDatabase.m in Sources */,
 				8884953918063F4000477836 /* DABCoordinator.m in Sources */,
 				8884948818063DDA00477836 /* DABAppDelegate.m in Sources */,
+				88DA81BB1829E31700F26EAD /* DABSimpleObject.m in Sources */,
 				8884948118063DDA00477836 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -578,6 +682,11 @@
 			isa = PBXTargetDependency;
 			target = 8884947018063DDA00477836 /* DatBase */;
 			targetProxy = 8884949618063DDA00477836 /* PBXContainerItemProxy */;
+		};
+		88DA81B71829E28F00F26EAD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Mantle;
+			targetProxy = 88DA81B61829E28F00F26EAD /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

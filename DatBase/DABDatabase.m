@@ -33,24 +33,23 @@
 	return self;
 }
 
-- (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
-	__block NSDictionary *result;
+- (NSArray *)objectForKeyedSubscript:(NSString *)key {
+	NSMutableArray *total = [NSMutableArray array];
 	[self.coordinator performTransactionType:DABCoordinatorTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
-		NSString *query = [NSString stringWithFormat:@"SELECT * FROM %@, %@ WHERE %@.tx_id = ? AND %@.entity_id = %@.id AND %@.key = ? LIMIT 1", DABEntitiesTableName, DABTransactionToEntityTableName, DABTransactionToEntityTableName, DABTransactionToEntityTableName, DABEntitiesTableName, DABEntitiesTableName];
-		FMResultSet *set = [database executeQuery:query, @(self.transactionID), key];
+		FMResultSet *set = [database executeQuery:@"SELECT * FROM entities WHERE key = ? GROUP BY attribute ORDER BY id DESC", key];
 		if (set == nil) {
 			if (error != NULL) *error = database.lastError;
 			return NO;
 		}
 
-		if (![set next]) return YES;
-
-		result = set.resultDictionary;
+		while ([set next]) {
+			[total addObject:set.resultDictionary];
+		}
 
 		return YES;
 	}];
 
-	return result;
+	return total;
 }
 
 - (NSArray *)allKeys {

@@ -25,13 +25,6 @@ typedef enum : NSInteger {
 	DABCoordinatorTransactionTypeExclusive,
 } DABCoordinatorTransactionType;
 
-extern NSString * const DABRefsTableName;
-extern NSString * const DABEntitiesTableName;
-extern NSString * const DABTransactionsTableName;
-extern NSString * const DABTransactionToEntityTableName;
-
-extern NSString * const DABHeadRefName;
-
 @class FMDatabase;
 
 @interface DABCoordinator ()

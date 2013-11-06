@@ -23,7 +23,17 @@
 
 	DABTransactor *transactor = [coordinator transactor];
 
-	[self doABunchOfWrites:transactor coordinator:coordinator];
+	NSString *UUID = [[NSUUID UUID] UUIDString];
+	[transactor addValue:@42 forAttribute:@"answer" key:UUID error:NULL];
+	[transactor addValue:@26 forAttribute:@"age" key:UUID error:NULL];
+	[transactor addValue:@27 forAttribute:@"age" key:UUID error:NULL];
+	[transactor addValue:@43 forAttribute:@"answer" key:UUID error:NULL];
+
+	DABDatabase *database = [coordinator currentDatabase:NULL];
+	NSArray *result = database[UUID];
+	NSLog(@"%@", result);
+
+//	[self doABunchOfWrites:transactor coordinator:coordinator];
 
 //	DABDatabase *originalDatabase = [coordinator currentDatabase:&error];
 //	NSAssert(originalDatabase != nil, @"Original database was nil: %@", error);
@@ -56,32 +66,32 @@
 //	NSLog(@"%@", database.allKeys);
 }
 
-- (void)doABunchOfWrites:(DABTransactor *)transactor coordinator:(DABCoordinator *)coordinator {
-	NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
-
-	static const NSUInteger count = 1000;
-	static NSString * const attribute = @"attribute";
-	NSString *newKey = [transactor generateNewKey];
-	for (NSUInteger i = 0; i < count; i++) {
-		NSError *error;
-		id valueToInsert = @(i);
-		BOOL success = [transactor addValue:valueToInsert forAttribute:attribute key:newKey error:&error];
-		if (!success) {
-			NSLog(@"Error: %@", error);
-			return;
-		}
-
-		DABDatabase *database = [coordinator currentDatabase:NULL];
-		NSDictionary *x = database[newKey];
-		NSAssert(x != nil, nil);
-		NSAssert([x[@"key"] isEqual:newKey], nil);
-		id value = [NSKeyedUnarchiver unarchiveObjectWithData:x[@"value"]];
-		NSAssert([value isEqual:valueToInsert], nil);
-	}
-
-	NSTimeInterval end = [NSDate timeIntervalSinceReferenceDate];
-	NSTimeInterval totalTime = end - start;
-	NSLog(@"%f adds/sec", count / totalTime);
-}
+//- (void)doABunchOfWrites:(DABTransactor *)transactor coordinator:(DABCoordinator *)coordinator {
+//	NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
+//
+//	static const NSUInteger count = 1000;
+//	static NSString * const attribute = @"attribute";
+//	NSString *newKey = [transactor generateNewKey];
+//	for (NSUInteger i = 0; i < count; i++) {
+//		NSError *error;
+//		id valueToInsert = @(i);
+//		BOOL success = [transactor addValue:valueToInsert forAttribute:attribute key:newKey error:&error];
+//		if (!success) {
+//			NSLog(@"Error: %@", error);
+//			return;
+//		}
+//
+//		DABDatabase *database = [coordinator currentDatabase:NULL];
+//		NSDictionary *x = database[newKey];
+//		NSAssert(x != nil, nil);
+//		NSAssert([x[@"key"] isEqual:newKey], nil);
+//		id value = [NSKeyedUnarchiver unarchiveObjectWithData:x[@"value"]];
+//		NSAssert([value isEqual:valueToInsert], nil);
+//	}
+//
+//	NSTimeInterval end = [NSDate timeIntervalSinceReferenceDate];
+//	NSTimeInterval totalTime = end - start;
+//	NSLog(@"%f adds/sec", count / totalTime);
+//}
 
 @end
