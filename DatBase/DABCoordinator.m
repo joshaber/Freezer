@@ -94,7 +94,7 @@ static NSString * const DABCoordinatorDatabaseKey = @"DABCoordinatorDatabaseKey"
 			"key STRING NOT NULL,"
 			"attribute STRING NOT NULL,"
 			"value BLOB NOT NULL,"
-			"tx_id INTEGER"
+			"tx_id INTEGER NOT NULL"
 		");";
 	success = [database executeUpdate:txsSchema];
 	if (!success) {
@@ -110,9 +110,10 @@ static NSString * const DABCoordinatorDatabaseKey = @"DABCoordinatorDatabaseKey"
 	FMDatabase *database = [self databaseForCurrentThread:error];
 	if (database == nil) return -1;
 
-	FMResultSet *set = [database executeQuery:@"SELECT id FROM entities WHERE key = ? LIMIT 1", @"head"];
+	FMResultSet *set = [database executeQuery:@"SELECT value FROM entities WHERE key = ? LIMIT 1", @"head"];
 	if ([set next]) {
-		headID = [set longLongIntForColumnIndex:0];
+		NSData *headIDData = [set objectForColumnIndex:0];
+		headID = [[NSKeyedUnarchiver unarchiveObjectWithData:headIDData] longLongValue];
 	}
 
 	return headID;

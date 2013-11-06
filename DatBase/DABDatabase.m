@@ -36,7 +36,7 @@
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[self.coordinator performTransactionType:DABCoordinatorTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
-		FMResultSet *set = [database executeQuery:@"SELECT * FROM entities WHERE key = ? GROUP BY attribute ORDER BY id DESC", key];
+		FMResultSet *set = [database executeQuery:@"SELECT * FROM entities WHERE key = ? AND tx_id <= ? GROUP BY attribute ORDER BY id DESC", key, @(self.transactionID)];
 		if (set == nil) {
 			if (error != NULL) *error = database.lastError;
 			return NO;

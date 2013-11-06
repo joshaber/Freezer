@@ -33,6 +33,11 @@
 	NSDictionary *result = database[UUID];
 	NSLog(@"%@", result);
 
+	[transactor addValue:@42 forAttribute:@"answer" key:UUID error:NULL];
+	database = [coordinator currentDatabase:NULL];
+	result = database[UUID];
+	NSLog(@"%@", result);
+
 //	[self doABunchOfWrites:transactor coordinator:coordinator];
 
 //	DABDatabase *originalDatabase = [coordinator currentDatabase:&error];

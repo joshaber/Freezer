@@ -41,6 +41,7 @@
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
+	NSDate *date = [NSDate date];
 	NSData *valueData = [NSKeyedArchiver archivedDataWithRootObject:value];
 
 	// We could split some of this work out into a non-exclusive transaction,
@@ -50,19 +51,29 @@
 	// TODO: Test whether the write cost of splitting it up is made up in read
 	// speed.
 	return [self.coordinator performTransactionType:DABCoordinatorTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
-		BOOL success = [database executeUpdate:@"INSERT INTO entities (attribute, value, key) VALUES (?, ?, ?)", attribute, valueData, key];
+		long long int headID = [self.coordinator headID:NULL];
+
+		NSString *txKey = [self generateNewKey];
+		BOOL success = [database executeUpdate:@"INSERT INTO entities (attribute, value, key, tx_id) VALUES (?, ?, ?, ?)", @"date", date, txKey, @(headID)];
 		if (!success) {
 			if (error != NULL) *error = database.lastError;
 			return NO;
 		}
 
-		sqlite_int64 addedEntityID = database.lastInsertRowId;
+		sqlite_int64 txID = database.lastInsertRowId;
+
+		success = [database executeUpdate:@"INSERT INTO entities (attribute, value, key, tx_id) VALUES (?, ?, ?, ?)", attribute, valueData, key, @(txID)];
+		if (!success) {
+			if (error != NULL) *error = database.lastError;
+			return NO;
+		}
 
 		FMResultSet *set = [database executeQuery:@"SELECT id FROM entities WHERE key = ? LIMIT 1", @"head"];
+		NSData *txIDData = [NSKeyedArchiver archivedDataWithRootObject:@(txID)];
 		if (![set next]) {
-			success = [database executeUpdate:@"INSERT INTO entities (attribute, value, key) VALUES (?, ?, ?)", @"id", @(addedEntityID), @"head"];
+			success = [database executeUpdate:@"INSERT INTO entities (attribute, value, key, tx_id) VALUES (?, ?, ?, ?)", @"id", txIDData, @"head", @0];
 		} else {
-			success = [database executeUpdate:@"UPDATE entities SET value = ? WHERE key = ?", @(addedEntityID), @"head"];
+			success = [database executeUpdate:@"UPDATE entities SET value = ? WHERE key = ?", txIDData, @"head"];
 		}
 
 		if (!success) {
