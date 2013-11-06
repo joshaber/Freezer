@@ -14,4 +14,6 @@
 
 - (BOOL)addValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
 
+- (BOOL)removeValueForAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
+
 @end

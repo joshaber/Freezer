@@ -12,6 +12,8 @@
 
 @interface DABTransactor ()
 
++ (NSData *)deletedSentinel;
+
 - (id)initWithCoordinator:(DABCoordinator *)coordinator;
 
 @end

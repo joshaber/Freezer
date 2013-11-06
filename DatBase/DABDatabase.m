@@ -10,6 +10,7 @@
 #import "DABDatabase+Private.h"
 #import "FMDatabase.h"
 #import "DABCoordinator+Private.h"
+#import "DABTransactor+Private.h"
 
 @interface DABDatabase ()
 
@@ -44,7 +45,10 @@
 
 		// TODO: Do we have to do this within the transaction?
 		while ([set next]) {
-			id value = [NSKeyedUnarchiver unarchiveObjectWithData:set[@"value"]];
+			NSData *valueData = set[@"value"];
+			if ([valueData isEqual:DABTransactor.deletedSentinel]) continue;
+
+			id value = [NSKeyedUnarchiver unarchiveObjectWithData:valueData];
 			NSString *attribute = set[@"attribute"];
 			result[attribute] = value;
 		}
