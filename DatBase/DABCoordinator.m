@@ -13,10 +13,9 @@
 #import "FMDatabase.h"
 
 static NSString * const DABCoordinatorDatabaseKey = @"DABCoordinatorDatabaseKey";
+static NSString * const DABCoordinatorActiveTransactionCountKey = @"DABCoordinatorActiveTransactionCountKey";
 
 @interface DABCoordinator ()
-
-@property (atomic, assign) BOOL inTransaction;
 
 @property (nonatomic, readonly, copy) NSString *databasePath;
 
@@ -126,32 +125,46 @@ static NSString * const DABCoordinatorDatabaseKey = @"DABCoordinatorDatabaseKey"
 	return [[DABDatabase alloc] initWithCoordinator:self transactionID:headID];
 }
 
+- (NSInteger)incrementTransactionCount {
+	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[DABCoordinatorActiveTransactionCountKey] integerValue];
+	transactionCount++;
+	NSThread.currentThread.threadDictionary[DABCoordinatorActiveTransactionCountKey] = @(transactionCount);
+	return transactionCount;
+}
+
+- (NSInteger)deccrementTransactionCount {
+	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[DABCoordinatorActiveTransactionCountKey] integerValue];
+	transactionCount--;
+	NSThread.currentThread.threadDictionary[DABCoordinatorActiveTransactionCountKey] = @(transactionCount);
+	return transactionCount;
+}
+
 - (BOOL)performTransactionType:(DABCoordinatorTransactionType)transactionType error:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block {
 	NSParameterAssert(block != NULL);
 
 	FMDatabase *database = [self databaseForCurrentThread:error];
 	if (database == nil) return NO;
 
-	NSDictionary *transactionTypeToName = @{
-		@(DABCoordinatorTransactionTypeDeferred): @"deferred",
-		@(DABCoordinatorTransactionTypeImmediate): @"immediate",
-		@(DABCoordinatorTransactionTypeExclusive): @"exclusive",
-	};
+	if ([self incrementTransactionCount] == 1) {
+		NSDictionary *transactionTypeToName = @{
+			@(DABCoordinatorTransactionTypeDeferred): @"deferred",
+			@(DABCoordinatorTransactionTypeImmediate): @"immediate",
+			@(DABCoordinatorTransactionTypeExclusive): @"exclusive",
+		};
 
-	NSString *transactionTypeName = transactionTypeToName[@(transactionType)];
-	NSAssert(transactionTypeName != nil, @"Unrecognized transaction type: %ld", transactionType);
-	[database executeUpdate:[NSString stringWithFormat:@"begin %@ transaction", transactionTypeName]];
-
-	self.inTransaction = YES;
+		NSString *transactionTypeName = transactionTypeToName[@(transactionType)];
+		NSAssert(transactionTypeName != nil, @"Unrecognized transaction type: %ld", transactionType);
+		[database executeUpdate:[NSString stringWithFormat:@"begin %@ transaction", transactionTypeName]];
+	}
 
 	BOOL success = block(database, error);
 	if (!success) {
 		[database rollback];
 	} else {
-		[database commit];
+		if ([self deccrementTransactionCount] == 0) {
+			[database commit];
+		}
 	}
-
-	self.inTransaction = NO;
 
 	return success;
 }

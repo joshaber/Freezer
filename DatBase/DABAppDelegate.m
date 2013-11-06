@@ -118,12 +118,12 @@
 //			return;
 //		}
 //
-//		DABDatabase *database = [coordinator currentDatabase:NULL];
-//		NSDictionary *x = database[newKey];
-//		NSAssert(x != nil, nil);
-//		NSAssert([x[@"key"] isEqual:newKey], nil);
-//		id value = [NSKeyedUnarchiver unarchiveObjectWithData:x[@"value"]];
-//		NSAssert([value isEqual:valueToInsert], nil);
+////		DABDatabase *database = [coordinator currentDatabase:NULL];
+////		NSDictionary *x = database[newKey];
+////		NSAssert(x != nil, nil);
+////		NSAssert([x[@"key"] isEqual:newKey], nil);
+////		id value = [NSKeyedUnarchiver unarchiveObjectWithData:x[@"value"]];
+////		NSAssert([value isEqual:valueToInsert], nil);
 //	}
 //
 //	NSTimeInterval end = [NSDate timeIntervalSinceReferenceDate];

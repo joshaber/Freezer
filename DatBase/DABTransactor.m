@@ -48,6 +48,12 @@ NSString * const DABTransactorDeletedSentinel = @"DABTransactorDeletedSentinel";
 	return [[NSUUID UUID] UUIDString];
 }
 
+- (BOOL)applyChangesWithError:(NSError **)error block:(BOOL (^)(NSError **error))block {
+	return [self.coordinator performTransactionType:DABCoordinatorTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+		return block(error);
+	}];
+}
+
 - (BOOL)insertIntoDatabase:(FMDatabase *)database value:(id)value forAttribute:(NSString *)attribute key:(NSString *)key transactionID:(sqlite_int64)transactionID error:(NSError **)error {
 	NSParameterAssert(database != nil);
 	NSParameterAssert(value != nil);
