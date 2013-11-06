@@ -77,6 +77,14 @@
 	NSArray *keys = [database5 keysWithAttribute:@"first-name" error:NULL];
 	NSLog(@"%@", keys);
 
+	[transactor addValues:@[ jssKey, dannyKey ] forAttribute:@"homies" key:joshKey error:NULL];
+	FRZDatabase *database6 = [coordinator currentDatabase:NULL];
+	NSLog(@"%@", database6[joshKey][@"homies"]);
+
+	[transactor removeValues:@[ dannyKey ] forAttribute:@"homies" key:joshKey error:NULL];
+	FRZDatabase *database7 = [coordinator currentDatabase:NULL];
+	NSLog(@"%@", database7[joshKey][@"homies"]);
+
 //	[self doABunchOfWrites:transactor coordinator:coordinator];
 
 //	DABDatabase *originalDatabase = [coordinator currentDatabase:&error];
