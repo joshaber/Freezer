@@ -43,6 +43,33 @@
 
 	NSLog(@"%@", database1.allKeys);
 
+	NSString *jssKey = [transactor generateNewKey];
+	[transactor addValue:@"Justin" forAttribute:@"first-name" key:jssKey error:NULL];
+	[transactor addValue:@"Spahr-Summers" forAttribute:@"last-name" key:jssKey error:NULL];
+
+	NSString *dannyKey = [transactor generateNewKey];
+	[transactor addValue:@"Danny" forAttribute:@"first-name" key:dannyKey error:NULL];
+	[transactor addValue:@"Greg" forAttribute:@"last-name" key:dannyKey error:NULL];
+
+	NSString *joshKey = [transactor generateNewKey];
+	[transactor addValue:@"Josh" forAttribute:@"first-name" key:joshKey error:NULL];
+	[transactor addValue:@"Abernathy" forAttribute:@"last-name" key:joshKey error:NULL];
+	[transactor addValue:@[ jssKey ] forAttribute:@"homies" key:joshKey error:NULL];
+
+	DABDatabase *database3 = [coordinator currentDatabase:NULL];
+	NSLog(@"%@", database3[joshKey]);
+	NSLog(@"%@", database3[database3[joshKey][@"homies"][0]]);
+
+	[transactor addValue:@[ jssKey, dannyKey ] forAttribute:@"homies" key:joshKey error:NULL];
+
+	DABDatabase *database4 = [coordinator currentDatabase:NULL];
+	NSLog(@"%@", database4[joshKey]);
+	NSLog(@"%@", database4[database4[joshKey][@"homies"][1]]);
+
+	[transactor removeValueForAttribute:@"homies" key:joshKey error:NULL];
+	DABDatabase *database5 = [coordinator currentDatabase:NULL];
+	NSLog(@"%@", database5[joshKey]);
+
 //	[self doABunchOfWrites:transactor coordinator:coordinator];
 
 //	DABDatabase *originalDatabase = [coordinator currentDatabase:&error];
