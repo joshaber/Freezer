@@ -1,6 +1,6 @@
 //
-//  DABCoordinator.h
-//  DatBase
+//  FRZCoordinator.h
+//  Freezer
 //
 //  Created by Josh Abernathy on 10/9/13.
 //  Copyright (c) 2013 Josh Abernathy. All rights reserved.
@@ -8,17 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
-@class DABDatabase;
-@class DABTransactor;
+@class FRZDatabase;
+@class FRZTransactor;
 
-@interface DABCoordinator : NSObject
+@interface FRZCoordinator : NSObject
 
 - (id)initInMemory:(NSError **)error;
 
 - (id)initWithDatabaseAtURL:(NSURL *)URL error:(NSError **)error;
 
-- (DABDatabase *)currentDatabase:(NSError **)error;
+- (FRZDatabase *)currentDatabase:(NSError **)error;
 
-- (DABTransactor *)transactor;
+- (FRZTransactor *)transactor;
 
 @end

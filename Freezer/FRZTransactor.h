@@ -1,6 +1,6 @@
 //
-//  DABTransactor.h
-//  DatBase
+//  FRZTransactor.h
+//  Freezer
 //
 //  Created by Josh Abernathy on 10/9/13.
 //  Copyright (c) 2013 Josh Abernathy. All rights reserved.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface DABTransactor : NSObject
+@interface FRZTransactor : NSObject
 
 - (NSString *)generateNewKey;
 

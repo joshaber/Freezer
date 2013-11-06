@@ -1,28 +1,28 @@
 //
-//  DABDatabase.m
-//  DatBase
+//  FRZDatabase.m
+//  Freezer
 //
 //  Created by Josh Abernathy on 10/9/13.
 //  Copyright (c) 2013 Josh Abernathy. All rights reserved.
 //
 
-#import "DABDatabase.h"
-#import "DABDatabase+Private.h"
+#import "FRZDatabase.h"
+#import "FRZDatabase+Private.h"
 #import "FMDatabase.h"
-#import "DABCoordinator+Private.h"
-#import "DABTransactor+Private.h"
+#import "FRZCoordinator+Private.h"
+#import "FRZTransactor+Private.h"
 
-@interface DABDatabase ()
+@interface FRZDatabase ()
 
-@property (nonatomic, readonly, strong) DABCoordinator *coordinator;
+@property (nonatomic, readonly, strong) FRZCoordinator *coordinator;
 
 @property (nonatomic, readonly, assign) long long int transactionID;
 
 @end
 
-@implementation DABDatabase
+@implementation FRZDatabase
 
-- (id)initWithCoordinator:(DABCoordinator *)coordinator transactionID:(long long int)transactionID {
+- (id)initWithCoordinator:(FRZCoordinator *)coordinator transactionID:(long long int)transactionID {
 	NSParameterAssert(coordinator != nil);
 
 	self = [super init];
@@ -36,7 +36,7 @@
 
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
-	[self.coordinator performTransactionType:DABCoordinatorTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
+	[self.coordinator performTransactionType:FRZCoordinatorTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
 		// NB: We don't want to filter out NULL values, because otherwise we'd
 		// inherit the last non-null value, which effectively ignores deletions.
 		FMResultSet *set = [database executeQuery:@"SELECT attribute, value FROM entities WHERE key = ? AND tx_id <= ? GROUP BY attribute ORDER BY id DESC", key, @(self.transactionID)];
@@ -63,7 +63,7 @@
 
 - (NSArray *)allKeys {
 	NSMutableArray *results = [NSMutableArray array];
-	[self.coordinator performTransactionType:DABCoordinatorTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
+	[self.coordinator performTransactionType:FRZCoordinatorTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
 		FMResultSet *set = [database executeQuery:@"SELECT DISTINCT key FROM entities WHERE value IS NOT NULL AND tx_id <= ? GROUP BY attribute ORDER BY id DESC", @(self.transactionID)];
 		if (set == nil) {
 			if (error != NULL) *error = database.lastError;
@@ -82,7 +82,7 @@
 
 - (NSArray *)keysWithAttribute:(NSString *)attribute error:(NSError **)error {
 	NSMutableArray *results = [NSMutableArray array];
-	[self.coordinator performTransactionType:DABCoordinatorTransactionTypeDeferred error:error block:^(FMDatabase *database, NSError **error) {
+	[self.coordinator performTransactionType:FRZCoordinatorTransactionTypeDeferred error:error block:^(FMDatabase *database, NSError **error) {
 		FMResultSet *set = [database executeQuery:@"SELECT key FROM entities WHERE attribute = ? AND value IS NOT NULL AND tx_id <= ? ORDER BY id DESC", attribute, @(self.transactionID)];
 		if (set == nil) {
 			if (error != NULL) *error = database.lastError;

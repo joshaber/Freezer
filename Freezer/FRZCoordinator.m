@@ -1,27 +1,27 @@
 //
-//  DABCoordinator.m
-//  DatBase
+//  FRZCoordinator.m
+//  Freezer
 //
 //  Created by Josh Abernathy on 10/9/13.
 //  Copyright (c) 2013 Josh Abernathy. All rights reserved.
 //
 
-#import "DABCoordinator.h"
-#import "DABCoordinator+Private.h"
-#import "DABDatabase+Private.h"
-#import "DABTransactor+Private.h"
+#import "FRZCoordinator.h"
+#import "FRZCoordinator+Private.h"
+#import "FRZDatabase+Private.h"
+#import "FRZTransactor+Private.h"
 #import "FMDatabase.h"
 
-static NSString * const DABCoordinatorDatabaseKey = @"DABCoordinatorDatabaseKey";
-static NSString * const DABCoordinatorActiveTransactionCountKey = @"DABCoordinatorActiveTransactionCountKey";
+static NSString * const FRZCoordinatorDatabaseKey = @"FRZCoordinatorDatabaseKey";
+static NSString * const FRZCoordinatorActiveTransactionCountKey = @"FRZCoordinatorActiveTransactionCountKey";
 
-@interface DABCoordinator ()
+@interface FRZCoordinator ()
 
 @property (nonatomic, readonly, copy) NSString *databasePath;
 
 @end
 
-@implementation DABCoordinator
+@implementation FRZCoordinator
 
 - (id)initWithPath:(NSString *)path error:(NSError **)error {
 	self = [super init];
@@ -118,28 +118,28 @@ static NSString * const DABCoordinatorActiveTransactionCountKey = @"DABCoordinat
 	return headID;
 }
 
-- (DABDatabase *)currentDatabase:(NSError **)error {
+- (FRZDatabase *)currentDatabase:(NSError **)error {
 	long long int headID = [self headID:error];
 	if (headID < 0) return nil;
 
-	return [[DABDatabase alloc] initWithCoordinator:self transactionID:headID];
+	return [[FRZDatabase alloc] initWithCoordinator:self transactionID:headID];
 }
 
 - (NSInteger)incrementTransactionCount {
-	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[DABCoordinatorActiveTransactionCountKey] integerValue];
+	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[FRZCoordinatorActiveTransactionCountKey] integerValue];
 	transactionCount++;
-	NSThread.currentThread.threadDictionary[DABCoordinatorActiveTransactionCountKey] = @(transactionCount);
+	NSThread.currentThread.threadDictionary[FRZCoordinatorActiveTransactionCountKey] = @(transactionCount);
 	return transactionCount;
 }
 
 - (NSInteger)deccrementTransactionCount {
-	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[DABCoordinatorActiveTransactionCountKey] integerValue];
+	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[FRZCoordinatorActiveTransactionCountKey] integerValue];
 	transactionCount--;
-	NSThread.currentThread.threadDictionary[DABCoordinatorActiveTransactionCountKey] = @(transactionCount);
+	NSThread.currentThread.threadDictionary[FRZCoordinatorActiveTransactionCountKey] = @(transactionCount);
 	return transactionCount;
 }
 
-- (BOOL)performTransactionType:(DABCoordinatorTransactionType)transactionType error:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block {
+- (BOOL)performTransactionType:(FRZCoordinatorTransactionType)transactionType error:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block {
 	NSParameterAssert(block != NULL);
 
 	FMDatabase *database = [self databaseForCurrentThread:error];
@@ -147,9 +147,9 @@ static NSString * const DABCoordinatorActiveTransactionCountKey = @"DABCoordinat
 
 	if ([self incrementTransactionCount] == 1) {
 		NSDictionary *transactionTypeToName = @{
-			@(DABCoordinatorTransactionTypeDeferred): @"deferred",
-			@(DABCoordinatorTransactionTypeImmediate): @"immediate",
-			@(DABCoordinatorTransactionTypeExclusive): @"exclusive",
+			@(FRZCoordinatorTransactionTypeDeferred): @"deferred",
+			@(FRZCoordinatorTransactionTypeImmediate): @"immediate",
+			@(FRZCoordinatorTransactionTypeExclusive): @"exclusive",
 		};
 
 		NSString *transactionTypeName = transactionTypeToName[@(transactionType)];
@@ -169,22 +169,20 @@ static NSString * const DABCoordinatorActiveTransactionCountKey = @"DABCoordinat
 	return success;
 }
 
-- (DABTransactor *)transactor {
-	return [[DABTransactor alloc] initWithCoordinator:self];
+- (FRZTransactor *)transactor {
+	return [[FRZTransactor alloc] initWithCoordinator:self];
 }
 
 - (FMDatabase *)databaseForCurrentThread:(NSError **)error {
-	@synchronized (self) {
-		FMDatabase *database = NSThread.currentThread.threadDictionary[DABCoordinatorDatabaseKey];
-		if (database == nil) {
-			database = [self createAndConfigureDatabase:error];
-			if (database == nil) return nil;
+	FMDatabase *database = NSThread.currentThread.threadDictionary[FRZCoordinatorDatabaseKey];
+	if (database == nil) {
+		database = [self createAndConfigureDatabase:error];
+		if (database == nil) return nil;
 
-			NSThread.currentThread.threadDictionary[DABCoordinatorDatabaseKey] = database;
-		}
-
-		return database;
+		NSThread.currentThread.threadDictionary[FRZCoordinatorDatabaseKey] = database;
 	}
+
+	return database;
 }
 
 @end

@@ -1,27 +1,27 @@
 //
 //  DABAppDelegate.m
-//  DatBase
+//  Freezer
 //
 //  Created by Josh Abernathy on 10/9/13.
 //  Copyright (c) 2013 Josh Abernathy. All rights reserved.
 //
 
 #import "DABAppDelegate.h"
-#import "DABCoordinator.h"
-#import "DABDatabase.h"
-#import "DABTransactor.h"
+#import "FRZCoordinator.h"
+#import "FRZDatabase.h"
+#import "FRZTransactor.h"
 
 @implementation DABAppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
 	NSError *error;
-	NSURL *URL = [NSURL fileURLWithPath:@"/Users/joshaber/Desktop/DatBase/test.sqlite"];
+	NSURL *URL = [NSURL fileURLWithPath:@"/Users/joshaber/Desktop/Freezer/test.sqlite"];
 	[NSFileManager.defaultManager removeItemAtURL:URL error:NULL];
 
-	DABCoordinator *coordinator = [[DABCoordinator alloc] initWithDatabaseAtURL:URL error:&error];
+	FRZCoordinator *coordinator = [[FRZCoordinator alloc] initWithDatabaseAtURL:URL error:&error];
 	NSAssert(coordinator != nil, @"Coordinator was nil: %@", error);
 
-	DABTransactor *transactor = [coordinator transactor];
+	FRZTransactor *transactor = [coordinator transactor];
 
 	NSString *UUID = [[NSUUID UUID] UUIDString];
 	[transactor addValue:@42 forAttribute:@"answer" key:UUID error:NULL];
@@ -29,12 +29,12 @@
 	[transactor addValue:@27 forAttribute:@"age" key:UUID error:NULL];
 	[transactor addValue:@43 forAttribute:@"answer" key:UUID error:NULL];
 
-	DABDatabase *database1 = [coordinator currentDatabase:NULL];
+	FRZDatabase *database1 = [coordinator currentDatabase:NULL];
 	NSDictionary *result = database1[UUID];
 	NSLog(@"%@", result);
 
 	[transactor addValue:@42 forAttribute:@"answer" key:UUID error:NULL];
-	DABDatabase *database2 = [coordinator currentDatabase:NULL];
+	FRZDatabase *database2 = [coordinator currentDatabase:NULL];
 	result = database2[UUID];
 	NSLog(@"%@", result);
 
@@ -56,18 +56,18 @@
 	[transactor addValue:@"Abernathy" forAttribute:@"last-name" key:joshKey error:NULL];
 	[transactor addValue:@[ jssKey ] forAttribute:@"homies" key:joshKey error:NULL];
 
-	DABDatabase *database3 = [coordinator currentDatabase:NULL];
+	FRZDatabase *database3 = [coordinator currentDatabase:NULL];
 	NSLog(@"%@", database3[joshKey]);
 	NSLog(@"%@", database3[database3[joshKey][@"homies"][0]]);
 
 	[transactor addValue:@[ jssKey, dannyKey ] forAttribute:@"homies" key:joshKey error:NULL];
 
-	DABDatabase *database4 = [coordinator currentDatabase:NULL];
+	FRZDatabase *database4 = [coordinator currentDatabase:NULL];
 	NSLog(@"%@", database4[joshKey]);
 	NSLog(@"%@", database4[database4[joshKey][@"homies"][1]]);
 
 	[transactor removeValueForAttribute:@"homies" key:joshKey error:NULL];
-	DABDatabase *database5 = [coordinator currentDatabase:NULL];
+	FRZDatabase *database5 = [coordinator currentDatabase:NULL];
 	NSLog(@"%@", database5[joshKey]);
 
 	NSArray *keys = [database5 keysWithAttribute:@"first-name" error:NULL];

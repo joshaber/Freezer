@@ -20,12 +20,11 @@
 		8884949418063DDA00477836 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8884949318063DDA00477836 /* XCTest.framework */; };
 		8884949518063DDA00477836 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8884947418063DDA00477836 /* Cocoa.framework */; };
 		8884949D18063DDA00477836 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8884949B18063DDA00477836 /* InfoPlist.strings */; };
-		8884949F18063DDA00477836 /* DatBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884949E18063DDA00477836 /* DatBaseTests.m */; };
-		8884953918063F4000477836 /* DABCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953818063F4000477836 /* DABCoordinator.m */; };
-		8884953C18063F4600477836 /* DABDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953B18063F4600477836 /* DABDatabase.m */; };
-		8884953F18063F5300477836 /* DABTransactor.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953E18063F5300477836 /* DABTransactor.m */; };
+		8884949F18063DDA00477836 /* FreezerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884949E18063DDA00477836 /* FreezerTests.m */; };
+		8884953918063F4000477836 /* FRZCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953818063F4000477836 /* FRZCoordinator.m */; };
+		8884953C18063F4600477836 /* FRZDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953B18063F4600477836 /* FRZDatabase.m */; };
+		8884953F18063F5300477836 /* FRZTransactor.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953E18063F5300477836 /* FRZTransactor.m */; };
 		88DA81B81829E29300F26EAD /* Mantle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88DA81A71829E27F00F26EAD /* Mantle.framework */; };
-		88DA81BB1829E31700F26EAD /* DABSimpleObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 88DA81BA1829E31700F26EAD /* DABSimpleObject.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -161,25 +160,25 @@
 		8851153A1811D77A00E00B2B /* fmdb.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = fmdb.xcodeproj; path = External/fmdb/fmdb.xcodeproj; sourceTree = "<group>"; };
 		8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactiveCocoa.xcodeproj; path = External/ReactiveCocoa/ReactiveCocoaFramework/ReactiveCocoa.xcodeproj; sourceTree = "<group>"; };
 		886D1996181240030044BD2F /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		8884947118063DDA00477836 /* DatBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DatBase.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8884947118063DDA00477836 /* Freezer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Freezer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8884947418063DDA00477836 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		8884947718063DDA00477836 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		8884947818063DDA00477836 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		8884947918063DDA00477836 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		8884947C18063DDA00477836 /* DatBase-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DatBase-Info.plist"; sourceTree = "<group>"; };
+		8884947C18063DDA00477836 /* Freezer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Freezer-Info.plist"; sourceTree = "<group>"; };
 		8884947E18063DDA00477836 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8884948018063DDA00477836 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		8884948218063DDA00477836 /* DatBase-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DatBase-Prefix.pch"; sourceTree = "<group>"; };
+		8884948218063DDA00477836 /* Freezer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Freezer-Prefix.pch"; sourceTree = "<group>"; };
 		8884948418063DDA00477836 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		8884948618063DDA00477836 /* DABAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DABAppDelegate.h; sourceTree = "<group>"; };
 		8884948718063DDA00477836 /* DABAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DABAppDelegate.m; sourceTree = "<group>"; };
 		8884948A18063DDA00477836 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		8884948C18063DDA00477836 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		8884949218063DDA00477836 /* DatBaseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DatBaseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8884949218063DDA00477836 /* FreezerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FreezerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8884949318063DDA00477836 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		8884949A18063DDA00477836 /* DatBaseTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DatBaseTests-Info.plist"; sourceTree = "<group>"; };
+		8884949A18063DDA00477836 /* FreezerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FreezerTests-Info.plist"; sourceTree = "<group>"; };
 		8884949C18063DDA00477836 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		8884949E18063DDA00477836 /* DatBaseTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DatBaseTests.m; sourceTree = "<group>"; };
+		8884949E18063DDA00477836 /* FreezerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FreezerTests.m; sourceTree = "<group>"; };
 		888494AA18063E6100477836 /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		888494AC18063E6100477836 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		888494AD18063E6100477836 /* Profile.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Profile.xcconfig; sourceTree = "<group>"; };
@@ -196,18 +195,16 @@
 		888494BB18063E6100477836 /* Mac-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-Framework.xcconfig"; sourceTree = "<group>"; };
 		888494BC18063E6100477836 /* Mac-StaticLibrary.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
 		888494BD18063E6100477836 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
-		8884953718063F4000477836 /* DABCoordinator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DABCoordinator.h; sourceTree = "<group>"; };
-		8884953818063F4000477836 /* DABCoordinator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DABCoordinator.m; sourceTree = "<group>"; };
-		8884953A18063F4600477836 /* DABDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DABDatabase.h; sourceTree = "<group>"; };
-		8884953B18063F4600477836 /* DABDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DABDatabase.m; sourceTree = "<group>"; };
-		8884953D18063F5300477836 /* DABTransactor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DABTransactor.h; sourceTree = "<group>"; };
-		8884953E18063F5300477836 /* DABTransactor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DABTransactor.m; sourceTree = "<group>"; };
-		888495401806410700477836 /* DABDatabase+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DABDatabase+Private.h"; sourceTree = "<group>"; };
-		888495411806431400477836 /* DABTransactor+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DABTransactor+Private.h"; sourceTree = "<group>"; };
-		888495421806437D00477836 /* DABCoordinator+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DABCoordinator+Private.h"; sourceTree = "<group>"; };
+		8884953718063F4000477836 /* FRZCoordinator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZCoordinator.h; sourceTree = "<group>"; };
+		8884953818063F4000477836 /* FRZCoordinator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZCoordinator.m; sourceTree = "<group>"; };
+		8884953A18063F4600477836 /* FRZDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZDatabase.h; sourceTree = "<group>"; };
+		8884953B18063F4600477836 /* FRZDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZDatabase.m; sourceTree = "<group>"; };
+		8884953D18063F5300477836 /* FRZTransactor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZTransactor.h; sourceTree = "<group>"; };
+		8884953E18063F5300477836 /* FRZTransactor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZTransactor.m; sourceTree = "<group>"; };
+		888495401806410700477836 /* FRZDatabase+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZDatabase+Private.h"; sourceTree = "<group>"; };
+		888495411806431400477836 /* FRZTransactor+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZTransactor+Private.h"; sourceTree = "<group>"; };
+		888495421806437D00477836 /* FRZCoordinator+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZCoordinator+Private.h"; sourceTree = "<group>"; };
 		88DA819B1829E27F00F26EAD /* Mantle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Mantle.xcodeproj; path = "../../Documents/Development/GitHub/write-mac/External/Mantle/Mantle.xcodeproj"; sourceTree = "<group>"; };
-		88DA81B91829E31700F26EAD /* DABSimpleObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DABSimpleObject.h; sourceTree = "<group>"; };
-		88DA81BA1829E31700F26EAD /* DABSimpleObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DABSimpleObject.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -261,8 +258,8 @@
 		8884946818063DDA00477836 = {
 			isa = PBXGroup;
 			children = (
-				8884947A18063DDA00477836 /* DatBase */,
-				8884949818063DDA00477836 /* DatBaseTests */,
+				8884947A18063DDA00477836 /* Freezer */,
+				8884949818063DDA00477836 /* FreezerTests */,
 				8884947318063DDA00477836 /* Frameworks */,
 				888494A818063E6100477836 /* Configuration */,
 				8884947218063DDA00477836 /* Products */,
@@ -272,8 +269,8 @@
 		8884947218063DDA00477836 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8884947118063DDA00477836 /* DatBase.app */,
-				8884949218063DDA00477836 /* DatBaseTests.xctest */,
+				8884947118063DDA00477836 /* Freezer.app */,
+				8884949218063DDA00477836 /* FreezerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -302,7 +299,7 @@
 			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
-		8884947A18063DDA00477836 /* DatBase */ = {
+		8884947A18063DDA00477836 /* Freezer */ = {
 			isa = PBXGroup;
 			children = (
 				8884948618063DDA00477836 /* DABAppDelegate.h */,
@@ -310,46 +307,44 @@
 				8884948918063DDA00477836 /* MainMenu.xib */,
 				8884948C18063DDA00477836 /* Images.xcassets */,
 				8884947B18063DDA00477836 /* Supporting Files */,
-				8884953718063F4000477836 /* DABCoordinator.h */,
-				888495421806437D00477836 /* DABCoordinator+Private.h */,
-				8884953818063F4000477836 /* DABCoordinator.m */,
-				8884953A18063F4600477836 /* DABDatabase.h */,
-				888495401806410700477836 /* DABDatabase+Private.h */,
-				8884953B18063F4600477836 /* DABDatabase.m */,
-				8884953D18063F5300477836 /* DABTransactor.h */,
-				888495411806431400477836 /* DABTransactor+Private.h */,
-				8884953E18063F5300477836 /* DABTransactor.m */,
-				88DA81B91829E31700F26EAD /* DABSimpleObject.h */,
-				88DA81BA1829E31700F26EAD /* DABSimpleObject.m */,
+				8884953718063F4000477836 /* FRZCoordinator.h */,
+				888495421806437D00477836 /* FRZCoordinator+Private.h */,
+				8884953818063F4000477836 /* FRZCoordinator.m */,
+				8884953A18063F4600477836 /* FRZDatabase.h */,
+				888495401806410700477836 /* FRZDatabase+Private.h */,
+				8884953B18063F4600477836 /* FRZDatabase.m */,
+				8884953D18063F5300477836 /* FRZTransactor.h */,
+				888495411806431400477836 /* FRZTransactor+Private.h */,
+				8884953E18063F5300477836 /* FRZTransactor.m */,
 			);
-			path = DatBase;
+			path = Freezer;
 			sourceTree = "<group>";
 		};
 		8884947B18063DDA00477836 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				8884947C18063DDA00477836 /* DatBase-Info.plist */,
+				8884947C18063DDA00477836 /* Freezer-Info.plist */,
 				8884947D18063DDA00477836 /* InfoPlist.strings */,
 				8884948018063DDA00477836 /* main.m */,
-				8884948218063DDA00477836 /* DatBase-Prefix.pch */,
+				8884948218063DDA00477836 /* Freezer-Prefix.pch */,
 				8884948318063DDA00477836 /* Credits.rtf */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		8884949818063DDA00477836 /* DatBaseTests */ = {
+		8884949818063DDA00477836 /* FreezerTests */ = {
 			isa = PBXGroup;
 			children = (
-				8884949E18063DDA00477836 /* DatBaseTests.m */,
+				8884949E18063DDA00477836 /* FreezerTests.m */,
 				8884949918063DDA00477836 /* Supporting Files */,
 			);
-			path = DatBaseTests;
+			path = FreezerTests;
 			sourceTree = "<group>";
 		};
 		8884949918063DDA00477836 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				8884949A18063DDA00477836 /* DatBaseTests-Info.plist */,
+				8884949A18063DDA00477836 /* FreezerTests-Info.plist */,
 				8884949B18063DDA00477836 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
@@ -434,9 +429,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8884947018063DDA00477836 /* DatBase */ = {
+		8884947018063DDA00477836 /* Freezer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 888494A218063DDA00477836 /* Build configuration list for PBXNativeTarget "DatBase" */;
+			buildConfigurationList = 888494A218063DDA00477836 /* Build configuration list for PBXNativeTarget "Freezer" */;
 			buildPhases = (
 				8884946D18063DDA00477836 /* Sources */,
 				8884946E18063DDA00477836 /* Frameworks */,
@@ -449,14 +444,14 @@
 				8859765A18178AEF00A8FC72 /* PBXTargetDependency */,
 				8851154A1811D78400E00B2B /* PBXTargetDependency */,
 			);
-			name = DatBase;
+			name = Freezer;
 			productName = DatBase;
-			productReference = 8884947118063DDA00477836 /* DatBase.app */;
+			productReference = 8884947118063DDA00477836 /* Freezer.app */;
 			productType = "com.apple.product-type.application";
 		};
-		8884949118063DDA00477836 /* DatBaseTests */ = {
+		8884949118063DDA00477836 /* FreezerTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 888494A518063DDA00477836 /* Build configuration list for PBXNativeTarget "DatBaseTests" */;
+			buildConfigurationList = 888494A518063DDA00477836 /* Build configuration list for PBXNativeTarget "FreezerTests" */;
 			buildPhases = (
 				8884948E18063DDA00477836 /* Sources */,
 				8884948F18063DDA00477836 /* Frameworks */,
@@ -467,9 +462,9 @@
 			dependencies = (
 				8884949718063DDA00477836 /* PBXTargetDependency */,
 			);
-			name = DatBaseTests;
+			name = FreezerTests;
 			productName = DatBaseTests;
-			productReference = 8884949218063DDA00477836 /* DatBaseTests.xctest */;
+			productReference = 8884949218063DDA00477836 /* FreezerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -487,7 +482,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8884946C18063DDA00477836 /* Build configuration list for PBXProject "DatBase" */;
+			buildConfigurationList = 8884946C18063DDA00477836 /* Build configuration list for PBXProject "Freezer" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -514,8 +509,8 @@
 			);
 			projectRoot = "";
 			targets = (
-				8884947018063DDA00477836 /* DatBase */,
-				8884949118063DDA00477836 /* DatBaseTests */,
+				8884947018063DDA00477836 /* Freezer */,
+				8884949118063DDA00477836 /* FreezerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -648,11 +643,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8884953F18063F5300477836 /* DABTransactor.m in Sources */,
-				8884953C18063F4600477836 /* DABDatabase.m in Sources */,
-				8884953918063F4000477836 /* DABCoordinator.m in Sources */,
+				8884953F18063F5300477836 /* FRZTransactor.m in Sources */,
+				8884953C18063F4600477836 /* FRZDatabase.m in Sources */,
+				8884953918063F4000477836 /* FRZCoordinator.m in Sources */,
 				8884948818063DDA00477836 /* DABAppDelegate.m in Sources */,
-				88DA81BB1829E31700F26EAD /* DABSimpleObject.m in Sources */,
 				8884948118063DDA00477836 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -661,7 +655,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8884949F18063DDA00477836 /* DatBaseTests.m in Sources */,
+				8884949F18063DDA00477836 /* FreezerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -680,7 +674,7 @@
 		};
 		8884949718063DDA00477836 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 8884947018063DDA00477836 /* DatBase */;
+			target = 8884947018063DDA00477836 /* Freezer */;
 			targetProxy = 8884949618063DDA00477836 /* PBXContainerItemProxy */;
 		};
 		88DA81B71829E28F00F26EAD /* PBXTargetDependency */ = {
@@ -803,9 +797,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DatBase/DatBase-Prefix.pch";
-				INFOPLIST_FILE = "DatBase/DatBase-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				GCC_PREFIX_HEADER = "Freezer/Freezer-Prefix.pch";
+				INFOPLIST_FILE = "Freezer/Freezer-Info.plist";
+				PRODUCT_NAME = Freezer;
 				USER_HEADER_SEARCH_PATHS = External/fmdb/src;
 				WRAPPER_EXTENSION = app;
 			};
@@ -818,9 +812,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DatBase/DatBase-Prefix.pch";
-				INFOPLIST_FILE = "DatBase/DatBase-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				GCC_PREFIX_HEADER = "Freezer/Freezer-Prefix.pch";
+				INFOPLIST_FILE = "Freezer/Freezer-Info.plist";
+				PRODUCT_NAME = Freezer;
 				USER_HEADER_SEARCH_PATHS = External/fmdb/src;
 				WRAPPER_EXTENSION = app;
 			};
@@ -830,20 +824,20 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 888494B818063E6100477836 /* Mac-Application.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/DatBase.app/Contents/MacOS/DatBase";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Freezer.app/Contents/MacOS/Freezer";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DatBase/DatBase-Prefix.pch";
+				GCC_PREFIX_HEADER = "Freezer/Freezer-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "DatBaseTests/DatBaseTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				INFOPLIST_FILE = "FreezerTests/FreezerTests-Info.plist";
+				PRODUCT_NAME = FreezerTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -853,16 +847,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 888494B818063E6100477836 /* Mac-Application.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/DatBase.app/Contents/MacOS/DatBase";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Freezer.app/Contents/MacOS/Freezer";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DatBase/DatBase-Prefix.pch";
-				INFOPLIST_FILE = "DatBaseTests/DatBaseTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				GCC_PREFIX_HEADER = "Freezer/Freezer-Prefix.pch";
+				INFOPLIST_FILE = "FreezerTests/FreezerTests-Info.plist";
+				PRODUCT_NAME = FreezerTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -871,7 +865,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8884946C18063DDA00477836 /* Build configuration list for PBXProject "DatBase" */ = {
+		8884946C18063DDA00477836 /* Build configuration list for PBXProject "Freezer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				888494A018063DDA00477836 /* Debug */,
@@ -880,7 +874,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		888494A218063DDA00477836 /* Build configuration list for PBXNativeTarget "DatBase" */ = {
+		888494A218063DDA00477836 /* Build configuration list for PBXNativeTarget "Freezer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				888494A318063DDA00477836 /* Debug */,
@@ -889,7 +883,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		888494A518063DDA00477836 /* Build configuration list for PBXNativeTarget "DatBaseTests" */ = {
+		888494A518063DDA00477836 /* Build configuration list for PBXNativeTarget "FreezerTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				888494A618063DDA00477836 /* Debug */,

@@ -1,26 +1,26 @@
 //
-//  DABTransactor.m
-//  DatBase
+//  FRZTransactor.m
+//  Freezer
 //
 //  Created by Josh Abernathy on 10/9/13.
 //  Copyright (c) 2013 Josh Abernathy. All rights reserved.
 //
 
-#import "DABTransactor.h"
-#import "DABDatabase+Private.h"
-#import "DABCoordinator.h"
-#import "DABCoordinator+Private.h"
+#import "FRZTransactor.h"
+#import "FRZDatabase+Private.h"
+#import "FRZCoordinator.h"
+#import "FRZCoordinator+Private.h"
 #import "FMDatabase.h"
 
-@interface DABTransactor ()
+@interface FRZTransactor ()
 
-@property (nonatomic, readonly, strong) DABCoordinator *coordinator;
+@property (nonatomic, readonly, strong) FRZCoordinator *coordinator;
 
 @end
 
-@implementation DABTransactor
+@implementation FRZTransactor
 
-- (id)initWithCoordinator:(DABCoordinator *)coordinator {
+- (id)initWithCoordinator:(FRZCoordinator *)coordinator {
 	NSParameterAssert(coordinator != nil);
 
 	self = [super init];
@@ -37,7 +37,7 @@
 }
 
 - (BOOL)applyChangesWithError:(NSError **)error block:(BOOL (^)(NSError **error))block {
-	return [self.coordinator performTransactionType:DABCoordinatorTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+	return [self.coordinator performTransactionType:FRZCoordinatorTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
 		return block(error);
 	}];
 }
@@ -84,7 +84,7 @@
 	//
 	// TODO: Test whether the write cost of splitting it up is made up in read
 	// speed.
-	return [self.coordinator performTransactionType:DABCoordinatorTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+	return [self.coordinator performTransactionType:FRZCoordinatorTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
 		sqlite_int64 txID = [self insertNewTransactionIntoDatabase:database error:error];
 		if (txID < 0) return NO;
 
@@ -99,7 +99,7 @@
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
-	return [self.coordinator performTransactionType:DABCoordinatorTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+	return [self.coordinator performTransactionType:FRZCoordinatorTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
 		sqlite_int64 txID = [self insertNewTransactionIntoDatabase:database error:error];
 		if (txID < 0) return NO;
 
