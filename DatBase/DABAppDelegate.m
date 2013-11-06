@@ -29,13 +29,16 @@
 	[transactor addValue:@27 forAttribute:@"age" key:UUID error:NULL];
 	[transactor addValue:@43 forAttribute:@"answer" key:UUID error:NULL];
 
-	DABDatabase *database = [coordinator currentDatabase:NULL];
-	NSDictionary *result = database[UUID];
+	DABDatabase *database1 = [coordinator currentDatabase:NULL];
+	NSDictionary *result = database1[UUID];
 	NSLog(@"%@", result);
 
 	[transactor addValue:@42 forAttribute:@"answer" key:UUID error:NULL];
-	database = [coordinator currentDatabase:NULL];
-	result = database[UUID];
+	DABDatabase *database2 = [coordinator currentDatabase:NULL];
+	result = database2[UUID];
+	NSLog(@"%@", result);
+
+	result = database1[UUID];
 	NSLog(@"%@", result);
 
 //	[self doABunchOfWrites:transactor coordinator:coordinator];
