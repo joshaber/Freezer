@@ -14,13 +14,6 @@
 
 static NSString * const DABCoordinatorDatabaseKey = @"DABCoordinatorDatabaseKey";
 
-NSString * const DABRefsTableName = @"refs";
-NSString * const DABEntitiesTableName = @"entities";
-NSString * const DABTransactionsTableName = @"txs";
-NSString * const DABTransactionToEntityTableName = @"tx_to_entity";
-
-NSString * const DABHeadRefName = @"head";
-
 @interface DABCoordinator ()
 
 @property (atomic, assign) BOOL inTransaction;
@@ -84,7 +77,7 @@ NSString * const DABHeadRefName = @"head";
 		return nil;
 	}
 
-	// Write-ahead logging lets us read and write concurrently.
+	// Write-ahead logging is usually faster and offers better concurrency.
 	//
 	// Note that we're using -executeQuery: here, instead of -executeUpdate: The
 	// result of turning on WAL is a row, which really rustles FMDB's jimmies if
@@ -95,62 +88,14 @@ NSString * const DABHeadRefName = @"head";
 		return nil;
 	}
 
-	NSString *txsSchema = [NSString stringWithFormat:
-		@"CREATE TABLE IF NOT EXISTS %@("
+	NSString *txsSchema =
+		@"CREATE TABLE IF NOT EXISTS entries("
 			"id INTEGER PRIMARY KEY AUTOINCREMENT,"
-			"date DATETIME NOT NULL"
-		");",
-		DABTransactionsTableName];
-	success = [database executeUpdate:txsSchema];
-	if (!success) {
-		if (error != NULL) *error = database.lastError;
-		return nil;
-	}
-
-	NSString *refsSchema = [NSString stringWithFormat:
-		@"CREATE TABLE IF NOT EXISTS %@("
-			"id INTEGER PRIMARY KEY AUTOINCREMENT,"
-			"tx_id INTEGER NOT NULL,"
-			"name TEXT NOT NULL,"
-			"FOREIGN KEY(tx_id) REFERENCES %@(id)"
-		");",
-		DABRefsTableName,
-		DABTransactionsTableName];
-	success = [database executeUpdate:refsSchema];
-	if (!success) {
-		if (error != NULL) *error = database.lastError;
-		return nil;
-	}
-
-	NSString *entitiesSchema = [NSString stringWithFormat:
-		@"CREATE TABLE IF NOT EXISTS %@("
-			"id INTEGER PRIMARY KEY AUTOINCREMENT,"
-			"attribute TEXT NOT NULL,"
+			"entity STRING NOT NULL,"
 			"value BLOB NOT NULL,"
-			"key STRING NOT NULL,"
-			"tx_id INTEGER NOT NULL,"
-			"FOREIGN KEY(tx_id) REFERENCES %@(id)"
-		");",
-		DABEntitiesTableName,
-		DABTransactionsTableName];
-	success = [database executeUpdate:entitiesSchema];
-	if (!success) {
-		if (error != NULL) *error = database.lastError;
-		return nil;
-	}
-
-	NSString *txToEntitySchema = [NSString stringWithFormat:
-		@"CREATE TABLE IF NOT EXISTS %@("
-			"tx_id INTEGER NOT NULL,"
-			"entity_key STRING NOT NULL,"
-			"entity_id INTEGER NOT NULL,"
-			"FOREIGN KEY(tx_id) REFERENCES %@(id),"
-			"FOREIGN KEY(entity_id) REFERENCES %@(id)"
-		");",
-		DABTransactionToEntityTableName,
-		DABTransactionsTableName,
-		DABEntitiesTableName];
-	success = [database executeUpdate:txToEntitySchema];
+			"tx_id INTEGER NOT NULL"
+		");";
+	success = [database executeUpdate:txsSchema];
 	if (!success) {
 		if (error != NULL) *error = database.lastError;
 		return nil;
