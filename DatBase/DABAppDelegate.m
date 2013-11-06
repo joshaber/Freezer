@@ -41,6 +41,8 @@
 	result = database1[UUID];
 	NSLog(@"%@", result);
 
+	NSLog(@"%@", database1.allKeys);
+
 //	[self doABunchOfWrites:transactor coordinator:coordinator];
 
 //	DABDatabase *originalDatabase = [coordinator currentDatabase:&error];

@@ -42,10 +42,13 @@
 			return NO;
 		}
 
+		// TODO: Do we have to do this within the transaction?
 		while ([set next]) {
 			id value = [NSKeyedUnarchiver unarchiveObjectWithData:set[@"value"]];
 			NSString *attribute = set[@"attribute"];
 			result[attribute] = value;
+
+			NSLog(@"%@", set.resultDictionary);
 		}
 
 		return YES;
@@ -55,14 +58,22 @@
 }
 
 - (NSArray *)allKeys {
-	return @[];
-//	NSArray *contents = self.commit.tree.contents;
-//	NSMutableArray *keys = [NSMutableArray arrayWithCapacity:contents.count];
-//	for (GTTreeEntry *entry in contents) {
-//		[keys addObject:entry.name];
-//	}
-//
-//	return keys;
+	NSMutableArray *results = [NSMutableArray array];
+	[self.coordinator performTransactionType:DABCoordinatorTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
+		FMResultSet *set = [database executeQuery:@"SELECT DISTINCT key FROM entities WHERE tx_id <= ? GROUP BY attribute ORDER BY id DESC", @(self.transactionID)];
+		if (set == nil) {
+			if (error != NULL) *error = database.lastError;
+			return NO;
+		}
+
+		while ([set next]) {
+			[results addObject:[set objectForColumnIndex:0]];
+		}
+
+		return YES;
+	}];
+
+	return results;
 }
 
 @end
