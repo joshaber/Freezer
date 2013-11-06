@@ -37,6 +37,8 @@
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[self.coordinator performTransactionType:DABCoordinatorTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
+		// NB: We don't want to filter out NULL values, because otherwise we'd
+		// inherit the last non-null value, which effectively ignores deletions.
 		FMResultSet *set = [database executeQuery:@"SELECT attribute, value FROM entities WHERE key = ? AND tx_id <= ? GROUP BY attribute ORDER BY id DESC", key, @(self.transactionID)];
 		if (set == nil) {
 			if (error != NULL) *error = database.lastError;
@@ -45,8 +47,8 @@
 
 		// TODO: Do we have to do this within the transaction?
 		while ([set next]) {
-			NSData *valueData = set[@"value"];
-			if ([valueData isEqual:DABTransactor.deletedSentinel]) continue;
+			id valueData = set[@"value"];
+			if (valueData == NSNull.null) continue;
 
 			id value = [NSKeyedUnarchiver unarchiveObjectWithData:valueData];
 			NSString *attribute = set[@"attribute"];
@@ -62,7 +64,7 @@
 - (NSArray *)allKeys {
 	NSMutableArray *results = [NSMutableArray array];
 	[self.coordinator performTransactionType:DABCoordinatorTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
-		FMResultSet *set = [database executeQuery:@"SELECT DISTINCT key FROM entities WHERE tx_id <= ? GROUP BY attribute ORDER BY id DESC", @(self.transactionID)];
+		FMResultSet *set = [database executeQuery:@"SELECT DISTINCT key FROM entities WHERE value IS NOT NULL AND tx_id <= ? GROUP BY attribute ORDER BY id DESC", @(self.transactionID)];
 		if (set == nil) {
 			if (error != NULL) *error = database.lastError;
 			return NO;
@@ -81,7 +83,7 @@
 - (NSArray *)keysWithAttribute:(NSString *)attribute error:(NSError **)error {
 	NSMutableArray *results = [NSMutableArray array];
 	[self.coordinator performTransactionType:DABCoordinatorTransactionTypeDeferred error:error block:^(FMDatabase *database, NSError **error) {
-		FMResultSet *set = [database executeQuery:@"SELECT key FROM entities WHERE attribute = ? AND tx_id <= ? ORDER BY id DESC", attribute, @(self.transactionID)];
+		FMResultSet *set = [database executeQuery:@"SELECT key FROM entities WHERE attribute = ? AND value IS NOT NULL AND tx_id <= ? ORDER BY id DESC", attribute, @(self.transactionID)];
 		if (set == nil) {
 			if (error != NULL) *error = database.lastError;
 			return NO;

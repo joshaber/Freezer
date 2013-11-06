@@ -92,7 +92,7 @@ static NSString * const DABCoordinatorActiveTransactionCountKey = @"DABCoordinat
 			"id INTEGER PRIMARY KEY AUTOINCREMENT,"
 			"key STRING NOT NULL,"
 			"attribute STRING NOT NULL,"
-			"value BLOB NOT NULL,"
+			"value BLOB,"
 			"tx_id INTEGER NOT NULL"
 		");";
 	success = [database executeUpdate:txsSchema];

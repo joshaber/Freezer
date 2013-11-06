@@ -12,8 +12,6 @@
 #import "DABCoordinator+Private.h"
 #import "FMDatabase.h"
 
-NSString * const DABTransactorDeletedSentinel = @"DABTransactorDeletedSentinel";
-
 @interface DABTransactor ()
 
 @property (nonatomic, readonly, strong) DABCoordinator *coordinator;
@@ -21,16 +19,6 @@ NSString * const DABTransactorDeletedSentinel = @"DABTransactorDeletedSentinel";
 @end
 
 @implementation DABTransactor
-
-+ (NSData *)deletedSentinel {
-	static dispatch_once_t onceToken;
-	static NSData *data;
-	dispatch_once(&onceToken, ^{
-		data = [DABTransactorDeletedSentinel dataUsingEncoding:NSUTF8StringEncoding];
-	});
-
-	return data;
-}
 
 - (id)initWithCoordinator:(DABCoordinator *)coordinator {
 	NSParameterAssert(coordinator != nil);
@@ -60,8 +48,8 @@ NSString * const DABTransactorDeletedSentinel = @"DABTransactorDeletedSentinel";
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
-	NSData *valueData = value;
-	if (value != self.class.deletedSentinel) {
+	id valueData = NSNull.null;
+	if (value != NSNull.null) {
 		valueData = [NSKeyedArchiver archivedDataWithRootObject:value];
 	}
 
@@ -115,7 +103,7 @@ NSString * const DABTransactorDeletedSentinel = @"DABTransactorDeletedSentinel";
 		sqlite_int64 txID = [self insertNewTransactionIntoDatabase:database error:error];
 		if (txID < 0) return NO;
 
-		BOOL success = [self insertIntoDatabase:database value:self.class.deletedSentinel forAttribute:attribute key:key transactionID:txID error:error];
+		BOOL success = [self insertIntoDatabase:database value:NSNull.null forAttribute:attribute key:key transactionID:txID error:error];
 		if (!success) return NO;
 
 		return [self updateHeadInDatabase:database toID:txID error:error];
