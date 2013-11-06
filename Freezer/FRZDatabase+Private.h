@@ -1,4 +1,4 @@
-//
+ //
 //  FRZDatabase+Private.h
 //  Freezer
 //
@@ -8,10 +8,17 @@
 
 #import "FRZDatabase.h"
 
-@class FRZCoordinator;
+@class FRZStore;
 
 @interface FRZDatabase ()
 
-- (id)initWithCoordinator:(FRZCoordinator *)coordinator transactionID:(long long int)transactionID;
+// Initializes the database with the given store and the transaction ID of the
+// current head of the store.
+//
+// store  - The store to which the database belongs. Cannot be nil.
+// headID - The ID of the current head of the store.
+//
+// Returns the initialized object.
+- (id)initWithStore:(FRZStore *)store headID:(long long int)headID;
 
 @end

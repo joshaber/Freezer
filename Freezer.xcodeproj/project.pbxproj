@@ -21,7 +21,7 @@
 		8884949518063DDA00477836 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8884947418063DDA00477836 /* Cocoa.framework */; };
 		8884949D18063DDA00477836 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8884949B18063DDA00477836 /* InfoPlist.strings */; };
 		8884949F18063DDA00477836 /* FreezerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884949E18063DDA00477836 /* FreezerTests.m */; };
-		8884953918063F4000477836 /* FRZCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953818063F4000477836 /* FRZCoordinator.m */; };
+		8884953918063F4000477836 /* FRZStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953818063F4000477836 /* FRZStore.m */; };
 		8884953C18063F4600477836 /* FRZDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953B18063F4600477836 /* FRZDatabase.m */; };
 		8884953F18063F5300477836 /* FRZTransactor.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953E18063F5300477836 /* FRZTransactor.m */; };
 		88DA81B81829E29300F26EAD /* Mantle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88DA81A71829E27F00F26EAD /* Mantle.framework */; };
@@ -195,15 +195,15 @@
 		888494BB18063E6100477836 /* Mac-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-Framework.xcconfig"; sourceTree = "<group>"; };
 		888494BC18063E6100477836 /* Mac-StaticLibrary.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
 		888494BD18063E6100477836 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
-		8884953718063F4000477836 /* FRZCoordinator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZCoordinator.h; sourceTree = "<group>"; };
-		8884953818063F4000477836 /* FRZCoordinator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZCoordinator.m; sourceTree = "<group>"; };
+		8884953718063F4000477836 /* FRZStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZStore.h; sourceTree = "<group>"; };
+		8884953818063F4000477836 /* FRZStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZStore.m; sourceTree = "<group>"; };
 		8884953A18063F4600477836 /* FRZDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZDatabase.h; sourceTree = "<group>"; };
 		8884953B18063F4600477836 /* FRZDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZDatabase.m; sourceTree = "<group>"; };
 		8884953D18063F5300477836 /* FRZTransactor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZTransactor.h; sourceTree = "<group>"; };
 		8884953E18063F5300477836 /* FRZTransactor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZTransactor.m; sourceTree = "<group>"; };
 		888495401806410700477836 /* FRZDatabase+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZDatabase+Private.h"; sourceTree = "<group>"; };
 		888495411806431400477836 /* FRZTransactor+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZTransactor+Private.h"; sourceTree = "<group>"; };
-		888495421806437D00477836 /* FRZCoordinator+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZCoordinator+Private.h"; sourceTree = "<group>"; };
+		888495421806437D00477836 /* FRZStore+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZStore+Private.h"; sourceTree = "<group>"; };
 		88DA819B1829E27F00F26EAD /* Mantle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Mantle.xcodeproj; path = "../../Documents/Development/GitHub/write-mac/External/Mantle/Mantle.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -307,9 +307,9 @@
 				8884948918063DDA00477836 /* MainMenu.xib */,
 				8884948C18063DDA00477836 /* Images.xcassets */,
 				8884947B18063DDA00477836 /* Supporting Files */,
-				8884953718063F4000477836 /* FRZCoordinator.h */,
-				888495421806437D00477836 /* FRZCoordinator+Private.h */,
-				8884953818063F4000477836 /* FRZCoordinator.m */,
+				8884953718063F4000477836 /* FRZStore.h */,
+				888495421806437D00477836 /* FRZStore+Private.h */,
+				8884953818063F4000477836 /* FRZStore.m */,
 				8884953A18063F4600477836 /* FRZDatabase.h */,
 				888495401806410700477836 /* FRZDatabase+Private.h */,
 				8884953B18063F4600477836 /* FRZDatabase.m */,
@@ -645,7 +645,7 @@
 			files = (
 				8884953F18063F5300477836 /* FRZTransactor.m in Sources */,
 				8884953C18063F4600477836 /* FRZDatabase.m in Sources */,
-				8884953918063F4000477836 /* FRZCoordinator.m in Sources */,
+				8884953918063F4000477836 /* FRZStore.m in Sources */,
 				8884948818063DDA00477836 /* DABAppDelegate.m in Sources */,
 				8884948118063DDA00477836 /* main.m in Sources */,
 			);

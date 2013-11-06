@@ -1,27 +1,29 @@
 //
-//  FRZCoordinator.m
+//  FRZStore.m
 //  Freezer
 //
 //  Created by Josh Abernathy on 10/9/13.
 //  Copyright (c) 2013 Josh Abernathy. All rights reserved.
 //
 
-#import "FRZCoordinator.h"
-#import "FRZCoordinator+Private.h"
+#import "FRZStore.h"
+#import "FRZStore+Private.h"
 #import "FRZDatabase+Private.h"
 #import "FRZTransactor+Private.h"
 #import "FMDatabase.h"
 
-static NSString * const FRZCoordinatorDatabaseKey = @"FRZCoordinatorDatabaseKey";
-static NSString * const FRZCoordinatorActiveTransactionCountKey = @"FRZCoordinatorActiveTransactionCountKey";
+static NSString * const FRZStoreDatabaseKey = @"FRZStoreDatabaseKey";
+static NSString * const FRZStoreActiveTransactionCountKey = @"FRZStoreActiveTransactionCountKey";
 
-@interface FRZCoordinator ()
+@interface FRZStore ()
 
 @property (nonatomic, readonly, copy) NSString *databasePath;
 
 @end
 
-@implementation FRZCoordinator
+@implementation FRZStore
+
+#pragma mark Lifecycle
 
 - (id)initWithPath:(NSString *)path error:(NSError **)error {
 	self = [super init];
@@ -40,7 +42,7 @@ static NSString * const FRZCoordinatorActiveTransactionCountKey = @"FRZCoordinat
 	return [self initWithPath:nil error:error];
 }
 
-- (id)initWithDatabaseAtURL:(NSURL *)URL error:(NSError **)error {
+- (id)initWithURL:(NSURL *)URL error:(NSError **)error {
 	NSParameterAssert(URL != nil);
 
 	return [self initWithPath:URL.path error:error];
@@ -104,6 +106,8 @@ static NSString * const FRZCoordinatorActiveTransactionCountKey = @"FRZCoordinat
 	return database;
 }
 
+#pragma mark Properties
+
 - (long long int)headID:(NSError **)error {
 	long long int headID = -1;
 	FMDatabase *database = [self databaseForCurrentThread:error];
@@ -122,24 +126,42 @@ static NSString * const FRZCoordinatorActiveTransactionCountKey = @"FRZCoordinat
 	long long int headID = [self headID:error];
 	if (headID < 0) return nil;
 
-	return [[FRZDatabase alloc] initWithCoordinator:self transactionID:headID];
+	return [[FRZDatabase alloc] initWithStore:self headID:headID];
 }
 
+- (FMDatabase *)databaseForCurrentThread:(NSError **)error {
+	FMDatabase *database = NSThread.currentThread.threadDictionary[FRZStoreDatabaseKey];
+	if (database == nil) {
+		database = [self createAndConfigureDatabase:error];
+		if (database == nil) return nil;
+
+		NSThread.currentThread.threadDictionary[FRZStoreDatabaseKey] = database;
+	}
+
+	return database;
+}
+
+- (FRZTransactor *)transactor {
+	return [[FRZTransactor alloc] initWithStore:self];
+}
+
+#pragma mark Transactions
+
 - (NSInteger)incrementTransactionCount {
-	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[FRZCoordinatorActiveTransactionCountKey] integerValue];
+	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[FRZStoreActiveTransactionCountKey] integerValue];
 	transactionCount++;
-	NSThread.currentThread.threadDictionary[FRZCoordinatorActiveTransactionCountKey] = @(transactionCount);
+	NSThread.currentThread.threadDictionary[FRZStoreActiveTransactionCountKey] = @(transactionCount);
 	return transactionCount;
 }
 
 - (NSInteger)deccrementTransactionCount {
-	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[FRZCoordinatorActiveTransactionCountKey] integerValue];
+	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[FRZStoreActiveTransactionCountKey] integerValue];
 	transactionCount--;
-	NSThread.currentThread.threadDictionary[FRZCoordinatorActiveTransactionCountKey] = @(transactionCount);
+	NSThread.currentThread.threadDictionary[FRZStoreActiveTransactionCountKey] = @(transactionCount);
 	return transactionCount;
 }
 
-- (BOOL)performTransactionType:(FRZCoordinatorTransactionType)transactionType error:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block {
+- (BOOL)performTransactionType:(FRZStoreTransactionType)transactionType error:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block {
 	NSParameterAssert(block != NULL);
 
 	FMDatabase *database = [self databaseForCurrentThread:error];
@@ -147,9 +169,9 @@ static NSString * const FRZCoordinatorActiveTransactionCountKey = @"FRZCoordinat
 
 	if ([self incrementTransactionCount] == 1) {
 		NSDictionary *transactionTypeToName = @{
-			@(FRZCoordinatorTransactionTypeDeferred): @"deferred",
-			@(FRZCoordinatorTransactionTypeImmediate): @"immediate",
-			@(FRZCoordinatorTransactionTypeExclusive): @"exclusive",
+			@(FRZStoreTransactionTypeDeferred): @"deferred",
+			@(FRZStoreTransactionTypeImmediate): @"immediate",
+			@(FRZStoreTransactionTypeExclusive): @"exclusive",
 		};
 
 		NSString *transactionTypeName = transactionTypeToName[@(transactionType)];
@@ -167,22 +189,6 @@ static NSString * const FRZCoordinatorActiveTransactionCountKey = @"FRZCoordinat
 	}
 
 	return success;
-}
-
-- (FRZTransactor *)transactor {
-	return [[FRZTransactor alloc] initWithCoordinator:self];
-}
-
-- (FMDatabase *)databaseForCurrentThread:(NSError **)error {
-	FMDatabase *database = NSThread.currentThread.threadDictionary[FRZCoordinatorDatabaseKey];
-	if (database == nil) {
-		database = [self createAndConfigureDatabase:error];
-		if (database == nil) return nil;
-
-		NSThread.currentThread.threadDictionary[FRZCoordinatorDatabaseKey] = database;
-	}
-
-	return database;
 }
 
 @end

@@ -8,28 +8,32 @@
 
 #import "FRZTransactor.h"
 #import "FRZDatabase+Private.h"
-#import "FRZCoordinator.h"
-#import "FRZCoordinator+Private.h"
+#import "FRZStore.h"
+#import "FRZStore+Private.h"
 #import "FMDatabase.h"
 
 @interface FRZTransactor ()
 
-@property (nonatomic, readonly, strong) FRZCoordinator *coordinator;
+@property (nonatomic, readonly, strong) FRZStore *store;
 
 @end
 
 @implementation FRZTransactor
 
-- (id)initWithCoordinator:(FRZCoordinator *)coordinator {
-	NSParameterAssert(coordinator != nil);
+#pragma mark Lifecycle
+
+- (id)initWithStore:(FRZStore *)store {
+	NSParameterAssert(store != nil);
 
 	self = [super init];
 	if (self == nil) return nil;
 
-	_coordinator = coordinator;
+	_store = store;
 
 	return self;
 }
+
+#pragma mark Changing
 
 - (NSString *)generateNewKey {
 	// Problem?
@@ -37,12 +41,14 @@
 }
 
 - (BOOL)applyChangesWithError:(NSError **)error block:(BOOL (^)(NSError **error))block {
-	return [self.coordinator performTransactionType:FRZCoordinatorTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+	NSParameterAssert(block != NULL);
+
+	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
 		return block(error);
 	}];
 }
 
-- (BOOL)insertIntoDatabase:(FMDatabase *)database value:(id)value forAttribute:(NSString *)attribute key:(NSString *)key transactionID:(sqlite_int64)transactionID error:(NSError **)error {
+- (BOOL)insertIntoDatabase:(FMDatabase *)database value:(id<NSCoding>)value forAttribute:(NSString *)attribute key:(NSString *)key transactionID:(sqlite_int64)transactionID error:(NSError **)error {
 	NSParameterAssert(database != nil);
 	NSParameterAssert(value != nil);
 	NSParameterAssert(attribute != nil);
@@ -65,7 +71,7 @@
 - (sqlite_int64)insertNewTransactionIntoDatabase:(FMDatabase *)database error:(NSError **)error {
 	NSParameterAssert(database != nil);
 
-	long long int headID = [self.coordinator headID:error];
+	long long int headID = [self.store headID:error];
 	NSString *txKey = [self generateNewKey];
 	BOOL success = [self insertIntoDatabase:database value:[NSDate date] forAttribute:@"date" key:txKey transactionID:headID error:error];
 	if (!success) return -1;
@@ -73,7 +79,7 @@
 	return database.lastInsertRowId;
 }
 
-- (BOOL)addValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error {
+- (BOOL)addValue:(id<NSCoding>)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error {
 	NSParameterAssert(value != nil);
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
@@ -84,7 +90,7 @@
 	//
 	// TODO: Test whether the write cost of splitting it up is made up in read
 	// speed.
-	return [self.coordinator performTransactionType:FRZCoordinatorTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
 		sqlite_int64 txID = [self insertNewTransactionIntoDatabase:database error:error];
 		if (txID < 0) return NO;
 
@@ -99,7 +105,7 @@
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
-	return [self.coordinator performTransactionType:FRZCoordinatorTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
 		sqlite_int64 txID = [self insertNewTransactionIntoDatabase:database error:error];
 		if (txID < 0) return NO;
 

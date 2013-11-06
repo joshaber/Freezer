@@ -7,7 +7,7 @@
 //
 
 #import "DABAppDelegate.h"
-#import "FRZCoordinator.h"
+#import "FRZStore.h"
 #import "FRZDatabase.h"
 #import "FRZTransactor.h"
 
@@ -18,7 +18,7 @@
 	NSURL *URL = [NSURL fileURLWithPath:@"/Users/joshaber/Desktop/Freezer/test.sqlite"];
 	[NSFileManager.defaultManager removeItemAtURL:URL error:NULL];
 
-	FRZCoordinator *coordinator = [[FRZCoordinator alloc] initWithDatabaseAtURL:URL error:&error];
+	FRZStore *coordinator = [[FRZStore alloc] initWithURL:URL error:&error];
 	NSAssert(coordinator != nil, @"Coordinator was nil: %@", error);
 
 	FRZTransactor *transactor = [coordinator transactor];

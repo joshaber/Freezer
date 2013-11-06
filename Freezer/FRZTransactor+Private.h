@@ -8,10 +8,15 @@
 
 #import "FRZTransactor.h"
 
-@class FRZCoordinator;
+@class FRZStore;
 
 @interface FRZTransactor ()
 
-- (id)initWithCoordinator:(FRZCoordinator *)coordinator;
+// Initializes the transactor with the given store.
+//
+// store - The store which the transactor will modify. Cannot be nil.
+//
+// Returns the initialized object.
+- (id)initWithStore:(FRZStore *)store;
 
 @end
