@@ -10,7 +10,7 @@
 
 @interface DABDatabase : NSObject
 
-- (NSArray *)objectForKeyedSubscript:(NSString *)key;
+- (NSDictionary *)objectForKeyedSubscript:(NSString *)key;
 
 - (NSArray *)allKeys;
 

@@ -33,8 +33,8 @@
 	return self;
 }
 
-- (NSArray *)objectForKeyedSubscript:(NSString *)key {
-	NSMutableArray *total = [NSMutableArray array];
+- (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
+	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[self.coordinator performTransactionType:DABCoordinatorTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
 		FMResultSet *set = [database executeQuery:@"SELECT * FROM entities WHERE key = ? GROUP BY attribute ORDER BY id DESC", key];
 		if (set == nil) {
@@ -43,13 +43,15 @@
 		}
 
 		while ([set next]) {
-			[total addObject:set.resultDictionary];
+			id value = [NSKeyedUnarchiver unarchiveObjectWithData:set[@"value"]];
+			NSString *attribute = set[@"attribute"];
+			result[attribute] = value;
 		}
 
 		return YES;
 	}];
 
-	return total;
+	return result;
 }
 
 - (NSArray *)allKeys {

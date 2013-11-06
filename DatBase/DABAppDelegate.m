@@ -30,7 +30,7 @@
 	[transactor addValue:@43 forAttribute:@"answer" key:UUID error:NULL];
 
 	DABDatabase *database = [coordinator currentDatabase:NULL];
-	NSArray *result = database[UUID];
+	NSDictionary *result = database[UUID];
 	NSLog(@"%@", result);
 
 //	[self doABunchOfWrites:transactor coordinator:coordinator];
