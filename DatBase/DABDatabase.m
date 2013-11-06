@@ -78,4 +78,23 @@
 	return results;
 }
 
+- (NSArray *)keysWithAttribute:(NSString *)attribute error:(NSError **)error {
+	NSMutableArray *results = [NSMutableArray array];
+	[self.coordinator performTransactionType:DABCoordinatorTransactionTypeDeferred error:error block:^(FMDatabase *database, NSError **error) {
+		FMResultSet *set = [database executeQuery:@"SELECT key FROM entities WHERE attribute = ? AND tx_id <= ? ORDER BY id DESC", attribute, @(self.transactionID)];
+		if (set == nil) {
+			if (error != NULL) *error = database.lastError;
+			return NO;
+		}
+
+		while ([set next]) {
+			[results addObject:[set objectForColumnIndex:0]];
+		}
+
+		return YES;
+	}];
+
+	return results;
+}
+
 @end

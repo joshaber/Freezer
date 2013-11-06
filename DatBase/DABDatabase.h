@@ -14,4 +14,6 @@
 
 - (NSArray *)allKeys;
 
+- (NSArray *)keysWithAttribute:(NSString *)attribute error:(NSError **)error;
+
 @end

@@ -70,6 +70,9 @@
 	DABDatabase *database5 = [coordinator currentDatabase:NULL];
 	NSLog(@"%@", database5[joshKey]);
 
+	NSArray *keys = [database5 keysWithAttribute:@"first-name" error:NULL];
+	NSLog(@"%@", keys);
+
 //	[self doABunchOfWrites:transactor coordinator:coordinator];
 
 //	DABDatabase *originalDatabase = [coordinator currentDatabase:&error];
