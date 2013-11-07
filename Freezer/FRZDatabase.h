@@ -28,4 +28,12 @@
 // Returns an array of NSString keys.
 - (NSArray *)keysWithAttribute:(NSString *)attribute;
 
+// Find the value for the given attribute of the given key.
+//
+// key       - The key whose attribute should be looked up. Cannot be nil.
+// attribute - The attribute to look up. Cannot be nil.
+//
+// Returns the value.
+- (id)valueForKey:(NSString *)key attribute:(NSString *)attribute;
+
 @end

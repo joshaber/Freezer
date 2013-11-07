@@ -164,4 +164,27 @@
 	return results;
 }
 
+- (id)valueForKey:(NSString *)key attribute:(NSString *)attribute {
+	NSParameterAssert(key != nil);
+	NSParameterAssert(attribute != nil);
+
+	__block id result;
+	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
+		NSString *tableName = [self.store tableNameForAttribute:attribute];
+		NSString *query = [NSString stringWithFormat:@"SELECT value FROM %@ WHERE key = ? AND tx_id <= ? ORDER BY tx_id DESC LIMIT 1", tableName];
+		FMResultSet *set = [database executeQuery:query, key, @(self.headID)];
+		if (set == nil) return NO;
+		if (![set next]) return YES;
+
+		id value = [set objectForColumnIndex:0];
+		if (value == NSNull.null) return YES;
+
+		result = value;
+
+		return YES;
+	}];
+
+	return result;
+}
+
 @end
