@@ -9,6 +9,7 @@
 #import "FRZStore.h"
 #import "FRZTransactor.h"
 #import "FRZDatabase.h"
+#import "FRZChange.h"
 
 SpecBegin(FRZStore)
 
@@ -67,6 +68,63 @@ it(@"should have a consistent database in different threads", ^{
 
 	expect(done).will.beTruthy();
 	expect(threadValue).to.equal(value);
+});
+
+describe(@"changes", ^{
+	__block FRZStore *store;
+	__block FRZTransactor *transactor;
+
+	beforeEach(^{
+		store = [[FRZStore alloc] initInMemory:NULL];
+		expect(store).notTo.beNil();
+
+		transactor = [store transactor];
+		expect(transactor).notTo.beNil();
+	});
+
+	it(@"should send adds as they occur", ^{
+		NSMutableArray *changes = [NSMutableArray array];
+		[store.changes subscribeNext:^(FRZChange *change) {
+			[changes addObject:change];
+		}];
+
+		const id value = @42;
+		static NSString * const testAttribute = @"test-attr";
+		static NSString * const testKey = @"test-key";
+		[transactor addValue:@41 forAttribute:testAttribute key:testKey error:NULL];
+		[transactor addValue:value forAttribute:testAttribute key:testKey error:NULL];
+		expect(changes.count).will.equal(2);
+
+		FRZChange *change = changes.lastObject;
+		expect(change.type).to.equal(FRZChangeTypeAdd);
+		expect(change.delta).to.equal(value);
+		expect(change.attribute).to.equal(testAttribute);
+		expect(change.key).to.equal(testKey);
+		expect(change.previousDatabase[testKey][testAttribute]).notTo.equal(value);
+		expect(change.changedDatabase[testKey][testAttribute]).to.equal(value);
+	});
+
+	it(@"should send removes as they occur", ^{
+		NSMutableArray *changes = [NSMutableArray array];
+		[store.changes subscribeNext:^(FRZChange *change) {
+			[changes addObject:change];
+		}];
+
+		const id value = @42;
+		static NSString * const testAttribute = @"test-attr";
+		static NSString * const testKey = @"test-key";
+		[transactor addValue:value forAttribute:testAttribute key:testKey error:NULL];
+		[transactor removeValueForAttribute:testAttribute key:testKey error:NULL];
+		expect(changes.count).will.equal(2);
+
+		FRZChange *change = changes.lastObject;
+		expect(change.type).to.equal(FRZChangeTypeRemove);
+		expect(change.delta).to.equal(nil);
+		expect(change.attribute).to.equal(testAttribute);
+		expect(change.key).to.equal(testKey);
+		expect(change.previousDatabase[testKey][testAttribute]).to.equal(value);
+		expect(change.changedDatabase[testKey][testAttribute]).to.beNil();
+	});
 });
 
 SpecEnd
