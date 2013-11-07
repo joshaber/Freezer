@@ -150,6 +150,8 @@
 		NSString *tableName = [self.store tableNameForAttribute:attribute];
 		NSString *query = [NSString stringWithFormat:@"SELECT key, value FROM %@ WHERE tx_id <= ? GROUP BY key ORDER BY tx_id DESC", tableName];
 		FMResultSet *set = [database executeQuery:query, @(self.headID)];
+		if (set == nil) return NO;
+
 		while ([set next]) {
 			id value = set[@"value"];
 			if (value == NSNull.null) continue;
