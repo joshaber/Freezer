@@ -19,7 +19,7 @@ const id testValue = @42;
 __block FRZStore *store;
 
 beforeEach(^{
-	store = [[FRZStore alloc] initWithURL:[NSURL fileURLWithPath:@"/Users/joshaber/Desktop/Freezer/test.sqlite"] error:NULL];
+	store = [[FRZStore alloc] initInMemory:NULL];
 	BOOL success = [store addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
 	expect(success).to.beTruthy();
 
