@@ -30,7 +30,7 @@
 // error     - The error if one occurs.
 //
 // Returns whether the add was successful.
-- (BOOL)addValue:(id<NSCoding>)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
+- (BOOL)addValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
 
 // Removes the value for the given attribute and key.
 //
