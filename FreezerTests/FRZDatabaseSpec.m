@@ -110,7 +110,7 @@ describe(@"-allKeys", ^{
 	});
 });
 
-describe(@"-keysWithAttribute:error:", ^{
+describe(@"-keysWithAttribute:", ^{
 	it(@"should contain a key after it's been added", ^{
 		FRZDatabase *database = [store currentDatabase:NULL];
 		expect(database).notTo.beNil();
