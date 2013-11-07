@@ -13,11 +13,6 @@
 #import "FMDatabase.h"
 #import "FRZChange.h"
 
-static NSString * const FRZStoreDatabaseKey = @"FRZStoreDatabaseKey";
-static NSString * const FRZStoreActiveTransactionCountKey = @"FRZStoreActiveTransactionCountKey";
-
-static NSString * const FRZStoreQueuedChangesKey = @"FRZStoreQueuedChangesKey";
-
 @interface FRZStore ()
 
 @property (nonatomic, readonly, strong) RACSubject *changesSubject;
@@ -35,6 +30,8 @@ static NSString * const FRZStoreQueuedChangesKey = @"FRZStoreQueuedChangesKey";
 }
 
 - (id)initWithPath:(NSString *)path error:(NSError **)error {
+	NSParameterAssert(path != nil);
+
 	self = [super init];
 	if (self == nil) return nil;
 
@@ -50,7 +47,10 @@ static NSString * const FRZStoreQueuedChangesKey = @"FRZStoreQueuedChangesKey";
 }
 
 - (id)initInMemory:(NSError **)error {
-	return [self initWithPath:nil error:error];
+	// We need to name our in-memory DB so that we can open multiple connections
+	// to it.
+	NSString *name = [NSString stringWithFormat:@"file:%@?mode=memory&cache=shared", [[NSUUID UUID] UUIDString]];
+	return [self initWithPath:name error:error];
 }
 
 - (id)initWithURL:(NSURL *)URL error:(NSError **)error {
@@ -141,12 +141,13 @@ static NSString * const FRZStoreQueuedChangesKey = @"FRZStoreQueuedChangesKey";
 }
 
 - (FMDatabase *)databaseForCurrentThread:(NSError **)error {
-	FMDatabase *database = NSThread.currentThread.threadDictionary[FRZStoreDatabaseKey];
+	NSString *databaseKey = [@"com.joshaber.Freezer.FRZStore.database.%@" stringByAppendingString:self.databasePath];
+	FMDatabase *database = NSThread.currentThread.threadDictionary[databaseKey];
 	if (database == nil) {
 		database = [self createAndConfigureDatabase:error];
 		if (database == nil) return nil;
 
-		NSThread.currentThread.threadDictionary[FRZStoreDatabaseKey] = database;
+		NSThread.currentThread.threadDictionary[databaseKey] = database;
 	}
 
 	return database;
@@ -156,19 +157,37 @@ static NSString * const FRZStoreQueuedChangesKey = @"FRZStoreQueuedChangesKey";
 	return [[FRZTransactor alloc] initWithStore:self];
 }
 
+- (NSMutableArray *)queuedChanges {
+	NSString *queuedChangesKey = [@"com.joshaber.Freezer.FRZStore.queuedChanged.%@" stringByAppendingString:self.databasePath];
+	NSMutableArray *array = NSThread.currentThread.threadDictionary[queuedChangesKey];
+	if (array != nil) return array;
+
+	array = [NSMutableArray array];
+	NSThread.currentThread.threadDictionary[queuedChangesKey] = array;
+	return array;
+}
+
+- (RACSignal *)changes {
+	return self.changesSubject;
+}
+
 #pragma mark Transactions
 
+- (NSString *)activeTransactionCountKey {
+	return [@"com.joshaber.Freezer.FRZStore.activeTransactionCount.%@" stringByAppendingString:self.databasePath];
+}
+
 - (NSInteger)incrementTransactionCount {
-	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[FRZStoreActiveTransactionCountKey] integerValue];
+	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[self.activeTransactionCountKey] integerValue];
 	transactionCount++;
-	NSThread.currentThread.threadDictionary[FRZStoreActiveTransactionCountKey] = @(transactionCount);
+	NSThread.currentThread.threadDictionary[self.activeTransactionCountKey] = @(transactionCount);
 	return transactionCount;
 }
 
 - (NSInteger)deccrementTransactionCount {
-	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[FRZStoreActiveTransactionCountKey] integerValue];
+	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[self.activeTransactionCountKey] integerValue];
 	transactionCount--;
-	NSThread.currentThread.threadDictionary[FRZStoreActiveTransactionCountKey] = @(transactionCount);
+	NSThread.currentThread.threadDictionary[self.activeTransactionCountKey] = @(transactionCount);
 	return transactionCount;
 }
 
@@ -206,19 +225,6 @@ static NSString * const FRZStoreQueuedChangesKey = @"FRZStoreQueuedChangesKey";
 	}
 
 	return success;
-}
-
-- (NSMutableArray *)queuedChanges {
-	NSMutableArray *array = NSThread.currentThread.threadDictionary[FRZStoreQueuedChangesKey];
-	if (array != nil) return array;
-
-	array = [NSMutableArray array];
-	NSThread.currentThread.threadDictionary[FRZStoreQueuedChangesKey] = array;
-	return array;
-}
-
-- (RACSignal *)changes {
-	return self.changesSubject;
 }
 
 @end
