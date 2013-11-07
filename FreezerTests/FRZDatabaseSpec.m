@@ -20,7 +20,7 @@ __block FRZStore *store;
 
 beforeEach(^{
 	store = [[FRZStore alloc] initWithURL:[NSURL fileURLWithPath:@"/Users/joshaber/Desktop/Freezer/test.sqlite"] error:NULL];
-	BOOL success = [store addAttribute:testAttribute sqliteType:@"INTEGER" error:NULL];
+	BOOL success = [store addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
 	expect(success).to.beTruthy();
 
 	FRZTransactor *transactor = [store transactor];
@@ -136,7 +136,7 @@ describe(@"-keysWithAttribute:error:", ^{
 		expect(database).notTo.beNil();
 
 		static NSString * const randomAttribute = @"some bullshit";
-		BOOL success = [store addAttribute:randomAttribute sqliteType:@"INTEGER" error:NULL];
+		BOOL success = [store addAttribute:randomAttribute type:FRZAttributeTypeInteger error:NULL];
 		expect(success).to.beTruthy();
 
 		NSArray *keys = [database keysWithAttribute:randomAttribute error:NULL];

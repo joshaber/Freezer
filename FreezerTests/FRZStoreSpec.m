@@ -39,7 +39,7 @@ it(@"should have a nil database before anything's been added", ^{
 it(@"should keep in-memory stores separate", ^{
 	FRZStore *store1 = [[FRZStore alloc] initInMemory:NULL];
 	static NSString *testAttribute = @"blah";
-	BOOL success = [store1 addAttribute:testAttribute sqliteType:@"INTEGER" error:NULL];
+	BOOL success = [store1 addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
 	expect(success).to.beTruthy();
 
 	FRZStore *store2 = [[FRZStore alloc] initInMemory:NULL];
@@ -55,7 +55,7 @@ it(@"should have a consistent database in different threads", ^{
 	static NSString * const testAttribute = @"blah";
 	static NSString * const testKey = @"test?";
 	FRZStore *store = [[FRZStore alloc] initInMemory:NULL];
-	BOOL success = [store addAttribute:testAttribute sqliteType:@"INTEGER" error:NULL];
+	BOOL success = [store addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
 	expect(success).to.beTruthy();
 
 	success = [[store transactor] addValue:@42 forAttribute:testAttribute key:testKey error:NULL];
@@ -87,7 +87,7 @@ describe(@"changes", ^{
 		store = [[FRZStore alloc] initInMemory:NULL];
 		expect(store).notTo.beNil();
 
-		BOOL success = [store addAttribute:testAttribute sqliteType:@"INTEGER" error:NULL];
+		BOOL success = [store addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
 		expect(success).to.beTruthy();
 
 		transactor = [store transactor];

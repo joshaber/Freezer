@@ -269,8 +269,8 @@
 		888494BB18063E6100477836 /* Mac-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-Framework.xcconfig"; sourceTree = "<group>"; };
 		888494BC18063E6100477836 /* Mac-StaticLibrary.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
 		888494BD18063E6100477836 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
-		8884953718063F4000477836 /* FRZStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZStore.h; sourceTree = "<group>"; };
-		8884953818063F4000477836 /* FRZStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZStore.m; sourceTree = "<group>"; };
+		8884953718063F4000477836 /* FRZStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRZStore.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		8884953818063F4000477836 /* FRZStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRZStore.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		8884953A18063F4600477836 /* FRZDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZDatabase.h; sourceTree = "<group>"; };
 		8884953B18063F4600477836 /* FRZDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZDatabase.m; sourceTree = "<group>"; };
 		8884953D18063F5300477836 /* FRZTransactor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZTransactor.h; sourceTree = "<group>"; };
@@ -290,9 +290,9 @@
 		88FD30DA182B26F8004CFDD4 /* Specta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Specta.xcodeproj; path = External/specta/Specta.xcodeproj; sourceTree = SOURCE_ROOT; };
 		88FD30E9182B26FE004CFDD4 /* Expecta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Expecta.xcodeproj; path = External/expecta/Expecta.xcodeproj; sourceTree = SOURCE_ROOT; };
 		88FD3106182B2755004CFDD4 /* FreezerTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FreezerTests-Prefix.pch"; sourceTree = "<group>"; };
-		88FD3108182B27DA004CFDD4 /* FRZStoreSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZStoreSpec.m; sourceTree = "<group>"; };
+		88FD3108182B27DA004CFDD4 /* FRZStoreSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRZStoreSpec.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		88FD310A182B282A004CFDD4 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		88FD3112182B28BA004CFDD4 /* FRZDatabaseSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZDatabaseSpec.m; sourceTree = "<group>"; };
+		88FD3112182B28BA004CFDD4 /* FRZDatabaseSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRZDatabaseSpec.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		88FD3115182B28CE004CFDD4 /* FRZTransactorSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZTransactorSpec.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 

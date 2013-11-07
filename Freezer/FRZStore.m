@@ -111,13 +111,36 @@ NSString * const FRZStoreTransactionDateAttribute = @"Freezer/tx/date";
 	return YES;
 }
 
+#pragma mark Attributes
+
 - (NSString *)tableNameForAttribute:(NSString *)attribute {
 	NSParameterAssert(attribute != nil);
 
 	return [NSString stringWithFormat:@"[%@]", attribute];
 }
 
+- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type error:(NSError **)error {
+	NSParameterAssert(attribute != nil);
+
+	NSDictionary *typeToTypeName = @{
+		@(FRZAttributeTypeInteger): @"INTEGER",
+		@(FRZAttributeTypeReal): @"REAL",
+		@(FRZAttributeTypeText): @"TEXT",
+		@(FRZAttributeTypeBlob): @"BLOB",
+		@(FRZAttributeTypeDate): @"DATE",
+		@(FRZAttributeTypeRef): @"STRING",
+		@(FRZAttributeTypeCollection): @"BLOB",
+	};
+
+	NSString *sqliteType = typeToTypeName[@(type)];
+	NSAssert(sqliteType != nil, @"Unknown type: %ld", type);
+	return [self addAttribute:attribute sqliteType:sqliteType error:error];
+}
+
 - (BOOL)addAttribute:(NSString *)attribute sqliteType:(NSString *)sqliteType error:(NSError **)error {
+	NSParameterAssert(attribute != nil);
+	NSParameterAssert(sqliteType != nil);
+
 	FMDatabase *database = [self databaseForCurrentThread:error];
 	if (database == nil) return NO;
 
