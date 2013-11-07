@@ -250,8 +250,6 @@
 		8884947C18063DDA00477836 /* Freezer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Freezer-Info.plist"; sourceTree = "<group>"; };
 		8884947E18063DDA00477836 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8884948218063DDA00477836 /* Freezer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Freezer-Prefix.pch"; sourceTree = "<group>"; };
-		8884948618063DDA00477836 /* DABAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DABAppDelegate.h; sourceTree = "<group>"; };
-		8884948718063DDA00477836 /* DABAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DABAppDelegate.m; sourceTree = "<group>"; };
 		8884949318063DDA00477836 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		888494AA18063E6100477836 /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		888494AC18063E6100477836 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
@@ -396,8 +394,6 @@
 		8884947A18063DDA00477836 /* Freezer */ = {
 			isa = PBXGroup;
 			children = (
-				8884948618063DDA00477836 /* DABAppDelegate.h */,
-				8884948718063DDA00477836 /* DABAppDelegate.m */,
 				88FD30A7182B25A8004CFDD4 /* Freezer.h */,
 				8884953718063F4000477836 /* FRZStore.h */,
 				888495421806437D00477836 /* FRZStore+Private.h */,
