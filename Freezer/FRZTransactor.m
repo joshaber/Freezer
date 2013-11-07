@@ -38,7 +38,7 @@
 
 - (NSString *)generateNewKey {
 	// Problem?
-	return [[NSUUID UUID] UUIDString];
+	return [NSString stringWithFormat:@"user/%@", [[NSUUID UUID] UUIDString]];
 }
 
 - (BOOL)applyChangesWithError:(NSError **)error block:(BOOL (^)(NSError **error))block {
