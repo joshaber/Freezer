@@ -38,7 +38,13 @@ Freezer is completely thread-safe. Since databases never change in place,
 `FRZDatabase`s may be read from in any thread. `FRZTransactor` may add or remove 
 values in any thread.
 
+## If the database is immutable... does that mean the store grows without bound?
+
+[Yuuuuuuuuuup](http://www.youtube.com/watch?v=zu9ZxzsWchg). That's less than 
+ideal.
+
 ## Should I use this?
 
 [Nooooooooope](http://www.youtube.com/watch?v=mJXYMDu6dpY). Or at least not yet. 
-Freezer's still in a constant state of flux.
+Freezer's still in a constant state of flux. Also, the above thing about the 
+store growing without bound.
