@@ -44,26 +44,65 @@
 
 #pragma mark Lookup
 
+- (NSArray *)attributesInDatabase:(FMDatabase *)database error:(NSError **)error {
+	NSParameterAssert(database != nil);
+
+	FMResultSet *set = [database executeQuery:@"SELECT name FROM sqlite_master WHERE type = 'table' AND name != 'sqlite_sequence'"];
+	if (set == nil) {
+		if (error != NULL) *error = database.lastError;
+		return nil;
+	}
+
+	NSMutableArray *names = [NSMutableArray array];
+	while ([set next]) {
+		[names addObject:[set objectForColumnIndex:0]];
+	}
+
+	return names;
+}
+
+- (id)valueForAttribute:(NSString *)attribute key:(NSString *)key inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error {
+	NSParameterAssert(attribute != nil);
+	NSParameterAssert(key != nil);
+	NSParameterAssert(database != nil);
+
+	NSString *tableName = [self.store tableNameForAttribute:attribute];
+	NSString *query = [NSString stringWithFormat:@"SELECT value FROM %@ WHERE key = ? AND tx_id <= ? ORDER BY tx_id DESC LIMIT 1", tableName];
+	FMResultSet *set = [database executeQuery:query, key, @(self.headID)];
+	if (set == nil) {
+		if (error != NULL) *error = database.lastError;
+		if (success != NULL) *success = NO;
+		return nil;
+	}
+
+	if (![set next]) {
+		if (success != NULL) *success = YES;
+		return nil;
+	}
+
+	id value = [set objectForColumnIndex:0];
+	if (value == NSNull.null) {
+		if (success != NULL) *success = YES;
+		return nil;
+	}
+
+	return value;
+}
+
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
 	NSParameterAssert(key != nil);
 
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
-		// NB: We don't want to filter out NULL values, because otherwise we'd
-		// inherit the last non-null value, which effectively ignores deletions.
-		FMResultSet *set = [database executeQuery:@"SELECT attribute, value FROM entities WHERE key = ? AND tx_id <= ? GROUP BY attribute ORDER BY id DESC", key, @(self.headID)];
-		if (set == nil) {
-			if (error != NULL) *error = database.lastError;
-			return NO;
-		}
+		NSArray *attributes = [self attributesInDatabase:database error:error];
+		if (attributes == nil) return NO;
 
-		// TODO: Can we do this outside the transaction?
-		while ([set next]) {
-			id valueData = set[@"value"];
-			if (valueData == NSNull.null) continue;
+		for (NSString *attribute in attributes) {
+			BOOL success = YES;
+			id value = [self valueForAttribute:attribute key:key inDatabase:database success:&success error:error];
+			if (value == nil && !success) return NO;
+			if (value == nil) continue;
 
-			id value = [NSKeyedUnarchiver unarchiveObjectWithData:valueData];
-			NSString *attribute = set[@"attribute"];
 			result[attribute] = value;
 		}
 
@@ -74,26 +113,33 @@
 }
 
 - (NSArray *)allKeys {
-	NSMutableArray *results = [NSMutableArray array];
+	NSMutableSet *results = [NSMutableSet set];
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
-		FMResultSet *set = [database executeQuery:@"SELECT DISTINCT key, value FROM entities WHERE tx_id <= ? GROUP BY attribute ORDER BY id DESC", @(self.headID)];
-		if (set == nil) {
-			if (error != NULL) *error = database.lastError;
-			return NO;
-		}
+		NSArray *attributes = [self attributesInDatabase:database error:error];
+		if (attributes == nil) return NO;
 
-		while ([set next]) {
-			id valueData = set[@"value"];
-			if (valueData == NSNull.null) continue;
+		for (NSString *attribute in attributes) {
+			NSString *tableName = [self.store tableNameForAttribute:attribute];
+			NSString *query = [NSString stringWithFormat:@"SELECT key, value FROM %@ WHERE tx_id <= ? ORDER BY tx_id DESC LIMIT 1", tableName];
+			FMResultSet *set = [database executeQuery:query, @(self.headID)];
+			if (set == nil) {
+				if (error != NULL) *error = database.lastError;
+				return NO;
+			}
 
-			NSString *key = set[@"key"];
+			if (![set next]) continue;
+
+			id value = set[@"value"];
+			if (value == NSNull.null) continue;
+
+			id key = set[@"key"];
 			[results addObject:key];
 		}
 
 		return YES;
 	}];
 
-	return results;
+	return results.allObjects;
 }
 
 - (NSArray *)keysWithAttribute:(NSString *)attribute error:(NSError **)error {
@@ -101,17 +147,14 @@
 
 	NSMutableArray *results = [NSMutableArray array];
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:error block:^(FMDatabase *database, NSError **error) {
-		FMResultSet *set = [database executeQuery:@"SELECT key, value FROM entities WHERE attribute = ? AND tx_id <= ? ORDER BY id DESC", attribute, @(self.headID)];
-		if (set == nil) {
-			if (error != NULL) *error = database.lastError;
-			return NO;
-		}
-
+		NSString *tableName = [self.store tableNameForAttribute:attribute];
+		NSString *query = [NSString stringWithFormat:@"SELECT key, value FROM %@ WHERE tx_id <= ? GROUP BY key ORDER BY tx_id DESC", tableName];
+		FMResultSet *set = [database executeQuery:query, @(self.headID)];
 		while ([set next]) {
-			id valueData = set[@"value"];
-			if (valueData == NSNull.null) continue;
+			id value = set[@"value"];
+			if (value == NSNull.null) continue;
 
-			NSString *key = set[@"key"];
+			id key = set[@"key"];
 			[results addObject:key];
 		}
 

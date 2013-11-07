@@ -1103,6 +1103,7 @@
 				88FD30BE182B25A9004CFDD4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		88FD30BF182B25A9004CFDD4 /* Build configuration list for PBXNativeTarget "FreezerTests" */ = {
 			isa = XCConfigurationList;
@@ -1111,6 +1112,7 @@
 				88FD30C1182B25A9004CFDD4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

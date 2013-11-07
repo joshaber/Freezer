@@ -49,18 +49,15 @@
 	}];
 }
 
-- (BOOL)insertIntoDatabase:(FMDatabase *)database value:(id<NSCoding>)value forAttribute:(NSString *)attribute key:(NSString *)key transactionID:(sqlite_int64)transactionID error:(NSError **)error {
+- (BOOL)insertIntoDatabase:(FMDatabase *)database value:(id)value forAttribute:(NSString *)attribute key:(NSString *)key transactionID:(long long int)transactionID error:(NSError **)error {
 	NSParameterAssert(database != nil);
 	NSParameterAssert(value != nil);
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
-	id valueData = NSNull.null;
-	if (value != NSNull.null) {
-		valueData = [NSKeyedArchiver archivedDataWithRootObject:value];
-	}
-
-	BOOL success = [database executeUpdate:@"INSERT INTO entities (attribute, value, key, tx_id) VALUES (?, ?, ?, ?)", attribute, valueData, key, @(transactionID)];
+	NSString *tableName = [self.store tableNameForAttribute:attribute];
+	NSString *query = [NSString stringWithFormat:@"INSERT INTO %@ (attribute, value, key, tx_id) VALUES (?, ?, ?, ?)", tableName];
+	BOOL success = [database executeUpdate:query, attribute, value, key, @(transactionID)];
 	if (!success) {
 		if (error != NULL) *error = database.lastError;
 		return NO;
@@ -69,12 +66,11 @@
 	return YES;
 }
 
-- (sqlite_int64)insertNewTransactionIntoDatabase:(FMDatabase *)database error:(NSError **)error {
+- (long long int)insertNewTransactionIntoDatabase:(FMDatabase *)database error:(NSError **)error {
 	NSParameterAssert(database != nil);
 
 	long long int headID = [self.store headID:error];
-	NSString *txKey = [self generateNewKey];
-	BOOL success = [self insertIntoDatabase:database value:[NSDate date] forAttribute:@"date" key:txKey transactionID:headID error:error];
+	BOOL success = [self insertIntoDatabase:database value:[NSDate date] forAttribute:FRZStoreTransactionDateAttribute key:@"head" transactionID:headID error:error];
 	if (!success) return -1;
 
 	return database.lastInsertRowId;
@@ -116,11 +112,12 @@
 		if (txID < 0) return NO;
 
 		FRZDatabase *currentDatabase = [self.store currentDatabase:error];
-		NSArray *currentValues = currentDatabase[key][attribute] ?: @[];
+		NSData *data = currentDatabase[key][attribute];
+		NSArray *currentValues = (data != nil ? [NSKeyedUnarchiver unarchiveObjectWithData:data] : @[]);
 		NSAssert([currentValues isKindOfClass:NSArray.class], @"%@ on %@ isn't an array: %@", attribute, key, currentValues);
 		NSArray *newValues = [currentValues arrayByAddingObjectsFromArray:values];
 
-		BOOL success = [self insertIntoDatabase:database value:newValues forAttribute:attribute key:key transactionID:txID error:error];
+		BOOL success = [self insertIntoDatabase:database value:[NSKeyedArchiver archivedDataWithRootObject:newValues] forAttribute:attribute key:key transactionID:txID error:error];
 		if (!success) return NO;
 
 		FRZDatabase *changedDatabase = [[FRZDatabase alloc] initWithStore:self.store headID:txID];
@@ -159,11 +156,12 @@
 		if (txID < 0) return NO;
 
 		FRZDatabase *currentDatabase = [self.store currentDatabase:error];
-		NSMutableArray *currentValues = [currentDatabase[key][attribute] ?: @[] mutableCopy];
+		NSData *data = currentDatabase[key][attribute];
+		NSMutableArray *currentValues = [(data != nil ? [NSKeyedUnarchiver unarchiveObjectWithData:data] : @[]) mutableCopy];
 		NSAssert([currentValues isKindOfClass:NSArray.class], @"%@ on %@ isn't an array: %@", attribute, key, currentValues);
 		[currentValues removeObjectsInArray:values];
 
-		BOOL success = [self insertIntoDatabase:database value:currentValues forAttribute:attribute key:key transactionID:txID error:error];
+		BOOL success = [self insertIntoDatabase:database value:[NSKeyedArchiver archivedDataWithRootObject:currentValues] forAttribute:attribute key:key transactionID:txID error:error];
 		if (!success) return NO;
 
 		FRZDatabase *changedDatabase = [[FRZDatabase alloc] initWithStore:self.store headID:txID];
@@ -176,14 +174,8 @@
 - (BOOL)updateHeadInDatabase:(FMDatabase *)database toID:(sqlite_int64)ID error:(NSError **)error {
 	NSParameterAssert(database != nil);
 
-	FMResultSet *set = [database executeQuery:@"SELECT id FROM entities WHERE key = ? LIMIT 1", @"head"];
-	if (![set next]) {
-		// TODO: Do we want transaction IDs for a transaction? What does it mean?!
-		return [self insertIntoDatabase:database value:@(ID) forAttribute:@"id" key:@"head" transactionID:0 error:error];
-	} else {
-		NSData *txIDData = [NSKeyedArchiver archivedDataWithRootObject:@(ID)];
-		return [database executeUpdate:@"UPDATE entities SET value = ? WHERE key = ?", txIDData, @"head"];
-	}
+	// TODO: Do we want to give head updates a transaction ID?
+	return [self insertIntoDatabase:database value:@(ID) forAttribute:FRZStoreHeadTransactionAttribute key:@"head" transactionID:0 error:error];
 }
 
 @end

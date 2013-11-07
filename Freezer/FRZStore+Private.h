@@ -9,6 +9,12 @@
 #import "FRZStore.h"
 #import <sqlite3.h>
 
+// The head transaction ID attribute.
+extern NSString * const FRZStoreHeadTransactionAttribute;
+
+// The transaction date attribute.
+extern NSString * const FRZStoreTransactionDateAttribute;
+
 // The type of transaction to use.
 //
 //   FRZStoreTransactionTypeDeferred  - Defer lock acquisition until it is
@@ -51,5 +57,12 @@ typedef enum : NSInteger {
 //
 // Returns the ID, or -1 if an error occurred.
 - (long long int)headID:(NSError **)error;
+
+// Convert from an attribute name to the Sqlite table name.
+//
+// attribute - The Freezer attribute name. Cannot be nil.
+//
+// Returns the Sqlite table name.
+- (NSString *)tableNameForAttribute:(NSString *)attribute;
 
 @end

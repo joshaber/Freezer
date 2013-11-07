@@ -47,4 +47,6 @@
 // Returns the transactor.
 - (FRZTransactor *)transactor;
 
+- (BOOL)addAttribute:(NSString *)attribute sqliteType:(NSString *)sqliteType error:(NSError **)error;
+
 @end

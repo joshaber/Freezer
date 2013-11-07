@@ -38,9 +38,13 @@ it(@"should have a nil database before anything's been added", ^{
 
 it(@"should keep in-memory stores separate", ^{
 	FRZStore *store1 = [[FRZStore alloc] initInMemory:NULL];
+	static NSString *testAttribute = @"blah";
+	BOOL success = [store1 addAttribute:testAttribute sqliteType:@"INTEGER" error:NULL];
+	expect(success).to.beTruthy();
+
 	FRZStore *store2 = [[FRZStore alloc] initInMemory:NULL];
 
-	BOOL success = [[store1 transactor] addValue:@42 forAttribute:@"blah" key:@"test?" error:NULL];
+	success = [[store1 transactor] addValue:@42 forAttribute:testAttribute key:@"test?" error:NULL];
 	expect(success).to.beTruthy();
 
 	FRZDatabase *database = [store2 currentDatabase:NULL];
@@ -48,10 +52,13 @@ it(@"should keep in-memory stores separate", ^{
 });
 
 it(@"should have a consistent database in different threads", ^{
-	FRZStore *store = [[FRZStore alloc] initInMemory:NULL];
-
+	static NSString * const testAttribute = @"blah";
 	static NSString * const testKey = @"test?";
-	BOOL success = [[store transactor] addValue:@42 forAttribute:@"blah" key:testKey error:NULL];
+	FRZStore *store = [[FRZStore alloc] initInMemory:NULL];
+	BOOL success = [store addAttribute:testAttribute sqliteType:@"INTEGER" error:NULL];
+	expect(success).to.beTruthy();
+
+	success = [[store transactor] addValue:@42 forAttribute:testAttribute key:testKey error:NULL];
 	expect(success).to.beTruthy();
 
 	FRZDatabase *database = [store currentDatabase:NULL];
@@ -71,12 +78,17 @@ it(@"should have a consistent database in different threads", ^{
 });
 
 describe(@"changes", ^{
+	static NSString * const testAttribute = @"test-attr";
+
 	__block FRZStore *store;
 	__block FRZTransactor *transactor;
 
 	beforeEach(^{
 		store = [[FRZStore alloc] initInMemory:NULL];
 		expect(store).notTo.beNil();
+
+		BOOL success = [store addAttribute:testAttribute sqliteType:@"INTEGER" error:NULL];
+		expect(success).to.beTruthy();
 
 		transactor = [store transactor];
 		expect(transactor).notTo.beNil();
@@ -89,7 +101,6 @@ describe(@"changes", ^{
 		}];
 
 		const id value = @42;
-		static NSString * const testAttribute = @"test-attr";
 		static NSString * const testKey = @"test-key";
 		[transactor addValue:@41 forAttribute:testAttribute key:testKey error:NULL];
 		[transactor addValue:value forAttribute:testAttribute key:testKey error:NULL];
@@ -111,7 +122,6 @@ describe(@"changes", ^{
 		}];
 
 		const id value = @42;
-		static NSString * const testAttribute = @"test-attr";
 		static NSString * const testKey = @"test-key";
 		[transactor addValue:value forAttribute:testAttribute key:testKey error:NULL];
 		[transactor removeValueForAttribute:testAttribute key:testKey error:NULL];

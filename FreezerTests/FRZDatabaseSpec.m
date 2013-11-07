@@ -19,10 +19,12 @@ const id testValue = @42;
 __block FRZStore *store;
 
 beforeEach(^{
-	store = [[FRZStore alloc] initInMemory:NULL];
+	store = [[FRZStore alloc] initWithURL:[NSURL fileURLWithPath:@"/Users/joshaber/Desktop/Freezer/test.sqlite"] error:NULL];
+	BOOL success = [store addAttribute:testAttribute sqliteType:@"INTEGER" error:NULL];
+	expect(success).to.beTruthy();
 
 	FRZTransactor *transactor = [store transactor];
-	BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
+	success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
 	expect(success).to.beTruthy();
 });
 
@@ -126,14 +128,18 @@ describe(@"-keysWithAttribute:error:", ^{
 		expect(database).notTo.beNil();
 
 		NSArray *keys = [database keysWithAttribute:testAttribute error:NULL];
-		expect(keys).to.contain(testKey);
+		expect(keys).notTo.contain(testKey);
 	});
 
 	it(@"shouldn't contain any keys for an attribute that's never been added", ^{
 		FRZDatabase *database = [store currentDatabase:NULL];
 		expect(database).notTo.beNil();
 
-		NSArray *keys = [database keysWithAttribute:@"some bullshit" error:NULL];
+		static NSString * const randomAttribute = @"some bullshit";
+		BOOL success = [store addAttribute:randomAttribute sqliteType:@"INTEGER" error:NULL];
+		expect(success).to.beTruthy();
+
+		NSArray *keys = [database keysWithAttribute:randomAttribute error:NULL];
 		expect(keys.count).to.equal(0);
 	});
 });
