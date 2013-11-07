@@ -9,6 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <ReactiveCocoa/ReactiveCocoa.h>
 
+// The domain for all general errors coming out of Freezer.
+extern NSString * const FRZErrorDomain;
+
+// The error code if the attribute involved is invalid, i.e., hasn't been added
+// to the store.
+extern const NSInteger FRZErrorInvalidAttribute;
+
 // The valid attribute types.
 //   FRZAttributeTypeInteger    - Integer type.
 //   FRZAttributeTypeReal       - Real numbers type.

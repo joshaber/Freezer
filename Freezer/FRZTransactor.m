@@ -49,6 +49,13 @@
 	}];
 }
 
+- (NSError *)invalidAttributeErrorWithError:(NSError *)error {
+	NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+	userInfo[NSLocalizedDescriptionKey] = NSLocalizedString(@"Invalid attribute", @"");
+	if (error != nil) userInfo[NSUnderlyingErrorKey] = error;
+	return [NSError errorWithDomain:FRZErrorDomain code:FRZErrorInvalidAttribute userInfo:userInfo];
+}
+
 - (BOOL)insertIntoDatabase:(FMDatabase *)database value:(id)value forAttribute:(NSString *)attribute key:(NSString *)key transactionID:(long long int)transactionID error:(NSError **)error {
 	NSParameterAssert(database != nil);
 	NSParameterAssert(value != nil);
@@ -59,7 +66,9 @@
 	NSString *query = [NSString stringWithFormat:@"INSERT INTO %@ (attribute, value, key, tx_id) VALUES (?, ?, ?, ?)", tableName];
 	BOOL success = [database executeUpdate:query, attribute, value, key, @(transactionID)];
 	if (!success) {
-		if (error != NULL) *error = database.lastError;
+		// We're really just guessing that the error is invalid attribute. FMDB
+		// doesn't wrap errors in any meaningful way.
+		if (error != NULL) *error = [self invalidAttributeErrorWithError:database.lastError];
 		return NO;
 	}
 
