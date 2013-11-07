@@ -115,7 +115,7 @@ describe(@"-keysWithAttribute:error:", ^{
 		FRZDatabase *database = [store currentDatabase:NULL];
 		expect(database).notTo.beNil();
 
-		NSArray *keys = [database keysWithAttribute:testAttribute error:NULL];
+		NSArray *keys = [database keysWithAttribute:testAttribute];
 		expect(keys).to.contain(testKey);
 	});
 
@@ -127,7 +127,7 @@ describe(@"-keysWithAttribute:error:", ^{
 		FRZDatabase *database = [store currentDatabase:NULL];
 		expect(database).notTo.beNil();
 
-		NSArray *keys = [database keysWithAttribute:testAttribute error:NULL];
+		NSArray *keys = [database keysWithAttribute:testAttribute];
 		expect(keys).notTo.contain(testKey);
 	});
 
@@ -139,7 +139,7 @@ describe(@"-keysWithAttribute:error:", ^{
 		BOOL success = [store addAttribute:randomAttribute type:FRZAttributeTypeInteger error:NULL];
 		expect(success).to.beTruthy();
 
-		NSArray *keys = [database keysWithAttribute:randomAttribute error:NULL];
+		NSArray *keys = [database keysWithAttribute:randomAttribute];
 		expect(keys.count).to.equal(0);
 	});
 });

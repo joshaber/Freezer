@@ -24,9 +24,8 @@
 // Find all the keys that have a given attribute.
 //
 // attribute - The attribute to find. Cannot be nil.
-// error     - The error if one occurred.
 //
 // Returns an array of NSString keys.
-- (NSArray *)keysWithAttribute:(NSString *)attribute error:(NSError **)error;
+- (NSArray *)keysWithAttribute:(NSString *)attribute;
 
 @end

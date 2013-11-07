@@ -142,11 +142,11 @@
 	return results.allObjects;
 }
 
-- (NSArray *)keysWithAttribute:(NSString *)attribute error:(NSError **)error {
+- (NSArray *)keysWithAttribute:(NSString *)attribute {
 	NSParameterAssert(attribute != nil);
 
 	NSMutableArray *results = [NSMutableArray array];
-	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:error block:^(FMDatabase *database, NSError **error) {
+	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
 		NSString *tableName = [self.store tableNameForAttribute:attribute];
 		NSString *query = [NSString stringWithFormat:@"SELECT key, value FROM %@ WHERE tx_id <= ? GROUP BY key ORDER BY tx_id DESC", tableName];
 		FMResultSet *set = [database executeQuery:query, @(self.headID)];
