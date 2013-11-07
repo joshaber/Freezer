@@ -144,4 +144,38 @@ describe(@"-keysWithAttribute:", ^{
 	});
 });
 
+describe(@"-valueForKey:attribute:", ^{
+	it(@"should find the value after it's been added", ^{
+		FRZDatabase *database = [store currentDatabase:NULL];
+		expect(database).notTo.beNil();
+
+		id value = [database valueForKey:testKey attribute:testAttribute];
+		expect(value).to.equal(testValue);
+	});
+
+	it(@"shouldn't contain the value after it's been removed", ^{
+		FRZTransactor *transactor = [store transactor];
+		BOOL success = [transactor removeValueForAttribute:testAttribute key:testKey error:NULL];
+		expect(success).to.beTruthy();
+
+		FRZDatabase *database = [store currentDatabase:NULL];
+		expect(database).notTo.beNil();
+
+		id value = [database valueForKey:testKey attribute:testAttribute];
+		expect(value).to.beNil();
+	});
+
+	it(@"shouldn't contain any value for an attribute that's never been added", ^{
+		FRZDatabase *database = [store currentDatabase:NULL];
+		expect(database).notTo.beNil();
+
+		static NSString * const randomAttribute = @"some bullshit";
+		BOOL success = [store addAttribute:randomAttribute type:FRZAttributeTypeInteger error:NULL];
+		expect(success).to.beTruthy();
+
+		id value = [database valueForKey:testValue attribute:randomAttribute];
+		expect(value).to.beNil();
+	});
+});
+
 SpecEnd
