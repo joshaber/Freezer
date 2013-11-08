@@ -98,10 +98,21 @@ it(@"should only apply changes when the outermost transaction is completed", ^{
 
 		expect(changes.count).to.equal(0);
 
+		[transactor performChangesWithError:NULL block:^(NSError **error) {
+			BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
+			expect(success).to.beTruthy();
+
+			expect(changes.count).to.equal(0);
+
+			return YES;
+		}];
+
+		expect(changes.count).to.equal(0);
+
 		return YES;
 	}];
 
-	expect(changes.count).will.equal(1);
+	expect(changes.count).will.equal(2);
 });
 
 SpecEnd
