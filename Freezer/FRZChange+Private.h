@@ -10,6 +10,10 @@
 
 @interface FRZChange ()
 
+@property (nonatomic, readwrite, copy) FRZDatabase *previousDatabase;
+
+@property (nonatomic, readwrite, copy) FRZDatabase *changedDatabase;
+
 // Initializes the receiver with the given values.
 //
 // type             - The type of change.
@@ -17,10 +21,8 @@
 //                    nil.
 // attribute        - The attribute whose value was changed. Cannot be nil.
 // delta            - The delta for the change. May be nil.
-// previousDatabase - The database before the change was affected. May be nil.
-// changedDatabase  - The database after the change was affected. Cannot be nil.
 //
 // Returns the initialized object.
-- (id)initWithType:(FRZChangeType)type key:(NSString *)key attribute:(NSString *)attribute delta:(id)delta previousDatabase:(FRZDatabase *)previousDatabase changedDatabase:(FRZDatabase *)changedDatabase;
+- (id)initWithType:(FRZChangeType)type key:(NSString *)key attribute:(NSString *)attribute delta:(id)delta;
 
 @end

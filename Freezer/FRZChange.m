@@ -14,10 +14,9 @@
 
 #pragma mark Lifecycle
 
-- (id)initWithType:(FRZChangeType)type key:(NSString *)key attribute:(NSString *)attribute delta:(id)delta previousDatabase:(FRZDatabase *)previousDatabase changedDatabase:(FRZDatabase *)changedDatabase {
+- (id)initWithType:(FRZChangeType)type key:(NSString *)key attribute:(NSString *)attribute delta:(id)delta {
 	NSParameterAssert(key != nil);
 	NSParameterAssert(attribute != nil);
-	NSParameterAssert(changedDatabase != nil);
 
 	self = [super init];
 	if (self == nil) return nil;
@@ -26,8 +25,6 @@
 	_key = [key copy];
 	_attribute = [attribute copy];
 	_delta = delta;
-	_previousDatabase = [previousDatabase copyWithZone:nil];
-	_changedDatabase = [changedDatabase copyWithZone:nil];
 
 	return self;
 }

@@ -135,6 +135,39 @@ describe(@"changes", ^{
 		expect(change.previousDatabase[testKey][testAttribute]).to.equal(value);
 		expect(change.changedDatabase[testKey][testAttribute]).to.beNil();
 	});
+
+	it(@"should send the database after the transaction's completed", ^{
+		static NSString * const testKey = @"some-key";
+		static NSString * const testAttribute1 = @"attr1";
+		static NSString * const testAttribute2 = @"attr2";
+
+		BOOL success = [transactor addAttribute:testAttribute1 type:FRZAttributeTypeInteger error:NULL];
+		expect(success).to.beTruthy();
+
+		success = [transactor addAttribute:testAttribute2 type:FRZAttributeTypeInteger error:NULL];
+		expect(success).to.beTruthy();
+
+		__block FRZDatabase *database;
+		[store.changes subscribeNext:^(FRZChange *change) {
+			database = change.changedDatabase;
+		}];
+
+		[transactor performChangesWithError:NULL block:^(NSError **error) {
+			BOOL success = [transactor addValue:@42 forAttribute:testAttribute1 key:testKey error:NULL];
+			expect(success).to.beTruthy();
+
+			success = [transactor addValue:@7 forAttribute:testAttribute2 key:testKey error:NULL];
+			expect(success).to.beTruthy();
+
+			return YES;
+		}];
+
+		NSDictionary *expected = @{
+			testAttribute1: @42,
+			testAttribute2: @7,
+		};
+		expect(database[testKey]).to.equal(expected);
+	});
 });
 
 SpecEnd

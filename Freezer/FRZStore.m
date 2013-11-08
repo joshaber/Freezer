@@ -12,6 +12,7 @@
 #import "FRZTransactor+Private.h"
 #import "FMDatabase.h"
 #import "FRZChange.h"
+#import "FRZChange+Private.h"
 
 NSString * const FRZErrorDomain = @"FRZErrorDomain";
 
@@ -206,6 +207,10 @@ NSString * const FRZStoreTransactionDateAttribute = @"Freezer/tx/date";
 	return transactionCount;
 }
 
+- (NSString *)previousDatabaseKey {
+	return [@"com.joshaber.Freezer.FRZStore.previousDatabase.%@" stringByAppendingString:self.databasePath];
+}
+
 - (BOOL)performTransactionType:(FRZStoreTransactionType)transactionType error:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block {
 	NSParameterAssert(block != NULL);
 
@@ -222,20 +227,31 @@ NSString * const FRZStoreTransactionDateAttribute = @"Freezer/tx/date";
 		NSString *transactionTypeName = transactionTypeToName[@(transactionType)];
 		NSAssert(transactionTypeName != nil, @"Unrecognized transaction type: %ld", transactionType);
 		[database executeUpdate:[NSString stringWithFormat:@"begin %@ transaction", transactionTypeName]];
+
+		FRZDatabase *previousDatabase = [self currentDatabase:NULL];
+		if (previousDatabase != nil) {
+			NSThread.currentThread.threadDictionary[self.previousDatabaseKey] = previousDatabase;
+		}
 	}
 
 	BOOL success = block(database, error);
 	if (!success) {
 		[database rollback];
 	} else {
-		if ([self deccrementTransactionCount] == 0) {
+		if ([self decrementTransactionCount] == 0) {
+			FRZDatabase *changedDatabase = [self currentDatabase:NULL];
+
 			[database commit];
 
-			for (FRZChange *change in self.queuedChanges) {
+			FRZDatabase *previousDatabase = NSThread.currentThread.threadDictionary[self.previousDatabaseKey];
+
+			NSArray *queuedChanges = [self.queuedChanges copy];
+			[self.queuedChanges removeAllObjects];
+			for (FRZChange *change in queuedChanges) {
+				change.previousDatabase = previousDatabase;
+				change.changedDatabase = changedDatabase;
 				[self.changesSubject sendNext:change];
 			}
-
-			[self.queuedChanges removeAllObjects];
 		}
 	}
 

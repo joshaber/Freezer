@@ -33,7 +33,8 @@ typedef enum : NSInteger {
 //   FRZChangeTypeRemove - nil.
 @property (nonatomic, readonly, strong) id delta;
 
-// The database before the change was applied.
+// The database before the change was applied. This may be nil if the addition
+// was the first value added to the store.
 @property (nonatomic, readonly, copy) FRZDatabase *previousDatabase;
 
 // The database after the change was applied.
