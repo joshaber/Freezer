@@ -32,14 +32,18 @@
 // Returns whether the add was successful.
 - (BOOL)addValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
 
-// Removes the value for the given attribute and key.
+// Removes the value for the given attribute and key, but only if the given
+// value matches the current value. If the current value does not match the
+// given value, then the method returns NO and the error code will be
+// FRZErrorInvalidValue.
 //
+// value     - The value which should be removed. Cannot be nil.
 // attribute - The attribute whose value should be removed. Cannot be nil.
 // key       - The key whose associated attribute will be removed. Cannot be nil.
 // error     - The error if one occurs.
 //
 // Returns whether the removal was successful.
-- (BOOL)removeValueForAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
+- (BOOL)removeValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
 
 // Adds the given values to the collection in the attribute on the key. Note
 // the value of attribute must be an array (or non-existent).

@@ -136,18 +136,26 @@
 	}];
 }
 
-- (BOOL)removeValueForAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error {
+- (BOOL)removeValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error {
+	NSParameterAssert(value != nil);
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
 	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+		FRZDatabase *previousDatabase = [self.store currentDatabase:NULL];
+		id currentValue = [previousDatabase valueForKey:key attribute:attribute];
+		if (![currentValue isEqual:value]) {
+			NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: NSLocalizedString(@"", @"") };
+			if (error != NULL) *error = [NSError errorWithDomain:FRZErrorDomain code:FRZErrorInvalidValue userInfo:userInfo];
+			return NO;
+		}
+
 		sqlite_int64 txID = [self insertNewTransactionIntoDatabase:database error:error];
 		if (txID < 0) return NO;
 
 		BOOL success = [self insertIntoDatabase:database value:NSNull.null forAttribute:attribute key:key transactionID:txID error:error];
 		if (!success) return NO;
 
-		FRZDatabase *previousDatabase = [self.store currentDatabase:NULL];
 		FRZDatabase *changedDatabase = [[FRZDatabase alloc] initWithStore:self.store headID:txID];
 		[self.store.queuedChanges addObject:[[FRZChange alloc] initWithType:FRZChangeTypeRemove key:key attribute:attribute delta:nil previousDatabase:previousDatabase changedDatabase:changedDatabase]];
 

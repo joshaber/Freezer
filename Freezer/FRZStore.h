@@ -16,6 +16,9 @@ extern NSString * const FRZErrorDomain;
 // to the store.
 extern const NSInteger FRZErrorInvalidAttribute;
 
+// The error code if the value given is invalid.
+extern const NSInteger FRZErrorInvalidValue;
+
 // The valid attribute types.
 //   FRZAttributeTypeInteger    - Integer type.
 //   FRZAttributeTypeReal       - Real numbers type.

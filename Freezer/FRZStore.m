@@ -16,6 +16,7 @@
 NSString * const FRZErrorDomain = @"FRZErrorDomain";
 
 const NSInteger FRZErrorInvalidAttribute = -1;
+const NSInteger FRZErrorInvalidValue = -2;
 
 NSString * const FRZStoreHeadTransactionAttribute = @"Freezer/tx/head";
 NSString * const FRZStoreTransactionDateAttribute = @"Freezer/tx/date";

@@ -124,7 +124,7 @@ describe(@"changes", ^{
 		const id value = @42;
 		static NSString * const testKey = @"test-key";
 		[transactor addValue:value forAttribute:testAttribute key:testKey error:NULL];
-		[transactor removeValueForAttribute:testAttribute key:testKey error:NULL];
+		[transactor removeValue:value forAttribute:testAttribute key:testKey error:NULL];
 		expect(changes.count).will.equal(2);
 
 		FRZChange *change = changes.lastObject;
