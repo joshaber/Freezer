@@ -107,10 +107,11 @@ NSString * const FRZStoreTransactionDateAttribute = @"Freezer/tx/date";
 		return NO;
 	}
 
-	success = [self addAttribute:FRZStoreHeadTransactionAttribute sqliteType:@"INTEGER" error:error];
+	FRZTransactor *transactor = [self transactor];
+	success = [transactor addAttribute:FRZStoreHeadTransactionAttribute type:FRZAttributeTypeInteger error:error];
 	if (!success) return NO;
 
-	success = [self addAttribute:FRZStoreTransactionDateAttribute sqliteType:@"DATETIME" error:error];
+	success = [transactor addAttribute:FRZStoreTransactionDateAttribute type:FRZAttributeTypeDate error:error];
 	if (!success) return NO;
 
 	return YES;
@@ -122,51 +123,6 @@ NSString * const FRZStoreTransactionDateAttribute = @"Freezer/tx/date";
 	NSParameterAssert(attribute != nil);
 
 	return [NSString stringWithFormat:@"[%@]", attribute];
-}
-
-- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type error:(NSError **)error {
-	NSParameterAssert(attribute != nil);
-
-	NSDictionary *typeToTypeName = @{
-		@(FRZAttributeTypeInteger): @"INTEGER",
-		@(FRZAttributeTypeReal): @"REAL",
-		@(FRZAttributeTypeText): @"TEXT",
-		@(FRZAttributeTypeBlob): @"BLOB",
-		@(FRZAttributeTypeDate): @"DATE",
-		@(FRZAttributeTypeRef): @"STRING",
-		@(FRZAttributeTypeCollection): @"BLOB",
-	};
-
-	NSString *sqliteType = typeToTypeName[@(type)];
-	NSAssert(sqliteType != nil, @"Unknown type: %ld", type);
-	return [self addAttribute:attribute sqliteType:sqliteType error:error];
-}
-
-- (BOOL)addAttribute:(NSString *)attribute sqliteType:(NSString *)sqliteType error:(NSError **)error {
-	NSParameterAssert(attribute != nil);
-	NSParameterAssert(sqliteType != nil);
-
-	FMDatabase *database = [self databaseForCurrentThread:error];
-	if (database == nil) return NO;
-
-	NSString *tableName = [self tableNameForAttribute:attribute];
-	NSString *schemaTemplate =
-		@"CREATE TABLE IF NOT EXISTS %@("
-			"id INTEGER PRIMARY KEY AUTOINCREMENT,"
-			"key STRING NOT NULL,"
-			"attribute STRING NOT NULL,"
-			"value %@,"
-			"tx_id INTEGER NOT NULL"
-		");";
-
-	NSString *schema = [NSString stringWithFormat:schemaTemplate, tableName, sqliteType];
-	BOOL success = [database executeUpdate:schema];
-	if (!success) {
-		if (error != NULL) *error = database.lastError;
-		return NO;
-	}
-
-	return YES;
 }
 
 #pragma mark Properties

@@ -8,13 +8,40 @@
 
 #import <Foundation/Foundation.h>
 
+// The valid attribute types.
+//   FRZAttributeTypeInteger    - Integer type.
+//   FRZAttributeTypeReal       - Real numbers type.
+//   FRZAttributeTypeText       - Arbitrary text type.
+//   FRZAttributeTypeBlob       - Data blob type.
+//   FRZAttributeTypeDate       - Date type.
+//   FRZAttributeTypeRef        - Reference to another key.
+//   FRZAttributeTypeCollection - A collection of values.
+typedef enum : NSInteger {
+	FRZAttributeTypeInteger,
+	FRZAttributeTypeReal,
+	FRZAttributeTypeText,
+	FRZAttributeTypeBlob,
+	FRZAttributeTypeDate,
+	FRZAttributeTypeRef,
+	FRZAttributeTypeCollection,
+} FRZAttributeType;
+
 // The transactor is responsible for effecting change to the store.
 @interface FRZTransactor : NSObject
 
 // Generate a new key to use for adding new values.
 - (NSString *)generateNewKey;
 
-// Apply changes to the store within the given block.
+// Add an attribute of the given type to the store.
+//
+// attribute - The name of the attribute to add. Cannot be nil.
+// type      - The type of the attribute.
+// error     - The error if one occurred.
+//
+// Returns whether the attribute addition was successful.
+- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type error:(NSError **)error;
+
+// Perform changes to the store within the given block.
 //
 // error - The error if one occurs.
 // block - The block in which adds or removes will be performed. Cannot be nil.

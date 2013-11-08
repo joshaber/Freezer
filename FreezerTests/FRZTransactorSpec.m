@@ -33,7 +33,7 @@ it(@"should be able to generate a new key", ^{
 });
 
 it(@"", ^{
-	BOOL success = [store addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
+	BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
 	expect(success).to.beTruthy();
 
 	NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
@@ -58,7 +58,7 @@ describe(@"single values", ^{
 	const id testValue = @42;
 
 	beforeEach(^{
-		BOOL success = [store addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
+		BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
 		expect(success).to.beTruthy();
 	});
 
@@ -90,11 +90,8 @@ describe(@"collections", ^{
 	const id testValue = @[ @42, @43 ];
 
 	beforeEach(^{
-		BOOL success = [store addAttribute:testAttribute type:FRZAttributeTypeCollection error:NULL];
+		BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeCollection error:NULL];
 		expect(success).to.beTruthy();
-
-		transactor = [store transactor];
-		expect(transactor).notTo.beNil();
 	});
 
 	xit(@"should be able to add new values", ^{
@@ -124,7 +121,7 @@ describe(@"collections", ^{
 xit(@"should only apply changes when the outermost transaction is completed", ^{
 	const id testValue = @42;
 
-	BOOL success = [store addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
+	BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
 	expect(success).to.beTruthy();
 
 	[transactor performChangesWithError:NULL block:^(NSError **error) {

@@ -90,7 +90,10 @@
 
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
-		for (NSString *attribute in self.attributes) {
+		NSArray *attributes = [self attributesInDatabase:database error:error];
+		if (attributes == nil) return NO;
+
+		for (NSString *attribute in attributes) {
 			BOOL success = YES;
 			id value = [self valueForAttribute:attribute key:key inDatabase:database success:&success error:error];
 			if (value == nil && !success) return NO;
@@ -108,7 +111,10 @@
 - (NSArray *)allKeys {
 	NSMutableSet *results = [NSMutableSet set];
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
-		for (NSString *attribute in self.attributes) {
+		NSArray *attributes = [self attributesInDatabase:database error:error];
+		if (attributes == nil) return NO;
+
+		for (NSString *attribute in attributes) {
 			NSString *tableName = [self.store tableNameForAttribute:attribute];
 			NSString *query = [NSString stringWithFormat:@"SELECT key, value FROM %@ WHERE tx_id <= ? ORDER BY tx_id DESC LIMIT 1", tableName];
 			FMResultSet *set = [database executeQuery:query, @(self.headID)];

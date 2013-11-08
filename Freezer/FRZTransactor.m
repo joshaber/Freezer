@@ -34,6 +34,62 @@
 	return self;
 }
 
+#pragma mark Attributes
+
+- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type error:(NSError **)error {
+	NSParameterAssert(attribute != nil);
+
+	return [self addAttribute:attribute type:type withMetadata:YES error:error];
+}
+
+- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type withMetadata:(BOOL)withMetadata error:(NSError **)error {
+	NSParameterAssert(attribute != nil);
+
+	NSDictionary *typeToSqliteTypeName = @{
+		@(FRZAttributeTypeInteger): @"INTEGER",
+		@(FRZAttributeTypeReal): @"REAL",
+		@(FRZAttributeTypeText): @"TEXT",
+		@(FRZAttributeTypeBlob): @"BLOB",
+		@(FRZAttributeTypeDate): @"DATE",
+		@(FRZAttributeTypeRef): @"STRING",
+		@(FRZAttributeTypeCollection): @"BLOB",
+	};
+
+	NSString *sqliteType = typeToSqliteTypeName[@(type)];
+	NSAssert(sqliteType != nil, @"Unknown type: %ld", type);
+
+	NSString *tableName = [self.store tableNameForAttribute:attribute];
+	NSAssert(tableName != nil, @"No table name for attribute: %@", attribute);
+
+	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+		return [self createTableWithName:tableName sqliteType:sqliteType database:database error:error];
+	}];
+}
+
+- (BOOL)createTableWithName:(NSString *)name sqliteType:(NSString *)sqliteType database:(FMDatabase *)database error:(NSError **)error {
+	NSParameterAssert(name != nil);
+	NSParameterAssert(sqliteType != nil);
+	NSParameterAssert(database != nil);
+
+	NSString *schemaTemplate =
+		@"CREATE TABLE IF NOT EXISTS %@("
+		"id INTEGER PRIMARY KEY AUTOINCREMENT,"
+		"key STRING NOT NULL,"
+		"attribute STRING NOT NULL,"
+		"value %@,"
+		"tx_id INTEGER NOT NULL"
+	");";
+
+	NSString *schema = [NSString stringWithFormat:schemaTemplate, name, sqliteType];
+	BOOL success = [database executeUpdate:schema];
+	if (!success) {
+		if (error != NULL) *error = database.lastError;
+		return NO;
+	}
+	
+	return YES;
+}
+
 #pragma mark Changing
 
 - (NSString *)generateNewKey {

@@ -20,10 +20,11 @@ __block FRZStore *store;
 
 beforeEach(^{
 	store = [[FRZStore alloc] initInMemory:NULL];
-	BOOL success = [store addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
-	expect(success).to.beTruthy();
 
 	FRZTransactor *transactor = [store transactor];
+	BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
+	expect(success).to.beTruthy();
+
 	success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
 	expect(success).to.beTruthy();
 });
@@ -136,7 +137,7 @@ describe(@"-keysWithAttribute:", ^{
 		expect(database).notTo.beNil();
 
 		static NSString * const randomAttribute = @"some bullshit";
-		BOOL success = [store addAttribute:randomAttribute type:FRZAttributeTypeInteger error:NULL];
+		BOOL success = [[store transactor] addAttribute:randomAttribute type:FRZAttributeTypeInteger error:NULL];
 		expect(success).to.beTruthy();
 
 		NSArray *keys = [database keysWithAttribute:randomAttribute];
@@ -170,7 +171,7 @@ describe(@"-valueForKey:attribute:", ^{
 		expect(database).notTo.beNil();
 
 		static NSString * const randomAttribute = @"some bullshit";
-		BOOL success = [store addAttribute:randomAttribute type:FRZAttributeTypeInteger error:NULL];
+		BOOL success = [[store transactor] addAttribute:randomAttribute type:FRZAttributeTypeInteger error:NULL];
 		expect(success).to.beTruthy();
 
 		id value = [database valueForKey:testValue attribute:randomAttribute];

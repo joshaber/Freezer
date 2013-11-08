@@ -19,24 +19,6 @@ extern const NSInteger FRZErrorInvalidAttribute;
 // The error code if the value given is invalid.
 extern const NSInteger FRZErrorInvalidValue;
 
-// The valid attribute types.
-//   FRZAttributeTypeInteger    - Integer type.
-//   FRZAttributeTypeReal       - Real numbers type.
-//   FRZAttributeTypeText       - Arbitrary text type.
-//   FRZAttributeTypeBlob       - Data blob type.
-//   FRZAttributeTypeDate       - Date type.
-//   FRZAttributeTypeRef        - Reference to another key.
-//   FRZAttributeTypeCollection - A collection of values.
-typedef enum : NSInteger {
-	FRZAttributeTypeInteger,
-	FRZAttributeTypeReal,
-	FRZAttributeTypeText,
-	FRZAttributeTypeBlob,
-	FRZAttributeTypeDate,
-	FRZAttributeTypeRef,
-	FRZAttributeTypeCollection,
-} FRZAttributeType;
-
 @class FRZDatabase;
 @class FRZTransactor;
 
@@ -69,15 +51,6 @@ typedef enum : NSInteger {
 //
 // Returns the database, or nil if an error occurred.
 - (FRZDatabase *)currentDatabase:(NSError **)error;
-
-// Add an attribute of the given type to the store.
-//
-// attribute - The name of the attribute to add. Cannot be nil.
-// type      - The type of the attribute.
-// error     - The error if one occurred.
-//
-// Returns whether the attribute addition was successful.
-- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type error:(NSError **)error;
 
 // Gets the transactor for the store.
 //
