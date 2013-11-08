@@ -19,36 +19,49 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
 	_store = [[FRZStore alloc] initInMemory:NULL];
 
-	static NSString * const nameAttribute = @"user/names";
-	static NSString * const hireDateAttribute = @"user/hire-date";
+	static NSString * const firstNameAttribute = @"user/first-name";
+	static NSString * const lastNameAttribute = @"user/last-name";
+	static NSString * const hubberAttribute = @"user/hubber";
 
 	[[[self.store.changes
 		filter:^ BOOL (FRZChange *change) {
-			return change.type == FRZChangeTypeAdd && [change.attribute isEqual:nameAttribute];
+			return change.type == FRZChangeTypeAdd && [change.attribute isEqual:hubberAttribute];
 		}]
 		map:^(FRZChange *change) {
 			return change.changedDatabase[change.key];
 		}]
 		subscribeNext:^(NSDictionary *x) {
-			NSLog(@"Added %@", x);
+			NSLog(@"%@ is a GitHubber!", x[firstNameAttribute]);
 		}];
 
 	FRZTransactor *transactor = [self.store transactor];
-	[transactor addAttribute:nameAttribute type:FRZAttributeTypeText error:NULL];
-	[transactor addAttribute:hireDateAttribute type:FRZAttributeTypeDate error:NULL];
+	[transactor addAttribute:firstNameAttribute type:FRZAttributeTypeText error:NULL];
+	[transactor addAttribute:lastNameAttribute type:FRZAttributeTypeText error:NULL];
+	[transactor addAttribute:hubberAttribute type:FRZAttributeTypeInteger error:NULL];
 
-	[transactor performChangesWithError:NULL block:^BOOL(NSError *__autoreleasing *error) {
-		[transactor addValue:@"Josh" forAttribute:nameAttribute key:[transactor generateNewKey] error:NULL];
-		[transactor addValue:@"Danny" forAttribute:nameAttribute key:[transactor generateNewKey] error:NULL];
-		[transactor addValue:@"Justin" forAttribute:nameAttribute key:[transactor generateNewKey] error:NULL];
-		[transactor addValue:@"Alan" forAttribute:nameAttribute key:[transactor generateNewKey] error:NULL];
+	[transactor performChangesWithError:NULL block:^(NSError **error) {
+		NSString *joshKey = [transactor generateNewKey];
+		[transactor addValue:@"Josh" forAttribute:firstNameAttribute key:joshKey error:NULL];
+		[transactor addValue:@"Abernathy" forAttribute:lastNameAttribute key:joshKey error:NULL];
+		[transactor addValue:@1 forAttribute:hubberAttribute key:joshKey error:NULL];
 
-		NSString *robKey = [transactor generateNewKey];
-		[transactor addValue:@"Rob" forAttribute:nameAttribute key:robKey error:NULL];
-		[transactor addValue:[NSDate date] forAttribute:hireDateAttribute key:robKey error:NULL];
+		NSString *dannyKey = [transactor generateNewKey];
+		[transactor addValue:@"Danny" forAttribute:firstNameAttribute key:dannyKey error:NULL];
+		[transactor addValue:@"Greg" forAttribute:lastNameAttribute key:dannyKey error:NULL];
+		[transactor addValue:@1 forAttribute:hubberAttribute key:dannyKey error:NULL];
+
+		NSString *johnKey = [transactor generateNewKey];
+		[transactor addValue:@"John" forAttribute:firstNameAttribute key:johnKey error:NULL];
+		[transactor addValue:@"Smith" forAttribute:lastNameAttribute key:johnKey error:NULL];
 
 		return YES;
 	}];
+
+	FRZDatabase *database = [self.store currentDatabase:NULL];
+	NSArray *keys = [database keysWithAttribute:hubberAttribute];
+	for (NSString *key in keys) {
+		NSLog(@"%@ is a GitHubber!", [database valueForKey:key attribute:lastNameAttribute]);
+	}
 }
 
 @end
