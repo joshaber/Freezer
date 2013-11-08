@@ -39,21 +39,23 @@
 	[transactor addAttribute:lastNameAttribute type:FRZAttributeTypeString error:NULL];
 	[transactor addAttribute:hubberAttribute type:FRZAttributeTypeInteger error:NULL];
 
-	[transactor performChangesWithError:NULL block:^(NSError **error) {
-		NSString *joshKey = [transactor generateNewKey];
-		[transactor addValue:@"Josh" forAttribute:firstNameAttribute key:joshKey error:NULL];
-		[transactor addValue:@"Abernathy" forAttribute:lastNameAttribute key:joshKey error:NULL];
-		[transactor addValue:@1 forAttribute:hubberAttribute key:joshKey error:NULL];
+	[transactor addValuesWithKey:[transactor generateNewKey] error:NULL block:^(FRZSingleKeyTransactor *transactor, NSError **error) {
+		[transactor addValue:@"Josh" forAttribute:firstNameAttribute error:error];
+		[transactor addValue:@"Abernathy" forAttribute:lastNameAttribute error:error];
+		[transactor addValue:@1 forAttribute:hubberAttribute error:error];
+		return YES;
+	}];
 
-		NSString *dannyKey = [transactor generateNewKey];
-		[transactor addValue:@"Danny" forAttribute:firstNameAttribute key:dannyKey error:NULL];
-		[transactor addValue:@"Greg" forAttribute:lastNameAttribute key:dannyKey error:NULL];
-		[transactor addValue:@1 forAttribute:hubberAttribute key:dannyKey error:NULL];
+	[transactor addValuesWithKey:[transactor generateNewKey] error:NULL block:^(FRZSingleKeyTransactor *transactor, NSError **error) {
+		[transactor addValue:@"Danny" forAttribute:firstNameAttribute error:error];
+		[transactor addValue:@"Greg" forAttribute:lastNameAttribute error:error];
+		[transactor addValue:@1 forAttribute:hubberAttribute error:error];
+		return YES;
+	}];
 
-		NSString *johnKey = [transactor generateNewKey];
-		[transactor addValue:@"John" forAttribute:firstNameAttribute key:johnKey error:NULL];
-		[transactor addValue:@"Smith" forAttribute:lastNameAttribute key:johnKey error:NULL];
-
+	[transactor addValuesWithKey:[transactor generateNewKey] error:NULL block:^(FRZSingleKeyTransactor *transactor, NSError **error) {
+		[transactor addValue:@"John" forAttribute:firstNameAttribute error:error];
+		[transactor addValue:@"Smith" forAttribute:lastNameAttribute error:error];
 		return YES;
 	}];
 
@@ -73,6 +75,13 @@
 	for (NSString *key in nonHubberKeys) {
 		NSLog(@"* %@ %@", [database valueForKey:key attribute:firstNameAttribute], [database valueForKey:key attribute:lastNameAttribute]);
 	}
+
+	[transactor addValuesWithKey:[transactor generateNewKey] error:NULL block:^(FRZSingleKeyTransactor *transactor, NSError **error) {
+		[transactor addValue:@"Justin" forAttribute:firstNameAttribute error:error];
+		[transactor addValue:@"Spahr-Summers" forAttribute:lastNameAttribute error:error];
+		[transactor addValue:@1 forAttribute:hubberAttribute error:error];
+		return YES;
+	}];
 }
 
 @end

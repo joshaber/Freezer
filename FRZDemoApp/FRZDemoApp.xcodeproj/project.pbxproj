@@ -528,6 +528,7 @@
 				88EFB663182D6A4100DF807A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		88EFB664182D6A4100DF807A /* Build configuration list for PBXNativeTarget "FRZDemoAppTests" */ = {
 			isa = XCConfigurationList;
@@ -536,6 +537,7 @@
 				88EFB666182D6A4100DF807A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
