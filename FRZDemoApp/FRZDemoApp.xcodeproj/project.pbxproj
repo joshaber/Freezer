@@ -1,0 +1,543 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		88EFB634182D6A4000DF807A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88EFB633182D6A4000DF807A /* Cocoa.framework */; };
+		88EFB63E182D6A4000DF807A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 88EFB63C182D6A4000DF807A /* InfoPlist.strings */; };
+		88EFB640182D6A4000DF807A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 88EFB63F182D6A4000DF807A /* main.m */; };
+		88EFB644182D6A4000DF807A /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 88EFB642182D6A4000DF807A /* Credits.rtf */; };
+		88EFB647182D6A4000DF807A /* FDAAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88EFB646182D6A4000DF807A /* FDAAppDelegate.m */; };
+		88EFB64A182D6A4000DF807A /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88EFB648182D6A4000DF807A /* MainMenu.xib */; };
+		88EFB64C182D6A4000DF807A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88EFB64B182D6A4000DF807A /* Images.xcassets */; };
+		88EFB653182D6A4000DF807A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88EFB652182D6A4000DF807A /* XCTest.framework */; };
+		88EFB654182D6A4000DF807A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88EFB633182D6A4000DF807A /* Cocoa.framework */; };
+		88EFB65C182D6A4000DF807A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 88EFB65A182D6A4000DF807A /* InfoPlist.strings */; };
+		88EFB65E182D6A4100DF807A /* FRZDemoAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 88EFB65D182D6A4100DF807A /* FRZDemoAppTests.m */; };
+		88EFB67C182D6A6300DF807A /* Freezer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88EFB676182D6A4F00DF807A /* Freezer.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		88EFB655182D6A4000DF807A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88EFB628182D6A4000DF807A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 88EFB62F182D6A4000DF807A;
+			remoteInfo = FRZDemoApp;
+		};
+		88EFB675182D6A4F00DF807A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88EFB667182D6A4E00DF807A /* Freezer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 88FD309E182B25A8004CFDD4;
+			remoteInfo = Freezer;
+		};
+		88EFB677182D6A4F00DF807A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88EFB667182D6A4E00DF807A /* Freezer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 88FD30AE182B25A8004CFDD4;
+			remoteInfo = FreezerTests;
+		};
+		88EFB679182D6A5900DF807A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88EFB667182D6A4E00DF807A /* Freezer.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 88FD309D182B25A8004CFDD4;
+			remoteInfo = Freezer;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		88EFB630182D6A4000DF807A /* FRZDemoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FRZDemoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		88EFB633182D6A4000DF807A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		88EFB636182D6A4000DF807A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		88EFB637182D6A4000DF807A /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		88EFB638182D6A4000DF807A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		88EFB63B182D6A4000DF807A /* FRZDemoApp-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FRZDemoApp-Info.plist"; sourceTree = "<group>"; };
+		88EFB63D182D6A4000DF807A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		88EFB63F182D6A4000DF807A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		88EFB641182D6A4000DF807A /* FRZDemoApp-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZDemoApp-Prefix.pch"; sourceTree = "<group>"; };
+		88EFB643182D6A4000DF807A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		88EFB645182D6A4000DF807A /* FDAAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FDAAppDelegate.h; sourceTree = "<group>"; };
+		88EFB646182D6A4000DF807A /* FDAAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FDAAppDelegate.m; sourceTree = "<group>"; };
+		88EFB649182D6A4000DF807A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		88EFB64B182D6A4000DF807A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		88EFB651182D6A4000DF807A /* FRZDemoAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FRZDemoAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		88EFB652182D6A4000DF807A /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		88EFB659182D6A4000DF807A /* FRZDemoAppTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FRZDemoAppTests-Info.plist"; sourceTree = "<group>"; };
+		88EFB65B182D6A4000DF807A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		88EFB65D182D6A4100DF807A /* FRZDemoAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRZDemoAppTests.m; sourceTree = "<group>"; };
+		88EFB667182D6A4E00DF807A /* Freezer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Freezer.xcodeproj; path = ../Freezer.xcodeproj; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		88EFB62D182D6A4000DF807A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				88EFB67C182D6A6300DF807A /* Freezer.framework in Frameworks */,
+				88EFB634182D6A4000DF807A /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88EFB64E182D6A4000DF807A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				88EFB654182D6A4000DF807A /* Cocoa.framework in Frameworks */,
+				88EFB653182D6A4000DF807A /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		88EFB627182D6A4000DF807A = {
+			isa = PBXGroup;
+			children = (
+				88EFB639182D6A4000DF807A /* FRZDemoApp */,
+				88EFB657182D6A4000DF807A /* FRZDemoAppTests */,
+				88EFB632182D6A4000DF807A /* Frameworks */,
+				88EFB631182D6A4000DF807A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		88EFB631182D6A4000DF807A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				88EFB630182D6A4000DF807A /* FRZDemoApp.app */,
+				88EFB651182D6A4000DF807A /* FRZDemoAppTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		88EFB632182D6A4000DF807A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				88EFB667182D6A4E00DF807A /* Freezer.xcodeproj */,
+				88EFB633182D6A4000DF807A /* Cocoa.framework */,
+				88EFB652182D6A4000DF807A /* XCTest.framework */,
+				88EFB635182D6A4000DF807A /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		88EFB635182D6A4000DF807A /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				88EFB636182D6A4000DF807A /* AppKit.framework */,
+				88EFB637182D6A4000DF807A /* CoreData.framework */,
+				88EFB638182D6A4000DF807A /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		88EFB639182D6A4000DF807A /* FRZDemoApp */ = {
+			isa = PBXGroup;
+			children = (
+				88EFB645182D6A4000DF807A /* FDAAppDelegate.h */,
+				88EFB646182D6A4000DF807A /* FDAAppDelegate.m */,
+				88EFB648182D6A4000DF807A /* MainMenu.xib */,
+				88EFB64B182D6A4000DF807A /* Images.xcassets */,
+				88EFB63A182D6A4000DF807A /* Supporting Files */,
+			);
+			path = FRZDemoApp;
+			sourceTree = "<group>";
+		};
+		88EFB63A182D6A4000DF807A /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				88EFB63B182D6A4000DF807A /* FRZDemoApp-Info.plist */,
+				88EFB63C182D6A4000DF807A /* InfoPlist.strings */,
+				88EFB63F182D6A4000DF807A /* main.m */,
+				88EFB641182D6A4000DF807A /* FRZDemoApp-Prefix.pch */,
+				88EFB642182D6A4000DF807A /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		88EFB657182D6A4000DF807A /* FRZDemoAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				88EFB65D182D6A4100DF807A /* FRZDemoAppTests.m */,
+				88EFB658182D6A4000DF807A /* Supporting Files */,
+			);
+			path = FRZDemoAppTests;
+			sourceTree = "<group>";
+		};
+		88EFB658182D6A4000DF807A /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				88EFB659182D6A4000DF807A /* FRZDemoAppTests-Info.plist */,
+				88EFB65A182D6A4000DF807A /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		88EFB668182D6A4E00DF807A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				88EFB676182D6A4F00DF807A /* Freezer.framework */,
+				88EFB678182D6A4F00DF807A /* FreezerTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		88EFB62F182D6A4000DF807A /* FRZDemoApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 88EFB661182D6A4100DF807A /* Build configuration list for PBXNativeTarget "FRZDemoApp" */;
+			buildPhases = (
+				88EFB62C182D6A4000DF807A /* Sources */,
+				88EFB62D182D6A4000DF807A /* Frameworks */,
+				88EFB62E182D6A4000DF807A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				88EFB67A182D6A5900DF807A /* PBXTargetDependency */,
+			);
+			name = FRZDemoApp;
+			productName = FRZDemoApp;
+			productReference = 88EFB630182D6A4000DF807A /* FRZDemoApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		88EFB650182D6A4000DF807A /* FRZDemoAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 88EFB664182D6A4100DF807A /* Build configuration list for PBXNativeTarget "FRZDemoAppTests" */;
+			buildPhases = (
+				88EFB64D182D6A4000DF807A /* Sources */,
+				88EFB64E182D6A4000DF807A /* Frameworks */,
+				88EFB64F182D6A4000DF807A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				88EFB656182D6A4000DF807A /* PBXTargetDependency */,
+			);
+			name = FRZDemoAppTests;
+			productName = FRZDemoAppTests;
+			productReference = 88EFB651182D6A4000DF807A /* FRZDemoAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		88EFB628182D6A4000DF807A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = FDA;
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "Josh Abernathy";
+				TargetAttributes = {
+					88EFB650182D6A4000DF807A = {
+						TestTargetID = 88EFB62F182D6A4000DF807A;
+					};
+				};
+			};
+			buildConfigurationList = 88EFB62B182D6A4000DF807A /* Build configuration list for PBXProject "FRZDemoApp" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 88EFB627182D6A4000DF807A;
+			productRefGroup = 88EFB631182D6A4000DF807A /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 88EFB668182D6A4E00DF807A /* Products */;
+					ProjectRef = 88EFB667182D6A4E00DF807A /* Freezer.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				88EFB62F182D6A4000DF807A /* FRZDemoApp */,
+				88EFB650182D6A4000DF807A /* FRZDemoAppTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		88EFB676182D6A4F00DF807A /* Freezer.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Freezer.framework;
+			remoteRef = 88EFB675182D6A4F00DF807A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		88EFB678182D6A4F00DF807A /* FreezerTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = FreezerTests.octest;
+			remoteRef = 88EFB677182D6A4F00DF807A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		88EFB62E182D6A4000DF807A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				88EFB63E182D6A4000DF807A /* InfoPlist.strings in Resources */,
+				88EFB64C182D6A4000DF807A /* Images.xcassets in Resources */,
+				88EFB644182D6A4000DF807A /* Credits.rtf in Resources */,
+				88EFB64A182D6A4000DF807A /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88EFB64F182D6A4000DF807A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				88EFB65C182D6A4000DF807A /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		88EFB62C182D6A4000DF807A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				88EFB647182D6A4000DF807A /* FDAAppDelegate.m in Sources */,
+				88EFB640182D6A4000DF807A /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88EFB64D182D6A4000DF807A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				88EFB65E182D6A4100DF807A /* FRZDemoAppTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		88EFB656182D6A4000DF807A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 88EFB62F182D6A4000DF807A /* FRZDemoApp */;
+			targetProxy = 88EFB655182D6A4000DF807A /* PBXContainerItemProxy */;
+		};
+		88EFB67A182D6A5900DF807A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Freezer;
+			targetProxy = 88EFB679182D6A5900DF807A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		88EFB63C182D6A4000DF807A /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				88EFB63D182D6A4000DF807A /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		88EFB642182D6A4000DF807A /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				88EFB643182D6A4000DF807A /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		88EFB648182D6A4000DF807A /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				88EFB649182D6A4000DF807A /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		88EFB65A182D6A4000DF807A /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				88EFB65B182D6A4000DF807A /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		88EFB65F182D6A4100DF807A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		88EFB660182D6A4100DF807A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		88EFB662182D6A4100DF807A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FRZDemoApp/FRZDemoApp-Prefix.pch";
+				INFOPLIST_FILE = "FRZDemoApp/FRZDemoApp-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		88EFB663182D6A4100DF807A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FRZDemoApp/FRZDemoApp-Prefix.pch";
+				INFOPLIST_FILE = "FRZDemoApp/FRZDemoApp-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		88EFB665182D6A4100DF807A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/FRZDemoApp.app/Contents/MacOS/FRZDemoApp";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FRZDemoApp/FRZDemoApp-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "FRZDemoAppTests/FRZDemoAppTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		88EFB666182D6A4100DF807A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/FRZDemoApp.app/Contents/MacOS/FRZDemoApp";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FRZDemoApp/FRZDemoApp-Prefix.pch";
+				INFOPLIST_FILE = "FRZDemoAppTests/FRZDemoAppTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		88EFB62B182D6A4000DF807A /* Build configuration list for PBXProject "FRZDemoApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				88EFB65F182D6A4100DF807A /* Debug */,
+				88EFB660182D6A4100DF807A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		88EFB661182D6A4100DF807A /* Build configuration list for PBXNativeTarget "FRZDemoApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				88EFB662182D6A4100DF807A /* Debug */,
+				88EFB663182D6A4100DF807A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		88EFB664182D6A4100DF807A /* Build configuration list for PBXNativeTarget "FRZDemoAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				88EFB665182D6A4100DF807A /* Debug */,
+				88EFB666182D6A4100DF807A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 88EFB628182D6A4000DF807A /* Project object */;
+}
