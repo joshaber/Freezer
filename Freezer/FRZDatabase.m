@@ -67,6 +67,8 @@
 	NSParameterAssert(database != nil);
 
 	NSString *tableName = [self.store tableNameForAttribute:attribute];
+	NSAssert(tableName != nil, @"Unknown table name for attribute: %@", attribute);
+
 	NSString *query = [NSString stringWithFormat:@"SELECT value FROM %@ WHERE key = ? AND tx_id <= ? ORDER BY tx_id DESC LIMIT 1", tableName];
 	FMResultSet *set = [database executeQuery:query, key, @(self.headID)];
 	if (set == nil) {
@@ -75,18 +77,12 @@
 		return nil;
 	}
 
-	if (![set next]) {
-		if (success != NULL) *success = YES;
-		return nil;
-	}
+	if (success != NULL) *success = YES;
+
+	if (![set next]) return nil;
 
 	id value = [set objectForColumnIndex:0];
-	if (value == NSNull.null) {
-		if (success != NULL) *success = YES;
-		return nil;
-	}
-
-	return value;
+	return [self unpackedValueFromValue:value];
 }
 
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
@@ -94,10 +90,7 @@
 
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
-		NSArray *attributes = [self attributesInDatabase:database error:error];
-		if (attributes == nil) return NO;
-
-		for (NSString *attribute in attributes) {
+		for (NSString *attribute in self.attributes) {
 			BOOL success = YES;
 			id value = [self valueForAttribute:attribute key:key inDatabase:database success:&success error:error];
 			if (value == nil && !success) return NO;
@@ -115,10 +108,7 @@
 - (NSArray *)allKeys {
 	NSMutableSet *results = [NSMutableSet set];
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
-		NSArray *attributes = [self attributesInDatabase:database error:error];
-		if (attributes == nil) return NO;
-
-		for (NSString *attribute in attributes) {
+		for (NSString *attribute in self.attributes) {
 			NSString *tableName = [self.store tableNameForAttribute:attribute];
 			NSString *query = [NSString stringWithFormat:@"SELECT key, value FROM %@ WHERE tx_id <= ? ORDER BY tx_id DESC LIMIT 1", tableName];
 			FMResultSet *set = [database executeQuery:query, @(self.headID)];
@@ -172,21 +162,18 @@
 
 	__block id result;
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
-		NSString *tableName = [self.store tableNameForAttribute:attribute];
-		NSString *query = [NSString stringWithFormat:@"SELECT value FROM %@ WHERE key = ? AND tx_id <= ? ORDER BY tx_id DESC LIMIT 1", tableName];
-		FMResultSet *set = [database executeQuery:query, key, @(self.headID)];
-		if (set == nil) return NO;
-		if (![set next]) return YES;
-
-		id value = [set objectForColumnIndex:0];
-		if (value == NSNull.null) return YES;
-
-		result = value;
-
-		return YES;
+		BOOL success = NO;
+		result = [self valueForAttribute:attribute key:key inDatabase:database success:&success error:error];
+		return success;
 	}];
 
 	return result;
+}
+
+- (id)unpackedValueFromValue:(id)value {
+	if (value == NSNull.null) return nil;
+
+	return value;
 }
 
 @end
