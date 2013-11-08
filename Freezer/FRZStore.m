@@ -202,7 +202,7 @@ NSString * const FRZStoreTransactionDateAttribute = @"Freezer/tx/date";
 	return transactionCount;
 }
 
-- (NSInteger)deccrementTransactionCount {
+- (NSInteger)decrementTransactionCount {
 	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[self.activeTransactionCountKey] integerValue];
 	transactionCount--;
 	NSThread.currentThread.threadDictionary[self.activeTransactionCountKey] = @(transactionCount);
