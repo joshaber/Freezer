@@ -44,21 +44,14 @@
 
 #pragma mark Lookup
 
-- (NSArray *)attributesInDatabase:(FMDatabase *)database error:(NSError **)error {
-	NSParameterAssert(database != nil);
-
-	FMResultSet *set = [database executeQuery:@"SELECT name FROM sqlite_master WHERE type = 'table' AND name != 'sqlite_sequence'"];
-	if (set == nil) {
-		if (error != NULL) *error = database.lastError;
-		return nil;
+- (NSArray *)attributes {
+	NSSet *keys = [self keysWithAttribute:FRZStoreAttributeNameAttribute];
+	NSMutableArray *attributes = [NSMutableArray array];
+	for (NSString *key in keys) {
+		[attributes addObject:[self valueForKey:key attribute:FRZStoreAttributeNameAttribute]];
 	}
 
-	NSMutableArray *names = [NSMutableArray array];
-	while ([set next]) {
-		[names addObject:[set objectForColumnIndex:0]];
-	}
-
-	return names;
+	return attributes;
 }
 
 - (id)valueForAttribute:(NSString *)attribute key:(NSString *)key inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error {
@@ -90,10 +83,7 @@
 
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
-		NSArray *attributes = [self attributesInDatabase:database error:error];
-		if (attributes == nil) return NO;
-
-		for (NSString *attribute in attributes) {
+		for (NSString *attribute in self.attributes) {
 			BOOL success = YES;
 			id value = [self valueForAttribute:attribute key:key inDatabase:database success:&success error:error];
 			if (value == nil && !success) return NO;
@@ -111,10 +101,7 @@
 - (NSSet *)allKeys {
 	NSMutableSet *results = [NSMutableSet set];
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
-		NSArray *attributes = [self attributesInDatabase:database error:error];
-		if (attributes == nil) return NO;
-
-		for (NSString *attribute in attributes) {
+		for (NSString *attribute in self.attributes) {
 			NSString *tableName = [self.store tableNameForAttribute:attribute];
 			NSString *query = [NSString stringWithFormat:@"SELECT key, value FROM %@ WHERE tx_id <= ? ORDER BY tx_id DESC LIMIT 1", tableName];
 			FMResultSet *set = [database executeQuery:query, @(self.headID)];
