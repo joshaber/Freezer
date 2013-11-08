@@ -73,6 +73,22 @@
 		88EFB65B182D6A4000DF807A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		88EFB65D182D6A4100DF807A /* FRZDemoAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FRZDemoAppTests.m; sourceTree = "<group>"; };
 		88EFB667182D6A4E00DF807A /* Freezer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Freezer.xcodeproj; path = ../Freezer.xcodeproj; sourceTree = "<group>"; };
+		88EFB6A1182DA27000DF807A /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
+		88EFB6A3182DA27000DF807A /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		88EFB6A4182DA27000DF807A /* Profile.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Profile.xcconfig; sourceTree = "<group>"; };
+		88EFB6A5182DA27000DF807A /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		88EFB6A6182DA27000DF807A /* Test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Test.xcconfig; sourceTree = "<group>"; };
+		88EFB6A8182DA27000DF807A /* Application.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Application.xcconfig; sourceTree = "<group>"; };
+		88EFB6A9182DA27000DF807A /* StaticLibrary.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = StaticLibrary.xcconfig; sourceTree = "<group>"; };
+		88EFB6AB182DA27000DF807A /* iOS-Application.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-Application.xcconfig"; sourceTree = "<group>"; };
+		88EFB6AC182DA27000DF807A /* iOS-Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-Base.xcconfig"; sourceTree = "<group>"; };
+		88EFB6AD182DA27000DF807A /* iOS-StaticLibrary.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
+		88EFB6AF182DA27000DF807A /* Mac-Application.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-Application.xcconfig"; sourceTree = "<group>"; };
+		88EFB6B0182DA27000DF807A /* Mac-Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-Base.xcconfig"; sourceTree = "<group>"; };
+		88EFB6B1182DA27000DF807A /* Mac-DynamicLibrary.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-DynamicLibrary.xcconfig"; sourceTree = "<group>"; };
+		88EFB6B2182DA27000DF807A /* Mac-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-Framework.xcconfig"; sourceTree = "<group>"; };
+		88EFB6B3182DA27000DF807A /* Mac-StaticLibrary.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
+		88EFB6B4182DA27000DF807A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +119,7 @@
 				88EFB639182D6A4000DF807A /* FRZDemoApp */,
 				88EFB657182D6A4000DF807A /* FRZDemoAppTests */,
 				88EFB632182D6A4000DF807A /* Frameworks */,
+				88EFB69F182DA27000DF807A /* xcconfigs */,
 				88EFB631182D6A4000DF807A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -186,6 +203,70 @@
 				88EFB678182D6A4F00DF807A /* FreezerTests.octest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		88EFB69F182DA27000DF807A /* xcconfigs */ = {
+			isa = PBXGroup;
+			children = (
+				88EFB6A0182DA27000DF807A /* Base */,
+				88EFB6AA182DA27000DF807A /* iOS */,
+				88EFB6AE182DA27000DF807A /* Mac OS X */,
+				88EFB6B4182DA27000DF807A /* README.md */,
+			);
+			name = xcconfigs;
+			path = ../External/xcconfigs;
+			sourceTree = "<group>";
+		};
+		88EFB6A0182DA27000DF807A /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				88EFB6A1182DA27000DF807A /* Common.xcconfig */,
+				88EFB6A2182DA27000DF807A /* Configurations */,
+				88EFB6A7182DA27000DF807A /* Targets */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		88EFB6A2182DA27000DF807A /* Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				88EFB6A3182DA27000DF807A /* Debug.xcconfig */,
+				88EFB6A4182DA27000DF807A /* Profile.xcconfig */,
+				88EFB6A5182DA27000DF807A /* Release.xcconfig */,
+				88EFB6A6182DA27000DF807A /* Test.xcconfig */,
+			);
+			path = Configurations;
+			sourceTree = "<group>";
+		};
+		88EFB6A7182DA27000DF807A /* Targets */ = {
+			isa = PBXGroup;
+			children = (
+				88EFB6A8182DA27000DF807A /* Application.xcconfig */,
+				88EFB6A9182DA27000DF807A /* StaticLibrary.xcconfig */,
+			);
+			path = Targets;
+			sourceTree = "<group>";
+		};
+		88EFB6AA182DA27000DF807A /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				88EFB6AB182DA27000DF807A /* iOS-Application.xcconfig */,
+				88EFB6AC182DA27000DF807A /* iOS-Base.xcconfig */,
+				88EFB6AD182DA27000DF807A /* iOS-StaticLibrary.xcconfig */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		88EFB6AE182DA27000DF807A /* Mac OS X */ = {
+			isa = PBXGroup;
+			children = (
+				88EFB6AF182DA27000DF807A /* Mac-Application.xcconfig */,
+				88EFB6B0182DA27000DF807A /* Mac-Base.xcconfig */,
+				88EFB6B1182DA27000DF807A /* Mac-DynamicLibrary.xcconfig */,
+				88EFB6B2182DA27000DF807A /* Mac-Framework.xcconfig */,
+				88EFB6B3182DA27000DF807A /* Mac-StaticLibrary.xcconfig */,
+			);
+			path = "Mac OS X";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -377,6 +458,7 @@
 /* Begin XCBuildConfiguration section */
 		88EFB65F182D6A4100DF807A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 88EFB6A3182DA27000DF807A /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -414,6 +496,7 @@
 		};
 		88EFB660182D6A4100DF807A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 88EFB6A5182DA27000DF807A /* Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -445,6 +528,7 @@
 		};
 		88EFB662182D6A4100DF807A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 88EFB6AF182DA27000DF807A /* Mac-Application.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -458,6 +542,7 @@
 		};
 		88EFB663182D6A4100DF807A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 88EFB6AF182DA27000DF807A /* Mac-Application.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -471,6 +556,7 @@
 		};
 		88EFB665182D6A4100DF807A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 88EFB6AF182DA27000DF807A /* Mac-Application.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/FRZDemoApp.app/Contents/MacOS/FRZDemoApp";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -493,6 +579,7 @@
 		};
 		88EFB666182D6A4100DF807A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 88EFB6AF182DA27000DF807A /* Mac-Application.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/FRZDemoApp.app/Contents/MacOS/FRZDemoApp";
 				COMBINE_HIDPI_IMAGES = YES;
