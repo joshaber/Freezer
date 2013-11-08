@@ -41,7 +41,7 @@
 	return [NSString stringWithFormat:@"user/%@", [[NSUUID UUID] UUIDString]];
 }
 
-- (BOOL)applyChangesWithError:(NSError **)error block:(BOOL (^)(NSError **error))block {
+- (BOOL)performChangesWithError:(NSError **)error block:(BOOL (^)(NSError **error))block {
 	NSParameterAssert(block != NULL);
 
 	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {

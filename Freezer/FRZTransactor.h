@@ -20,7 +20,7 @@
 // block - The block in which adds or removes will be performed. Cannot be nil.
 //
 // Returns whether the changes were successful.
-- (BOOL)applyChangesWithError:(NSError **)error block:(BOOL (^)(NSError **error))block;
+- (BOOL)performChangesWithError:(NSError **)error block:(BOOL (^)(NSError **error))block;
 
 // Adds a new value for the given attribute, associated with the given key.
 //
