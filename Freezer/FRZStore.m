@@ -77,6 +77,8 @@ NSString * const FRZStoreTransactionDateAttribute = @"Freezer/tx/date";
 		return nil;
 	}
 
+	database.logsErrors = NO;
+
 	return database;
 }
 
