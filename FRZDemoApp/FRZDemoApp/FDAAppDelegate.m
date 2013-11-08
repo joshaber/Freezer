@@ -58,9 +58,20 @@
 	}];
 
 	FRZDatabase *database = [self.store currentDatabase:NULL];
-	NSArray *keys = [database keysWithAttribute:hubberAttribute];
-	for (NSString *key in keys) {
-		NSLog(@"%@ is a GitHubber!", [database valueForKey:key attribute:lastNameAttribute]);
+	NSLog(@" ");
+	NSLog(@"Hubbers:");
+	NSSet *hubberKeys = [database keysWithAttribute:hubberAttribute];
+	for (NSString *key in hubberKeys) {
+		NSLog(@"* %@ %@", [database valueForKey:key attribute:firstNameAttribute], [database valueForKey:key attribute:lastNameAttribute]);
+	}
+
+	NSLog(@" ");
+	NSLog(@"Not Hubbers:");
+	NSSet *namedKeys = [database keysWithAttribute:firstNameAttribute];
+	NSMutableSet *nonHubberKeys = [namedKeys mutableCopy];
+	[nonHubberKeys minusSet:hubberKeys];
+	for (NSString *key in nonHubberKeys) {
+		NSLog(@"* %@ %@", [database valueForKey:key attribute:firstNameAttribute], [database valueForKey:key attribute:lastNameAttribute]);
 	}
 }
 
