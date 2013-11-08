@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class FRZSingleKeyTransactor;
+
 // The valid attribute types.
 //   FRZAttributeTypeInteger    - Integer type.
 //   FRZAttributeTypeReal       - Real numbers type.
@@ -56,6 +58,15 @@ typedef enum : NSInteger {
 //
 // Returns whether the add was successful.
 - (BOOL)addValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
+
+// Add many attribute-value pairs to a key within a single transaction.
+//
+// key   - The key to add to. Cannot be nil.
+// error - The error if one occurred.
+// block - The block in which adds will be performed. Cannot be nil.
+//
+// Returns whether the adds were successful.
+- (BOOL)addValuesWithKey:(NSString *)key error:(NSError **)error block:(BOOL (^)(FRZSingleKeyTransactor *transactor, NSError **error))block;
 
 // Removes the value for the given attribute and key, but only if the given
 // value matches the current value. If the current value does not match the

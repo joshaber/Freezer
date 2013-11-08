@@ -12,6 +12,7 @@
 #import "FRZStore+Private.h"
 #import "FMDatabase.h"
 #import "FRZChange+Private.h"
+#import "FRZSingleKeyTransactor+Private.h"
 
 @interface FRZTransactor ()
 
@@ -170,6 +171,16 @@
 		[self.store.queuedChanges addObject:[[FRZChange alloc] initWithType:FRZChangeTypeAdd key:key attribute:attribute delta:value]];
 
 		return [self updateHeadInDatabase:database toID:txID error:error];
+	}];
+}
+
+- (BOOL)addValuesWithKey:(NSString *)key error:(NSError **)error block:(BOOL (^)(FRZSingleKeyTransactor *transactor, NSError **error))block {
+	NSParameterAssert(key != nil);
+	NSParameterAssert(block != NULL);
+
+	FRZSingleKeyTransactor *transactor = [[FRZSingleKeyTransactor alloc] initWithTransactor:self key:key];
+	return [self performChangesWithError:error block:^(NSError **error) {
+		return block(transactor, error);
 	}];
 }
 
