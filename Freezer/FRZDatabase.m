@@ -108,7 +108,7 @@
 	return (result.count > 0 ? result : nil);
 }
 
-- (NSArray *)allKeys {
+- (NSSet *)allKeys {
 	NSMutableSet *results = [NSMutableSet set];
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
 		NSArray *attributes = [self attributesInDatabase:database error:error];
@@ -135,13 +135,13 @@
 		return YES;
 	}];
 
-	return results.allObjects;
+	return results;
 }
 
-- (NSArray *)keysWithAttribute:(NSString *)attribute {
+- (NSSet *)keysWithAttribute:(NSString *)attribute {
 	NSParameterAssert(attribute != nil);
 
-	NSMutableArray *results = [NSMutableArray array];
+	NSMutableSet *results = [NSMutableSet set];
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
 		NSString *tableName = [self.store tableNameForAttribute:attribute];
 		NSString *query = [NSString stringWithFormat:@"SELECT key, value FROM %@ WHERE tx_id <= ? GROUP BY key ORDER BY tx_id DESC", tableName];

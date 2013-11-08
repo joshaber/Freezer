@@ -19,14 +19,14 @@
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key;
 
 // Get all the keys in the database.
-- (NSArray *)allKeys;
+- (NSSet *)allKeys;
 
 // Find all the keys that have a given attribute.
 //
 // attribute - The attribute to find. Cannot be nil.
 //
-// Returns an array of NSString keys.
-- (NSArray *)keysWithAttribute:(NSString *)attribute;
+// Returns a set of NSString keys.
+- (NSSet *)keysWithAttribute:(NSString *)attribute;
 
 // Find the value for the given attribute of the given key.
 //
