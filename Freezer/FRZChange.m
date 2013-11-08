@@ -37,9 +37,7 @@
 - (NSString *)description {
 	NSDictionary *typeToTypeName = @{
 		@(FRZChangeTypeAdd): @"add",
-		@(FRZChangeTypeAddMany): @"add many",
 		@(FRZChangeTypeRemove): @"remove",
-		@(FRZChangeTypeRemoveMany): @"remove many",
 	};
 	NSString *typeName = typeToTypeName[@(self.type)];
 
