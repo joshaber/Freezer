@@ -168,13 +168,15 @@
 	NSParameterAssert(set != nil);
 	NSParameterAssert(attribute != nil);
 
+	id value = [set objectForColumnIndex:0];
+	if (value == NSNull.null) return nil;
+
 	FRZAttributeType type = [self typeForAttribute:attribute];
 	if (type == FRZAttributeTypeDate) {
 		return [set dateForColumnIndex:0];
+	} else if (type == FRZAttributeTypeRef) {
+		return self[value];
 	}
-
-	id value = [set objectForColumnIndex:0];
-	if (value == NSNull.null) return nil;
 
 	return value;
 }

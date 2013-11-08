@@ -67,22 +67,6 @@ it(@"should be able to add new values", ^{
 	expect([database valueForKey:testKey attribute:testAttribute]).to.equal(testValue);
 });
 
-it(@"should be able to add dates", ^{
-	static NSString * const dateAttribute = @"date";
-	BOOL success = [transactor addAttribute:dateAttribute type:FRZAttributeTypeDate error:NULL];
-	expect(success).to.beTruthy();
-
-	NSDate *date = [NSDate date];
-	success = [transactor addValue:date forAttribute:dateAttribute key:testKey error:NULL];
-	expect(success).to.beTruthy();
-
-	FRZDatabase *database = [store currentDatabase:NULL];
-	expect(database).notTo.beNil();
-
-	NSDate *valueDate = [database valueForKey:testKey attribute:dateAttribute];
-	expect([valueDate timeIntervalSinceDate:date]).to.beLessThan(0.001);
-});
-
 it(@"should be able to remove values", ^{
 	BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
 	expect(success).to.beTruthy();
