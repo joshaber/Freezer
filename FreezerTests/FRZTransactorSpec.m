@@ -15,6 +15,7 @@ SpecBegin(FRZTransactor)
 
 static NSString * const testAttribute = @"testAttribute";
 static NSString * const testKey = @"testKey";
+const id testValue = @42;
 
 __block FRZTransactor *transactor;
 __block FRZStore *store;
@@ -25,6 +26,9 @@ beforeEach(^{
 
 	transactor = [store transactor];
 	expect(transactor).notTo.beNil();
+
+	BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
+	expect(success).to.beTruthy();
 });
 
 it(@"should be able to generate a new key", ^{
@@ -54,86 +58,50 @@ it(@"", ^{
 	[SPTReporter.sharedReporter printLineWithFormat:@"%lu writes", writes];
 });
 
-describe(@"single values", ^{
-	const id testValue = @42;
+it(@"should be able to add new values", ^{
+	BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
+	expect(success).to.beTruthy();
 
-	beforeEach(^{
-		BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
-		expect(success).to.beTruthy();
-	});
-
-	it(@"should be able to add new values", ^{
-		BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
-		expect(success).to.beTruthy();
-
-		FRZDatabase *database = [store currentDatabase:NULL];
-		expect(database).notTo.beNil();
-		expect([database valueForKey:testKey attribute:testAttribute]).to.equal(testValue);
-	});
-
-	it(@"should be able to remove values", ^{
-		BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
-		expect(success).to.beTruthy();
-
-		FRZDatabase *database = [store currentDatabase:NULL];
-		expect(database).notTo.beNil();
-		expect([database valueForKey:testKey attribute:testAttribute]).to.equal(testValue);
-
-		[transactor removeValue:testValue forAttribute:testAttribute key:testKey error:NULL];
-		database = [store currentDatabase:NULL];
-		expect(database).notTo.beNil();
-		expect([database valueForKey:testKey attribute:testAttribute]).to.beNil();
-	});
+	FRZDatabase *database = [store currentDatabase:NULL];
+	expect(database).notTo.beNil();
+	expect([database valueForKey:testKey attribute:testAttribute]).to.equal(testValue);
 });
 
-describe(@"collections", ^{
-	const id testValue = @[ @42, @43 ];
+it(@"should be able to remove values", ^{
+	BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
+	expect(success).to.beTruthy();
 
-	beforeEach(^{
-		BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeCollection error:NULL];
-		expect(success).to.beTruthy();
-	});
+	FRZDatabase *database = [store currentDatabase:NULL];
+	expect(database).notTo.beNil();
+	expect([database valueForKey:testKey attribute:testAttribute]).to.equal(testValue);
 
-	xit(@"should be able to add new values", ^{
-		BOOL success = [transactor addValues:testValue forAttribute:testAttribute key:testKey error:NULL];
-		expect(success).to.beTruthy();
-
-		FRZDatabase *database = [store currentDatabase:NULL];
-		expect(database).notTo.beNil();
-		expect([database valueForKey:testKey attribute:testAttribute]).to.equal(testValue);
-	});
-
-	xit(@"should be able to remove values", ^{
-		BOOL success = [transactor addValues:testValue forAttribute:testAttribute key:testKey error:NULL];
-		expect(success).to.beTruthy();
-
-		FRZDatabase *database = [store currentDatabase:NULL];
-		expect(database).notTo.beNil();
-		expect([database valueForKey:testKey attribute:testAttribute]).to.equal(testValue);
-
-		[transactor removeValue:testValue forAttribute:testAttribute key:testKey error:NULL];
-		database = [store currentDatabase:NULL];
-		expect(database).notTo.beNil();
-		expect([database valueForKey:testKey attribute:testAttribute]).to.beNil();
-	});
+	[transactor removeValue:testValue forAttribute:testAttribute key:testKey error:NULL];
+	database = [store currentDatabase:NULL];
+	expect(database).notTo.beNil();
+	expect([database valueForKey:testKey attribute:testAttribute]).to.beNil();
 });
 
-xit(@"should only apply changes when the outermost transaction is completed", ^{
+it(@"should only apply changes when the outermost transaction is completed", ^{
 	const id testValue = @42;
 
 	BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
 	expect(success).to.beTruthy();
 
+	NSMutableArray *changes = [NSMutableArray array];
+	[store.changes subscribeNext:^(id x) {
+		[changes addObject:x];
+	}];
+
 	[transactor performChangesWithError:NULL block:^(NSError **error) {
 		BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
 		expect(success).to.beTruthy();
 
-		FRZDatabase *database = [store currentDatabase:NULL];
-		expect(database).notTo.beNil();
-		expect([database valueForKey:testKey attribute:testAttribute]).to.beNil();
+		expect(changes.count).to.equal(0);
 
 		return YES;
 	}];
+
+	expect(changes.count).will.equal(1);
 });
 
 SpecEnd

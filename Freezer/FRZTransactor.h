@@ -15,7 +15,6 @@
 //   FRZAttributeTypeBlob       - Data blob type.
 //   FRZAttributeTypeDate       - Date type.
 //   FRZAttributeTypeRef        - Reference to another key.
-//   FRZAttributeTypeCollection - A collection of values.
 typedef enum : NSInteger {
 	FRZAttributeTypeInteger,
 	FRZAttributeTypeReal,
@@ -23,7 +22,6 @@ typedef enum : NSInteger {
 	FRZAttributeTypeBlob,
 	FRZAttributeTypeDate,
 	FRZAttributeTypeRef,
-	FRZAttributeTypeCollection,
 } FRZAttributeType;
 
 // The transactor is responsible for effecting change to the store.
@@ -71,27 +69,5 @@ typedef enum : NSInteger {
 //
 // Returns whether the removal was successful.
 - (BOOL)removeValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
-
-// Adds the given values to the collection in the attribute on the key. Note
-// the value of attribute must be an array (or non-existent).
-//
-// values    - The values to add. Cannot be nil.
-// attribute - The attribute whose value will be added as `value`. Cannot be nil.
-// key       - The key to associate with the attribute and value. Cannot be nil.
-// error     - The error if one occurs.
-//
-// Returns whether the add was successful.
-- (BOOL)addValues:(NSArray *)values forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
-
-// Removes the given values from the collection in the attribute on the key.
-// Note the value of attribute must be an array (or non-existent).
-//
-// values    - The values to remove. Cannot be nil.
-// attribute - The attribute whose value should be removed. Cannot be nil.
-// key       - The key whose associated attribute will be removed. Cannot be nil.
-// error     - The error if one occurs.
-//
-// Returns whether the removal was successful.
-- (BOOL)removeValues:(NSArray *)values forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
 
 @end

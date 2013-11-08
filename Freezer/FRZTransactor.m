@@ -52,7 +52,6 @@
 		@(FRZAttributeTypeBlob): @"BLOB",
 		@(FRZAttributeTypeDate): @"DATE",
 		@(FRZAttributeTypeRef): @"STRING",
-		@(FRZAttributeTypeCollection): @"BLOB",
 	};
 
 	NSString *sqliteType = typeToSqliteTypeName[@(type)];
@@ -167,31 +166,6 @@
 	}];
 }
 
-- (BOOL)addValues:(NSArray *)values forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error {
-	NSParameterAssert(values != nil);
-	NSParameterAssert(attribute != nil);
-	NSParameterAssert(key != nil);
-
-	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
-		sqlite_int64 txID = [self insertNewTransactionIntoDatabase:database error:error];
-		if (txID < 0) return NO;
-
-		FRZDatabase *currentDatabase = [self.store currentDatabase:error];
-		NSData *data = currentDatabase[key][attribute];
-		NSArray *currentValues = (data != nil ? [NSKeyedUnarchiver unarchiveObjectWithData:data] : @[]);
-		NSAssert([currentValues isKindOfClass:NSArray.class], @"%@ on %@ isn't an array: %@", attribute, key, currentValues);
-		NSArray *newValues = [currentValues arrayByAddingObjectsFromArray:values];
-
-		BOOL success = [self insertIntoDatabase:database value:[NSKeyedArchiver archivedDataWithRootObject:newValues] forAttribute:attribute key:key transactionID:txID error:error];
-		if (!success) return NO;
-
-		FRZDatabase *changedDatabase = [[FRZDatabase alloc] initWithStore:self.store headID:txID];
-		[self.store.queuedChanges addObject:[[FRZChange alloc] initWithType:FRZChangeTypeAddMany key:key attribute:attribute delta:values previousDatabase:currentDatabase changedDatabase:changedDatabase]];
-
-		return [self updateHeadInDatabase:database toID:txID error:error];
-	}];
-}
-
 - (BOOL)removeValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error {
 	NSParameterAssert(value != nil);
 	NSParameterAssert(attribute != nil);
@@ -214,31 +188,6 @@
 
 		FRZDatabase *changedDatabase = [[FRZDatabase alloc] initWithStore:self.store headID:txID];
 		[self.store.queuedChanges addObject:[[FRZChange alloc] initWithType:FRZChangeTypeRemove key:key attribute:attribute delta:nil previousDatabase:previousDatabase changedDatabase:changedDatabase]];
-
-		return [self updateHeadInDatabase:database toID:txID error:error];
-	}];
-}
-
-- (BOOL)removeValues:(NSArray *)values forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error {
-	NSParameterAssert(values != nil);
-	NSParameterAssert(attribute != nil);
-	NSParameterAssert(key != nil);
-
-	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
-		sqlite_int64 txID = [self insertNewTransactionIntoDatabase:database error:error];
-		if (txID < 0) return NO;
-
-		FRZDatabase *currentDatabase = [self.store currentDatabase:error];
-		NSData *data = currentDatabase[key][attribute];
-		NSMutableArray *currentValues = [(data != nil ? [NSKeyedUnarchiver unarchiveObjectWithData:data] : @[]) mutableCopy];
-		NSAssert([currentValues isKindOfClass:NSArray.class], @"%@ on %@ isn't an array: %@", attribute, key, currentValues);
-		[currentValues removeObjectsInArray:values];
-
-		BOOL success = [self insertIntoDatabase:database value:[NSKeyedArchiver archivedDataWithRootObject:currentValues] forAttribute:attribute key:key transactionID:txID error:error];
-		if (!success) return NO;
-
-		FRZDatabase *changedDatabase = [[FRZDatabase alloc] initWithStore:self.store headID:txID];
-		[self.store.queuedChanges addObject:[[FRZChange alloc] initWithType:FRZChangeTypeRemoveMany key:key attribute:attribute delta:values previousDatabase:currentDatabase changedDatabase:changedDatabase]];
 
 		return [self updateHeadInDatabase:database toID:txID error:error];
 	}];
