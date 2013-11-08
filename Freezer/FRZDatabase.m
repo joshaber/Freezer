@@ -45,13 +45,7 @@
 #pragma mark Lookup
 
 - (NSArray *)attributes {
-	NSSet *keys = [self keysWithAttribute:FRZStoreAttributeNameAttribute];
-	NSMutableArray *attributes = [NSMutableArray array];
-	for (NSString *key in keys) {
-		[attributes addObject:[self valueForKey:key attribute:FRZStoreAttributeNameAttribute]];
-	}
-
-	return attributes;
+	return [self keysWithAttribute:FRZStoreAttributeTypeAttribute].allObjects;
 }
 
 - (id)valueForAttribute:(NSString *)attribute key:(NSString *)key inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error {
@@ -74,8 +68,7 @@
 
 	if (![set next]) return nil;
 
-	id value = [set objectForColumnIndex:0];
-	return [self unpackedValueFromValue:value];
+	return [self unpackedValueFromFirstColumn:set attribute:attribute];
 }
 
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
@@ -163,7 +156,24 @@
 	return result;
 }
 
-- (id)unpackedValueFromValue:(id)value {
+- (FRZAttributeType)typeForAttribute:(NSString *)attribute {
+	NSParameterAssert(attribute != nil);
+
+	if (attribute == FRZStoreAttributeTypeAttribute) return 0;
+
+	return [[self valueForKey:attribute attribute:FRZStoreAttributeTypeAttribute] integerValue];
+}
+
+- (id)unpackedValueFromFirstColumn:(FMResultSet *)set attribute:(NSString *)attribute {
+	NSParameterAssert(set != nil);
+	NSParameterAssert(attribute != nil);
+
+	FRZAttributeType type = [self typeForAttribute:attribute];
+	if (type == FRZAttributeTypeDate) {
+		return [set dateForColumnIndex:0];
+	}
+
+	id value = [set objectForColumnIndex:0];
 	if (value == NSNull.null) return nil;
 
 	return value;

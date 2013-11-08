@@ -67,9 +67,6 @@
 		if (!withMetadata) return YES;
 
 		// TODO: Do we want to associate attributes with a tx?
-		success = [self insertIntoDatabase:database value:attribute forAttribute:FRZStoreAttributeNameAttribute key:attribute transactionID:0 error:error];
-		if (!success) return NO;
-
 		success = [self insertIntoDatabase:database value:@(type) forAttribute:FRZStoreAttributeTypeAttribute key:attribute transactionID:0 error:error];
 		if (!success) return NO;
 

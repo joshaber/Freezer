@@ -22,7 +22,6 @@ const NSInteger FRZErrorInvalidValue = -2;
 NSString * const FRZStoreHeadTransactionAttribute = @"Freezer/tx/head";
 NSString * const FRZStoreTransactionDateAttribute = @"Freezer/tx/date";
 
-NSString * const FRZStoreAttributeNameAttribute = @"Freezer/attribute/name";
 NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 
 @interface FRZStore ()
@@ -118,9 +117,6 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 	if (!success) return NO;
 
 	success = [transactor addAttribute:FRZStoreTransactionDateAttribute type:FRZAttributeTypeDate withMetadata:NO error:error];
-	if (!success) return NO;
-
-	success = [transactor addAttribute:FRZStoreAttributeNameAttribute type:FRZAttributeTypeText withMetadata:NO error:error];
 	if (!success) return NO;
 
 	success = [transactor addAttribute:FRZStoreAttributeTypeAttribute type:FRZAttributeTypeInteger withMetadata:NO error:error];
