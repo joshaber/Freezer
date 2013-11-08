@@ -22,6 +22,9 @@ const NSInteger FRZErrorInvalidValue = -2;
 NSString * const FRZStoreHeadTransactionAttribute = @"Freezer/tx/head";
 NSString * const FRZStoreTransactionDateAttribute = @"Freezer/tx/date";
 
+NSString * const FRZStoreAttributeNameAttribute = @"Freezer/attribute/name";
+NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
+
 @interface FRZStore ()
 
 @property (nonatomic, readonly, strong) RACSubject *changesSubject;
@@ -111,10 +114,16 @@ NSString * const FRZStoreTransactionDateAttribute = @"Freezer/tx/date";
 	}
 
 	FRZTransactor *transactor = [self transactor];
-	success = [transactor addAttribute:FRZStoreHeadTransactionAttribute type:FRZAttributeTypeInteger error:error];
+	success = [transactor addAttribute:FRZStoreHeadTransactionAttribute type:FRZAttributeTypeInteger withMetadata:NO error:error];
 	if (!success) return NO;
 
-	success = [transactor addAttribute:FRZStoreTransactionDateAttribute type:FRZAttributeTypeDate error:error];
+	success = [transactor addAttribute:FRZStoreTransactionDateAttribute type:FRZAttributeTypeDate withMetadata:NO error:error];
+	if (!success) return NO;
+
+	success = [transactor addAttribute:FRZStoreAttributeNameAttribute type:FRZAttributeTypeText withMetadata:NO error:error];
+	if (!success) return NO;
+
+	success = [transactor addAttribute:FRZStoreAttributeTypeAttribute type:FRZAttributeTypeInteger withMetadata:NO error:error];
 	if (!success) return NO;
 
 	return YES;

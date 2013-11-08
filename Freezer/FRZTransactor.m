@@ -39,6 +39,12 @@
 - (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type error:(NSError **)error {
 	NSParameterAssert(attribute != nil);
 
+	return [self addAttribute:attribute type:type withMetadata:YES error:error];
+}
+
+- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type withMetadata:(BOOL)withMetadata error:(NSError **)error {
+	NSParameterAssert(attribute != nil);
+
 	NSDictionary *typeToSqliteTypeName = @{
 		@(FRZAttributeTypeInteger): @"INTEGER",
 		@(FRZAttributeTypeReal): @"REAL",
@@ -55,7 +61,19 @@
 	NSAssert(tableName != nil, @"No table name for attribute: %@", attribute);
 
 	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
-		return [self createTableWithName:tableName sqliteType:sqliteType database:database error:error];
+		BOOL success = [self createTableWithName:tableName sqliteType:sqliteType database:database error:error];
+		if (!success) return NO;
+
+		if (!withMetadata) return YES;
+
+		// TODO: Do we want to associate attributes with a tx?
+		success = [self insertIntoDatabase:database value:attribute forAttribute:FRZStoreAttributeNameAttribute key:attribute transactionID:0 error:error];
+		if (!success) return NO;
+
+		success = [self insertIntoDatabase:database value:@(type) forAttribute:FRZStoreAttributeTypeAttribute key:attribute transactionID:0 error:error];
+		if (!success) return NO;
+
+		return YES;
 	}];
 }
 

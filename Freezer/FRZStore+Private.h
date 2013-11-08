@@ -15,6 +15,12 @@ extern NSString * const FRZStoreHeadTransactionAttribute;
 // The transaction date attribute.
 extern NSString * const FRZStoreTransactionDateAttribute;
 
+// The attribute's name.
+extern NSString * const FRZStoreAttributeNameAttribute;
+
+// The attribute's type.
+extern NSString * const FRZStoreAttributeTypeAttribute;
+
 // The type of transaction to use.
 //
 //   FRZStoreTransactionTypeDeferred  - Defer lock acquisition until it is
