@@ -11,14 +11,14 @@
 // The valid attribute types.
 //   FRZAttributeTypeInteger    - Integer type.
 //   FRZAttributeTypeReal       - Real numbers type.
-//   FRZAttributeTypeText       - Arbitrary text type.
+//   FRZAttributeTypeString     - String type.
 //   FRZAttributeTypeBlob       - Data blob type.
 //   FRZAttributeTypeDate       - Date type.
 //   FRZAttributeTypeRef        - Reference to another key.
 typedef enum : NSInteger {
-	FRZAttributeTypeInteger,
+	FRZAttributeTypeInteger = 1,
 	FRZAttributeTypeReal,
-	FRZAttributeTypeText,
+	FRZAttributeTypeString,
 	FRZAttributeTypeBlob,
 	FRZAttributeTypeDate,
 	FRZAttributeTypeRef,

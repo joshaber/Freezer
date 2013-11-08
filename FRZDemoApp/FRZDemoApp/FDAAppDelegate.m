@@ -35,8 +35,8 @@
 		}];
 
 	FRZTransactor *transactor = [self.store transactor];
-	[transactor addAttribute:firstNameAttribute type:FRZAttributeTypeText error:NULL];
-	[transactor addAttribute:lastNameAttribute type:FRZAttributeTypeText error:NULL];
+	[transactor addAttribute:firstNameAttribute type:FRZAttributeTypeString error:NULL];
+	[transactor addAttribute:lastNameAttribute type:FRZAttributeTypeString error:NULL];
 	[transactor addAttribute:hubberAttribute type:FRZAttributeTypeInteger error:NULL];
 
 	[transactor performChangesWithError:NULL block:^(NSError **error) {

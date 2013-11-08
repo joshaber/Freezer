@@ -48,10 +48,10 @@
 	NSDictionary *typeToSqliteTypeName = @{
 		@(FRZAttributeTypeInteger): @"INTEGER",
 		@(FRZAttributeTypeReal): @"REAL",
-		@(FRZAttributeTypeText): @"TEXT",
+		@(FRZAttributeTypeString): @"TEXT",
 		@(FRZAttributeTypeBlob): @"BLOB",
-		@(FRZAttributeTypeDate): @"DATE",
-		@(FRZAttributeTypeRef): @"STRING",
+		@(FRZAttributeTypeDate): @"DATETIME",
+		@(FRZAttributeTypeRef): @"TEXT",
 	};
 
 	NSString *sqliteType = typeToSqliteTypeName[@(type)];
