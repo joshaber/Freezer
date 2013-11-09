@@ -29,9 +29,6 @@ typedef enum : NSInteger {
 // The transactor is responsible for effecting change to the store.
 @interface FRZTransactor : NSObject
 
-// Generate a new key to use for adding new values.
-- (NSString *)generateNewKey;
-
 // Add an attribute of the given type to the store.
 //
 // attribute - The name of the attribute to add. Cannot be nil.
@@ -41,13 +38,8 @@ typedef enum : NSInteger {
 // Returns whether the attribute addition was successful.
 - (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type error:(NSError **)error;
 
-// Perform changes to the store within the given block.
-//
-// error - The error if one occurs.
-// block - The block in which adds or removes will be performed. Cannot be nil.
-//
-// Returns whether the changes were successful.
-- (BOOL)performChangesWithError:(NSError **)error block:(BOOL (^)(NSError **error))block;
+// Generate a new key to use for adding new values.
+- (NSString *)generateNewKey;
 
 // Adds a new value for the given attribute, associated with the given key.
 //
@@ -80,5 +72,13 @@ typedef enum : NSInteger {
 //
 // Returns whether the removal was successful.
 - (BOOL)removeValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
+
+// Perform changes to the store within the given block.
+//
+// error - The error if one occurs.
+// block - The block in which adds or removes will be performed. Cannot be nil.
+//
+// Returns whether the changes were successful.
+- (BOOL)performChangesWithError:(NSError **)error block:(BOOL (^)(NSError **error))block;
 
 @end
