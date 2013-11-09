@@ -217,4 +217,47 @@
 	return [self insertIntoDatabase:database value:@(ID) forAttribute:FRZStoreHeadTransactionAttribute key:@"head" transactionID:0 error:error];
 }
 
+#pragma mark Trimming
+
+- (BOOL)trimOldKeys:(FMDatabase *)database error:(NSError **)error {
+	FRZDatabase *currentDatabase = [self.store currentDatabase];
+	NSArray *keys = currentDatabase.allKeys.allObjects;
+	NSSet *attributes = currentDatabase.allAttributes;
+	NSMutableString *keySet = [NSMutableString string];
+	for (NSUInteger i = 0; i < keys.count; i++) {
+		NSString *key = keys[i];
+		NSString *escapedKey = [NSString stringWithFormat:@"\"%@\"", key];
+		if (i == 0) {
+			[keySet appendString:escapedKey];
+		} else {
+			[keySet appendFormat:@", %@", escapedKey];
+		}
+	}
+
+	for (NSString *attribute in attributes) {
+		NSString *tableName = [self.store tableNameForAttribute:attribute];
+		NSString *query = [NSString stringWithFormat:@"DELETE FROM %@ WHERE key NOT IN (%@)", tableName, keySet];
+		BOOL success = [database executeUpdate:query];
+		if (!success) {
+			if (error != NULL) *error = database.lastError;
+			return NO;
+		}
+	}
+
+	return YES;
+}
+
+- (BOOL)trimOldValues:(FMDatabase *)database error:(NSError **)error {
+	return YES;
+}
+
+- (BOOL)trim:(NSError **)error {
+	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+		BOOL success = [self trimOldKeys:database error:error];
+		if (!success) return NO;
+
+		return [self trimOldValues:database error:error];
+	}];
+}
+
 @end
