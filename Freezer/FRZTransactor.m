@@ -164,8 +164,7 @@
 - (long long int)insertNewTransactionIntoDatabase:(FMDatabase *)database error:(NSError **)error {
 	NSParameterAssert(database != nil);
 
-	long long int headID = [self.store headID];
-	BOOL success = [self insertIntoDatabase:database value:[NSDate date] forAttribute:FRZStoreTransactionDateAttribute key:@"head" transactionID:headID error:error];
+	BOOL success = [self insertIntoDatabase:database value:[NSDate date] forAttribute:FRZStoreTransactionDateAttribute key:@"head" transactionID:0 error:error];
 	if (!success) return -1;
 
 	return database.lastInsertRowId;
