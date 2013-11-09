@@ -5,7 +5,7 @@ Freezer is inspired by / ripped off from Rich Hickey's talk, [The Database as a 
 Freezer is an **immutable value store**. All changes to the store create a new 
 database, as opposed to changing the database in place. Once you have pulled a
 database out of the store, it never changes. It is a fixed view of the store at 
-time at which you got the database.
+that point in time.
 
 Freezer is made up of a few basic components:
 
@@ -22,9 +22,8 @@ attribute-value pairs, grouped by a key. Attributes have a fixed type and must
 be added to the store before being used. (See `-[FRZStore addAttribute:type:error:]`.)
 
 A collection of attributes, grouped by key, may be transformed into, for example,
-a [Mantle](https://github.com/github/Mantle) model object. But that model object
-is simply a view on the data. It is not the thing itself. Changes to the model
-object would not propogate up to the store.
+a [Mantle](https://github.com/github/Mantle) model object. But note that model 
+object is simply a view on the data. It is not the thing itself.
 
 ## Changes
 
@@ -32,11 +31,23 @@ Stores provide a `RACSignal` of changes which are applied to the store. This
 signal can be filtered, throttled, etc. as needed to find out about the changes
 your app cares about.
 
+## Collections
+
+Collections can be seen as just another view on the data. You can use attributes 
+as tags to group keys into collections.
+
+For example:
+
+```objc
+FRZDatabase *database = [store currentDatabase];
+NSSet *keys = [database keysWithAttribute:@"app/hubber"];
+// `keys` is now all the keys that have the `app/hubber` attribute.
+```
+
 ## Thread-safety
 
-Freezer is completely thread-safe. Since databases never change in place, 
-`FRZDatabase`s may be read from in any thread. `FRZTransactor` may add or remove 
-values in any thread.
+Freezer is completely thread-safe. Databases may be read from in any thread and 
+`FRZTransactor` may add or remove values in any thread.
 
 ## If the database is immutable... does that mean the store grows without bound?
 
