@@ -74,9 +74,19 @@
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
 	NSParameterAssert(key != nil);
 
+	NSSet *allAttributes = self.allAttributes;
+	if (allAttributes == nil) return nil;
+
+	return [self valuesForKey:key attributes:allAttributes.allObjects];
+}
+
+- (NSDictionary *)valuesForKey:(NSString *)key attributes:(NSArray *)attributes {
+	NSParameterAssert(key != nil);
+	NSParameterAssert(attributes != nil);
+
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
-		for (NSString *attribute in self.allAttributes) {
+		for (NSString *attribute in attributes) {
 			BOOL success = YES;
 			id value = [self valueForAttribute:attribute key:key inDatabase:database success:&success error:error];
 			if (value == nil && !success) return NO;

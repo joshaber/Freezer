@@ -39,6 +39,14 @@
 // Returns the value.
 - (id)valueForKey:(NSString *)key attribute:(NSString *)attribute;
 
+// Find the values for the given attributes of the given key.
+//
+// key        - The key whose attribute should be looked up. Cannot be nil.
+// attributes - The attributes to look up. Cannot be nil.
+//
+// Returns the dictionary of values.
+- (NSDictionary *)valuesForKey:(NSString *)key attributes:(NSArray *)attributes;
+
 // Get all the attributes in the database.
 - (NSSet *)allAttributes;
 
