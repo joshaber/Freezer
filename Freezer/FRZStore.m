@@ -30,6 +30,14 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 
 @property (nonatomic, readonly, copy) NSString *databasePath;
 
+@property (nonatomic, readonly, copy) NSString *activeTransactionCountKey;
+
+@property (nonatomic, readonly, copy) NSString *queuedChangesKey;
+
+@property (nonatomic, readonly, copy) NSString *currentDatabaseKey;
+
+@property (nonatomic, readonly, copy) NSString *previousDatabaseKey;
+
 @end
 
 @implementation FRZStore
@@ -53,6 +61,11 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 	if (database == nil) return nil;
 
 	_changesSubject = [RACSubject subject];
+
+	_activeTransactionCountKey = [@"com.joshaber.Freezer.FRZStore.activeTransactionCount." stringByAppendingString:self.databasePath];
+	_queuedChangesKey = [@"com.joshaber.Freezer.FRZStore.queuedChanged." stringByAppendingString:self.databasePath];
+	_currentDatabaseKey = [@"com.joshaber.Freezer.FRZStore.database." stringByAppendingString:self.databasePath];
+	_previousDatabaseKey = [@"com.joshaber.Freezer.FRZStore.previousDatabase." stringByAppendingString:self.databasePath];
 
 	return self;
 }
@@ -169,13 +182,12 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 }
 
 - (FMDatabase *)databaseForCurrentThread:(NSError **)error {
-	NSString *databaseKey = [@"com.joshaber.Freezer.FRZStore.database.%@" stringByAppendingString:self.databasePath];
-	FMDatabase *database = NSThread.currentThread.threadDictionary[databaseKey];
+	FMDatabase *database = NSThread.currentThread.threadDictionary[self.currentDatabaseKey];
 	if (database == nil) {
 		database = [self createDatabase:error];
 		if (database == nil) return nil;
 
-		NSThread.currentThread.threadDictionary[databaseKey] = database;
+		NSThread.currentThread.threadDictionary[self.currentDatabaseKey] = database;
 
 		BOOL success = [self configureDatabase:database error:error];
 		if (!success) return nil;
@@ -191,12 +203,11 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 }
 
 - (NSMutableArray *)queuedChanges {
-	NSString *queuedChangesKey = [@"com.joshaber.Freezer.FRZStore.queuedChanged.%@" stringByAppendingString:self.databasePath];
-	NSMutableArray *array = NSThread.currentThread.threadDictionary[queuedChangesKey];
+	NSMutableArray *array = NSThread.currentThread.threadDictionary[self.queuedChangesKey];
 	if (array != nil) return array;
 
 	array = [NSMutableArray array];
-	NSThread.currentThread.threadDictionary[queuedChangesKey] = array;
+	NSThread.currentThread.threadDictionary[self.queuedChangesKey] = array;
 	return array;
 }
 
@@ -205,10 +216,6 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 }
 
 #pragma mark Transactions
-
-- (NSString *)activeTransactionCountKey {
-	return [@"com.joshaber.Freezer.FRZStore.activeTransactionCount.%@" stringByAppendingString:self.databasePath];
-}
 
 - (NSInteger)incrementTransactionCount {
 	NSInteger transactionCount = [NSThread.currentThread.threadDictionary[self.activeTransactionCountKey] integerValue];
@@ -222,10 +229,6 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 	transactionCount--;
 	NSThread.currentThread.threadDictionary[self.activeTransactionCountKey] = @(transactionCount);
 	return transactionCount;
-}
-
-- (NSString *)previousDatabaseKey {
-	return [@"com.joshaber.Freezer.FRZStore.previousDatabase.%@" stringByAppendingString:self.databasePath];
 }
 
 - (BOOL)performTransactionType:(FRZStoreTransactionType)transactionType error:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block {
