@@ -219,11 +219,11 @@
 
 #pragma mark Trimming
 
-- (BOOL)trimOldKeys:(FMDatabase *)database error:(NSError **)error {
-	FRZDatabase *currentDatabase = [self.store currentDatabase];
-	NSArray *keys = currentDatabase.allKeys.allObjects;
+- (NSString *)deleteQueryForTable:(NSString *)table placeholderCount:(NSUInteger)placeholderCount {
+	NSParameterAssert(table != nil);
+
 	NSMutableString *placeholder = [NSMutableString string];
-	for (NSUInteger i = 0; i < keys.count; i++) {
+	for (NSUInteger i = 0; i < placeholderCount; i++) {
 		if (i == 0) {
 			[placeholder appendString:@"?"];
 		} else {
@@ -231,10 +231,16 @@
 		}
 	}
 
+	return [NSString stringWithFormat:@"DELETE FROM %@ WHERE key NOT IN (%@)", table, placeholder];
+}
+
+- (BOOL)trimOldKeys:(FMDatabase *)database error:(NSError **)error {
+	FRZDatabase *currentDatabase = [self.store currentDatabase];
+	NSArray *keys = currentDatabase.allKeys.allObjects;
 	NSSet *attributes = currentDatabase.allAttributes;
 	for (NSString *attribute in attributes) {
 		NSString *tableName = [self.store tableNameForAttribute:attribute];
-		NSString *query = [NSString stringWithFormat:@"DELETE FROM %@ WHERE key NOT IN (%@)", tableName, placeholder];
+		NSString *query = [self deleteQueryForTable:tableName placeholderCount:keys.count];
 		BOOL success = [database executeUpdate:query withArgumentsInArray:keys];
 		if (!success) {
 			if (error != NULL) *error = database.lastError;
@@ -246,8 +252,29 @@
 }
 
 - (BOOL)trimOldValues:(FMDatabase *)database error:(NSError **)error {
-	// Make a set of all the IDs of the topmost values. Delete everything not in
-	// it?
+	FRZDatabase *currentDatabase = [self.store currentDatabase];
+	NSSet *attributes = currentDatabase.allAttributes;
+	for (NSString *attribute in attributes) {
+		NSString *tableName = [self.store tableNameForAttribute:attribute];
+		NSString *query = [NSString stringWithFormat:@"SELECT id FROM %@ WHERE key = ? AND tx_id <= ? ORDER BY tx_id DESC LIMIT 1", tableName];
+		FMResultSet *set = [database executeQuery:query];
+		if (set == nil) {
+			if (error != NULL) *error = database.lastError;
+			return NO;
+		}
+
+		if (![set next]) continue;
+
+		NSNumber *topID = [set objectForColumnIndex:0];
+
+		query = [NSString stringWithFormat:@"DELETE FROM %@ WHERE id != ?", tableName];
+		BOOL success = [database executeUpdate:query, topID];
+		if (!success) {
+			if (error != NULL) *error = database.lastError;
+			return NO;
+		}
+	}
+
 	return YES;
 }
 
