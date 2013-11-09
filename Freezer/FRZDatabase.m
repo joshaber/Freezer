@@ -44,8 +44,8 @@
 
 #pragma mark Lookup
 
-- (NSArray *)attributes {
-	return [self keysWithAttribute:FRZStoreAttributeTypeAttribute].allObjects;
+- (NSSet *)allAttributes {
+	return [self keysWithAttribute:FRZStoreAttributeTypeAttribute];
 }
 
 - (id)valueForAttribute:(NSString *)attribute key:(NSString *)key inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error {
@@ -76,7 +76,7 @@
 
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
-		for (NSString *attribute in self.attributes) {
+		for (NSString *attribute in self.allAttributes) {
 			BOOL success = YES;
 			id value = [self valueForAttribute:attribute key:key inDatabase:database success:&success error:error];
 			if (value == nil && !success) return NO;
@@ -100,7 +100,7 @@
 - (NSSet *)allKeys {
 	NSMutableSet *results = [NSMutableSet set];
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
-		for (NSString *attribute in self.attributes) {
+		for (NSString *attribute in self.allAttributes) {
 			NSString *tableName = [self.store tableNameForAttribute:attribute];
 			NSString *query = [NSString stringWithFormat:@"SELECT key, value FROM %@ WHERE tx_id <= ? ORDER BY tx_id DESC LIMIT 1", tableName];
 			FMResultSet *set = [database executeQuery:query, @(self.headID)];

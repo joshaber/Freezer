@@ -39,4 +39,7 @@
 // Returns the value.
 - (id)valueForKey:(NSString *)key attribute:(NSString *)attribute;
 
+// Get all the attributes in the database.
+- (NSSet *)allAttributes;
+
 @end
