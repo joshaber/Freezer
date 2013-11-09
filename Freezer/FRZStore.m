@@ -135,11 +135,11 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 
 #pragma mark Properties
 
-- (long long int)headID:(NSError **)error {
+- (long long int)headID {
 	// NB: This can't go through the standard FRZDatabase method of retrieval
 	// because that needs to call -headID to fix the FRZDatabase to the current
 	// head. :cry:
-	FMDatabase *database = [self databaseForCurrentThread:error];
+	FMDatabase *database = [self databaseForCurrentThread:NULL];
 	if (database == nil) return -1;
 
 	NSString *tableName = [self tableNameForAttribute:FRZStoreHeadTransactionAttribute];
@@ -152,7 +152,7 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 }
 
 - (FRZDatabase *)currentDatabase {
-	long long int headID = [self headID:NULL];
+	long long int headID = [self headID];
 	if (headID < 0) return nil;
 
 	return [[FRZDatabase alloc] initWithStore:self headID:headID];

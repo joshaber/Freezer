@@ -56,10 +56,8 @@ typedef enum : NSInteger {
 
 // Get the ID of the head transaction of the store.
 //
-// error - The error if one occurred.
-//
-// Returns the ID, or -1 if an error occurred.
-- (long long int)headID:(NSError **)error;
+// Returns the ID.
+- (long long int)headID;
 
 // Convert from an attribute name to the Sqlite table name.
 //
