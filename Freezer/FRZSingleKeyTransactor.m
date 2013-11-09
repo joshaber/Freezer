@@ -20,6 +20,8 @@
 
 @implementation FRZSingleKeyTransactor
 
+#pragma mark Lifecycle
+
 - (id)initWithTransactor:(FRZTransactor *)transactor key:(NSString *)key {
 	NSParameterAssert(transactor != nil);
 	NSParameterAssert(key != nil);
@@ -32,6 +34,8 @@
 
 	return self;
 }
+
+#pragma mark Adding
 
 - (BOOL)addValue:(id)value forAttribute:(NSString *)attribute error:(NSError **)error {
 	NSParameterAssert(value != nil);
