@@ -74,10 +74,7 @@
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
 	NSParameterAssert(key != nil);
 
-	NSSet *allAttributes = self.allAttributes;
-	if (allAttributes == nil) return nil;
-
-	return [self valuesForKey:key attributes:allAttributes.allObjects];
+	return [self valueForKey:key];
 }
 
 - (NSDictionary *)valuesForKey:(NSString *)key attributes:(NSArray *)attributes {
@@ -104,7 +101,10 @@
 - (id)valueForKey:(NSString *)key {
 	NSParameterAssert(key != nil);
 
-	return self[key];
+	NSSet *allAttributes = self.allAttributes;
+	if (allAttributes == nil) return nil;
+
+	return [self valuesForKey:key attributes:allAttributes.allObjects];
 }
 
 - (NSSet *)allKeys {
