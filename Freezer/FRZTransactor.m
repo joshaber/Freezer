@@ -248,6 +248,8 @@
 }
 
 - (BOOL)trimOldValues:(FMDatabase *)database error:(NSError **)error {
+	// Make a set of all the IDs of the topmost values. Delete everything not in
+	// it?
 	return YES;
 }
 
