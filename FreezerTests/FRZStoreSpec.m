@@ -129,7 +129,7 @@ describe(@"changes", ^{
 
 		FRZChange *change = changes.lastObject;
 		expect(change.type).to.equal(FRZChangeTypeRemove);
-		expect(change.delta).to.equal(nil);
+		expect(change.delta).to.equal(value);
 		expect(change.attribute).to.equal(testAttribute);
 		expect(change.key).to.equal(testKey);
 		expect(change.previousDatabase[testKey][testAttribute]).to.equal(value);

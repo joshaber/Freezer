@@ -16,11 +16,10 @@
 
 // Initializes the receiver with the given values.
 //
-// type             - The type of change.
-// key              - The key whose value of attribute was changed. Cannot be
-//                    nil.
-// attribute        - The attribute whose value was changed. Cannot be nil.
-// delta            - The delta for the change. May be nil.
+// type      - The type of change.
+// key       - The key whose value of attribute was changed. Cannot be nil.
+// attribute - The attribute whose value was changed. Cannot be nil.
+// delta     - The delta for the change. Cannot be nil.
 //
 // Returns the initialized object.
 - (id)initWithType:(FRZChangeType)type key:(NSString *)key attribute:(NSString *)attribute delta:(id)delta;

@@ -17,6 +17,7 @@
 - (id)initWithType:(FRZChangeType)type key:(NSString *)key attribute:(NSString *)attribute delta:(id)delta {
 	NSParameterAssert(key != nil);
 	NSParameterAssert(attribute != nil);
+	NSParameterAssert(delta != nil);
 
 	self = [super init];
 	if (self == nil) return nil;

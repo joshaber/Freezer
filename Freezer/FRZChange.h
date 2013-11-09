@@ -28,9 +28,7 @@ typedef enum : NSInteger {
 // The attribute which was changed.
 @property (nonatomic, readonly, copy) NSString *attribute;
 
-// The delta of the change. This is change type-dependent.
-//   FRZChangeTypeAdd    - The value added.
-//   FRZChangeTypeRemove - nil.
+// The value which was added or removed.
 @property (nonatomic, readonly, strong) id delta;
 
 // The database before the change was applied. This may be nil if the addition
