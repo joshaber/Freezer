@@ -151,8 +151,8 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 	return [set longLongIntForColumnIndex:0];
 }
 
-- (FRZDatabase *)currentDatabase:(NSError **)error {
-	long long int headID = [self headID:error];
+- (FRZDatabase *)currentDatabase {
+	long long int headID = [self headID:NULL];
 	if (headID < 0) return nil;
 
 	return [[FRZDatabase alloc] initWithStore:self headID:headID];
@@ -235,7 +235,7 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 		NSAssert(transactionTypeName != nil, @"Unrecognized transaction type: %ld", transactionType);
 		[database executeUpdate:[NSString stringWithFormat:@"begin %@ transaction", transactionTypeName]];
 
-		FRZDatabase *previousDatabase = [self currentDatabase:NULL];
+		FRZDatabase *previousDatabase = [self currentDatabase];
 		if (previousDatabase != nil) {
 			NSThread.currentThread.threadDictionary[self.previousDatabaseKey] = previousDatabase;
 		}
@@ -246,7 +246,7 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 		[database rollback];
 	} else {
 		if ([self decrementTransactionCount] == 0) {
-			FRZDatabase *changedDatabase = [self currentDatabase:NULL];
+			FRZDatabase *changedDatabase = [self currentDatabase];
 
 			[database commit];
 

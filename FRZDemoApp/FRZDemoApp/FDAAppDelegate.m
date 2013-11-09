@@ -59,7 +59,7 @@
 		return YES;
 	}];
 
-	FRZDatabase *database = [self.store currentDatabase:NULL];
+	FRZDatabase *database = [self.store currentDatabase];
 	NSLog(@" ");
 	NSLog(@"Hubbers:");
 	NSSet *hubberKeys = [database keysWithAttribute:hubberAttribute];

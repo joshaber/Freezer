@@ -190,7 +190,7 @@
 	NSParameterAssert(key != nil);
 
 	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
-		FRZDatabase *previousDatabase = [self.store currentDatabase:NULL];
+		FRZDatabase *previousDatabase = [self.store currentDatabase];
 		id currentValue = [previousDatabase valueForKey:key attribute:attribute];
 		if (![currentValue isEqual:value]) {
 			NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: NSLocalizedString(@"", @"") };

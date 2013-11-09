@@ -32,7 +32,7 @@ it(@"should return a non-nil transactor", ^{
 
 it(@"should have a nil database before anything's been added", ^{
 	FRZStore *store = [[FRZStore alloc] initInMemory:NULL];
-	FRZDatabase *database = [store currentDatabase:NULL];
+	FRZDatabase *database = [store currentDatabase];
 	expect(database).to.beNil();
 });
 
@@ -47,7 +47,7 @@ it(@"should keep in-memory stores separate", ^{
 	success = [[store1 transactor] addValue:@42 forAttribute:testAttribute key:@"test?" error:NULL];
 	expect(success).to.beTruthy();
 
-	FRZDatabase *database = [store2 currentDatabase:NULL];
+	FRZDatabase *database = [store2 currentDatabase];
 	expect(database[@"test?"]).to.beNil();
 });
 
@@ -61,14 +61,14 @@ it(@"should have a consistent database in different threads", ^{
 	success = [[store transactor] addValue:@42 forAttribute:testAttribute key:testKey error:NULL];
 	expect(success).to.beTruthy();
 
-	FRZDatabase *database = [store currentDatabase:NULL];
+	FRZDatabase *database = [store currentDatabase];
 	NSDictionary *value = database[testKey];
 	expect(value).notTo.beNil();
 
 	__block BOOL done = NO;
 	__block NSDictionary *threadValue;
 	dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		threadValue = database[testKey];
 		done = YES;
 	});

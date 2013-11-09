@@ -47,10 +47,8 @@ extern const NSInteger FRZErrorInvalidValue;
 
 // Gets the current database. The returned database is immutable.
 //
-// error - The error if one occurred.
-//
-// Returns the database, or nil if an error occurred.
-- (FRZDatabase *)currentDatabase:(NSError **)error;
+// Returns the database.
+- (FRZDatabase *)currentDatabase;
 
 // Gets the transactor for the store.
 //

@@ -31,7 +31,7 @@ beforeEach(^{
 
 describe(@"key lookup", ^{
 	it(@"should contain a key after it's been added", ^{
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		expect(database).notTo.beNil();
 
 		NSDictionary *value = database[testKey];
@@ -44,7 +44,7 @@ describe(@"key lookup", ^{
 		BOOL success = [transactor removeValue:testValue forAttribute:testAttribute key:testKey error:NULL];
 		expect(success).to.beTruthy();
 
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		expect(database).notTo.beNil();
 
 		NSDictionary *value = database[testKey];
@@ -52,7 +52,7 @@ describe(@"key lookup", ^{
 	});
 
 	it(@"return nil for a key that's never been added", ^{
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		expect(database).notTo.beNil();
 
 		NSDictionary *value = database[@"bullshit key"];
@@ -64,7 +64,7 @@ describe(@"key lookup", ^{
 		BOOL success = [transactor addValue:@100 forAttribute:testAttribute key:testKey error:NULL];
 		expect(success).to.beTruthy();
 
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		expect(database).notTo.beNil();
 
 		NSDictionary *value = database[testKey];
@@ -73,7 +73,7 @@ describe(@"key lookup", ^{
 	});
 
 	it(@"should continue to return the old value for old databases", ^{
-		FRZDatabase *originalDatabase = [store currentDatabase:NULL];
+		FRZDatabase *originalDatabase = [store currentDatabase];
 		expect(originalDatabase).notTo.beNil();
 
 		NSDictionary *originalValue = originalDatabase[testKey];
@@ -82,7 +82,7 @@ describe(@"key lookup", ^{
 		BOOL success = [transactor addValue:@100 forAttribute:testAttribute key:testKey error:NULL];
 		expect(success).to.beTruthy();
 
-		FRZDatabase *updatedDatabase = [store currentDatabase:NULL];
+		FRZDatabase *updatedDatabase = [store currentDatabase];
 		expect(updatedDatabase).notTo.beNil();
 
 		NSDictionary *updatedValue = updatedDatabase[testKey];
@@ -95,7 +95,7 @@ describe(@"key lookup", ^{
 
 describe(@"-allKeys", ^{
 	it(@"should contain a key after it's been added", ^{
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		expect(database).notTo.beNil();
 		expect(database.allKeys).to.contain(testKey);
 	});
@@ -105,7 +105,7 @@ describe(@"-allKeys", ^{
 		BOOL success = [transactor removeValue:testValue forAttribute:testAttribute key:testKey error:NULL];
 		expect(success).to.beTruthy();
 
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		expect(database).notTo.beNil();
 		expect(database.allKeys).notTo.contain(testKey);
 	});
@@ -113,7 +113,7 @@ describe(@"-allKeys", ^{
 
 describe(@"-keysWithAttribute:", ^{
 	it(@"should contain a key after it's been added", ^{
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		expect(database).notTo.beNil();
 
 		NSSet *keys = [database keysWithAttribute:testAttribute];
@@ -125,7 +125,7 @@ describe(@"-keysWithAttribute:", ^{
 		BOOL success = [transactor removeValue:testValue forAttribute:testAttribute key:testKey error:NULL];
 		expect(success).to.beTruthy();
 
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		expect(database).notTo.beNil();
 
 		NSSet *keys = [database keysWithAttribute:testAttribute];
@@ -133,7 +133,7 @@ describe(@"-keysWithAttribute:", ^{
 	});
 
 	it(@"shouldn't contain any keys for an attribute that's never been added", ^{
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		expect(database).notTo.beNil();
 
 		static NSString * const randomAttribute = @"some bullshit";
@@ -147,7 +147,7 @@ describe(@"-keysWithAttribute:", ^{
 
 describe(@"-valueForKey:attribute:", ^{
 	it(@"should find the value after it's been added", ^{
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		expect(database).notTo.beNil();
 
 		id value = [database valueForKey:testKey attribute:testAttribute];
@@ -159,7 +159,7 @@ describe(@"-valueForKey:attribute:", ^{
 		BOOL success = [transactor removeValue:testValue forAttribute:testAttribute key:testKey error:NULL];
 		expect(success).to.beTruthy();
 
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		expect(database).notTo.beNil();
 
 		id value = [database valueForKey:testKey attribute:testAttribute];
@@ -167,7 +167,7 @@ describe(@"-valueForKey:attribute:", ^{
 	});
 
 	it(@"shouldn't contain any value for an attribute that's never been added", ^{
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		expect(database).notTo.beNil();
 
 		static NSString * const randomAttribute = @"some bullshit";
@@ -196,7 +196,7 @@ describe(@"special types", ^{
 		success = [transactor addValue:date forAttribute:dateAttribute key:testKey error:NULL];
 		expect(success).to.beTruthy();
 
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		expect(database).notTo.beNil();
 
 		NSDate *valueDate = [database valueForKey:testKey attribute:dateAttribute];
@@ -215,7 +215,7 @@ describe(@"special types", ^{
 		success = [transactor addValue:testKey forAttribute:refAttribute key:key error:NULL];
 		expect(success).to.beTruthy();
 
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		expect(database).notTo.beNil();
 
 		NSDictionary *expected = @{ testAttribute: testValue };

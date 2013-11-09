@@ -63,7 +63,7 @@ it(@"should be able to add new values", ^{
 	BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
 	expect(success).to.beTruthy();
 
-	FRZDatabase *database = [store currentDatabase:NULL];
+	FRZDatabase *database = [store currentDatabase];
 	expect(database).notTo.beNil();
 	expect([database valueForKey:testKey attribute:testAttribute]).to.equal(testValue);
 });
@@ -72,12 +72,12 @@ it(@"should be able to remove values", ^{
 	BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
 	expect(success).to.beTruthy();
 
-	FRZDatabase *database = [store currentDatabase:NULL];
+	FRZDatabase *database = [store currentDatabase];
 	expect(database).notTo.beNil();
 	expect([database valueForKey:testKey attribute:testAttribute]).to.equal(testValue);
 
 	[transactor removeValue:testValue forAttribute:testAttribute key:testKey error:NULL];
-	database = [store currentDatabase:NULL];
+	database = [store currentDatabase];
 	expect(database).notTo.beNil();
 	expect([database valueForKey:testKey attribute:testAttribute]).to.beNil();
 });
@@ -124,7 +124,7 @@ describe(@"-addValuesWithKey:error:block:", ^{
 		}];
 		expect(success).to.beTruthy();
 
-		FRZDatabase *database = [store currentDatabase:NULL];
+		FRZDatabase *database = [store currentDatabase];
 		expect(database).notTo.beNil();
 		expect([database valueForKey:testKey attribute:testAttribute]).to.equal(testValue);
 	});
