@@ -135,6 +135,17 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 
 #pragma mark Properties
 
+- (NSString *)selectHeadValueQuery {
+	static dispatch_once_t onceToken;
+	static NSString *query;
+	dispatch_once(&onceToken, ^{
+		NSString *tableName = [self tableNameForAttribute:FRZStoreHeadTransactionAttribute];
+		query = [NSString stringWithFormat:@"SELECT value FROM %@ WHERE key = 'head' ORDER BY id DESC LIMIT 1", tableName];
+	});
+
+	return query;
+}
+
 - (long long int)headID {
 	// NB: This can't go through the standard FRZDatabase method of retrieval
 	// because that needs to call -headID to fix the FRZDatabase to the current
@@ -142,8 +153,7 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 	FMDatabase *database = [self databaseForCurrentThread:NULL];
 	if (database == nil) return -1;
 
-	NSString *tableName = [self tableNameForAttribute:FRZStoreHeadTransactionAttribute];
-	NSString *query = [NSString stringWithFormat:@"SELECT value FROM %@ WHERE key = 'head' ORDER BY id DESC LIMIT 1", tableName];
+	NSString *query = self.selectHeadValueQuery;
 	FMResultSet *set = [database executeQuery:query];
 	if (set == nil) return -1;
 	if (![set next]) return -1;

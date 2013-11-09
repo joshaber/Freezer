@@ -103,7 +103,7 @@
 
 - (NSString *)generateNewKey {
 	// Problem?
-	return [NSString stringWithFormat:@"user/%@", [[NSUUID UUID] UUIDString]];
+	return [@"user/" stringByAppendingString:[[NSUUID UUID] UUIDString]];
 }
 
 - (BOOL)performChangesWithError:(NSError **)error block:(BOOL (^)(NSError **error))block {
@@ -121,14 +121,35 @@
 	return [NSError errorWithDomain:FRZErrorDomain code:FRZErrorInvalidAttribute userInfo:userInfo];
 }
 
+- (NSString *)insertQueryForAttribute:(NSString *)attribute {
+	static dispatch_once_t onceToken;
+	static NSMutableDictionary *lookup;
+	static dispatch_queue_t queue;
+	dispatch_once(&onceToken, ^{
+		lookup = [NSMutableDictionary dictionary];
+		queue = dispatch_queue_create("blah", 0);
+	});
+
+	__block NSString *query;
+	dispatch_sync(queue, ^{
+		query = lookup[attribute];
+		if (query != nil) return;
+
+		NSString *tableName = [self.store tableNameForAttribute:attribute];
+		query = [NSString stringWithFormat:@"INSERT INTO %@ (attribute, value, key, tx_id) VALUES (?, ?, ?, ?)", tableName];
+		lookup[attribute] = query;
+	});
+
+	return query;
+}
+
 - (BOOL)insertIntoDatabase:(FMDatabase *)database value:(id)value forAttribute:(NSString *)attribute key:(NSString *)key transactionID:(long long int)transactionID error:(NSError **)error {
 	NSParameterAssert(database != nil);
 	NSParameterAssert(value != nil);
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
-	NSString *tableName = [self.store tableNameForAttribute:attribute];
-	NSString *query = [NSString stringWithFormat:@"INSERT INTO %@ (attribute, value, key, tx_id) VALUES (?, ?, ?, ?)", tableName];
+	NSString *query = [self insertQueryForAttribute:attribute];
 	BOOL success = [database executeUpdate:query, attribute, value, key, @(transactionID)];
 	if (!success) {
 		// We're really just guessing that the error is invalid attribute. FMDB
