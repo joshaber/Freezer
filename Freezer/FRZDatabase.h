@@ -16,6 +16,9 @@
 // key - The key to look up. Cannot be nil.
 //
 // Returns of the attributes and values for that key.
+- (id)valueForKey:(NSString *)key;
+
+// The same as -valueForKey:.
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key;
 
 // Get all the keys in the database.
