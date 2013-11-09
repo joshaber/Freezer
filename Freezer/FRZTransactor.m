@@ -222,22 +222,20 @@
 - (BOOL)trimOldKeys:(FMDatabase *)database error:(NSError **)error {
 	FRZDatabase *currentDatabase = [self.store currentDatabase];
 	NSArray *keys = currentDatabase.allKeys.allObjects;
-	NSSet *attributes = currentDatabase.allAttributes;
-	NSMutableString *keySet = [NSMutableString string];
+	NSMutableString *placeholder = [NSMutableString string];
 	for (NSUInteger i = 0; i < keys.count; i++) {
-		NSString *key = keys[i];
-		NSString *escapedKey = [NSString stringWithFormat:@"\"%@\"", key];
 		if (i == 0) {
-			[keySet appendString:escapedKey];
+			[placeholder appendString:@"?"];
 		} else {
-			[keySet appendFormat:@", %@", escapedKey];
+			[placeholder appendString:@", ?"];
 		}
 	}
 
+	NSSet *attributes = currentDatabase.allAttributes;
 	for (NSString *attribute in attributes) {
 		NSString *tableName = [self.store tableNameForAttribute:attribute];
-		NSString *query = [NSString stringWithFormat:@"DELETE FROM %@ WHERE key NOT IN (%@)", tableName, keySet];
-		BOOL success = [database executeUpdate:query];
+		NSString *query = [NSString stringWithFormat:@"DELETE FROM %@ WHERE key NOT IN (%@)", tableName, placeholder];
+		BOOL success = [database executeUpdate:query withArgumentsInArray:keys];
 		if (!success) {
 			if (error != NULL) *error = database.lastError;
 			return NO;
