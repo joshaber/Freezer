@@ -91,6 +91,12 @@
 	return (result.count > 0 ? result : nil);
 }
 
+- (id)valueForKey:(NSString *)key {
+	NSParameterAssert(key != nil);
+
+	return self[key];
+}
+
 - (NSSet *)allKeys {
 	NSMutableSet *results = [NSMutableSet set];
 	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
