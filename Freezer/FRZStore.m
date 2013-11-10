@@ -114,7 +114,7 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 		return NO;
 	}
 
-	success = [database executeUpdate:@"PRAGMA foreign_keys = ON;"];
+	success = [database executeUpdate:@"PRAGMA synchronous = NORMAL;"];
 	if (!success) {
 		if (error != NULL) *error = database.lastError;
 		return NO;
