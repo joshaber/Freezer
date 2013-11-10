@@ -24,4 +24,23 @@
 // attribute attributes (/mind blown).
 - (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type withMetadata:(BOOL)withMetadata error:(NSError **)error;
 
+// Insert a new transaction into the database.
+//
+// database - The database into which the transaction will be inserted. Cannot
+//            be nil.
+// error    - The error if one occurred.
+//
+// Returns the inserted transaction's ID, or -1 if an error occurred.
+- (long long int)insertNewTransactionIntoDatabase:(FMDatabase *)database error:(NSError **)error;
+
+// Update the database's head transaction ID to `ID`.
+//
+// database - The database whose head transaction is being updated. Cannot be
+//            nil.
+// ID       - The ID of the new head transaction.
+// error    - The error if one occurred.
+//
+// Returns whether the update was successful.
+- (BOOL)updateHeadInDatabase:(FMDatabase *)database toID:(long long int)ID error:(NSError **)error;
+
 @end

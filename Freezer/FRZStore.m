@@ -39,6 +39,8 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 
 @property (nonatomic, readonly, assign) pthread_key_t previousDatabaseKey;
 
+@property (nonatomic, readonly, assign) pthread_key_t txIDKey;
+
 @end
 
 @implementation FRZStore
@@ -52,6 +54,7 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 	pthread_key_delete(_queuedChangesKey);
 	pthread_key_delete(_currentDatabaseKey);
 	pthread_key_delete(_previousDatabaseKey);
+	pthread_key_delete(_txIDKey);
 }
 
 - (id)initWithPath:(NSString *)path error:(NSError **)error {
@@ -72,6 +75,7 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 	pthread_key_create(&_queuedChangesKey, NULL);
 	pthread_key_create(&_currentDatabaseKey, NULL);
 	pthread_key_create(&_previousDatabaseKey, NULL);
+	pthread_key_create(&_txIDKey, NULL);
 
 	return self;
 }
@@ -242,16 +246,30 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 	return *transactionCount;
 }
 
-- (BOOL)performTransactionType:(FRZStoreTransactionType)transactionType error:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block {
+- (BOOL)performReadTransactionWithError:(NSError **)error block:(BOOL (^)(FMDatabase *database, NSError **error))block {
+	NSParameterAssert(block != NULL);
+
+	return [self performTransactionType:FRZStoreTransactionTypeDeferred withNewTransaction:NO error:error block:^(FMDatabase *database, long long txID, NSError **error) {
+		return block(database, error);
+	}];
+}
+
+- (BOOL)performWriteTransactionWithError:(NSError **)error block:(BOOL (^)(FMDatabase *database, long long int txID, NSError **error))block {
+	NSParameterAssert(block != nil);
+
+	return [self performTransactionType:FRZStoreTransactionTypeExclusive withNewTransaction:YES error:error block:block];
+}
+
+- (BOOL)performTransactionType:(FRZStoreTransactionType)transactionType withNewTransaction:(BOOL)withNewTransaction error:(NSError **)error block:(BOOL (^)(FMDatabase *database, long long int txID, NSError **error))block {
 	NSParameterAssert(block != NULL);
 
 	FMDatabase *database = [self databaseForCurrentThread:error];
 	if (database == nil) return NO;
 
+	long long int txID = -1;
 	if ([self incrementTransactionCount] == 1) {
 		NSDictionary *transactionTypeToName = @{
 			@(FRZStoreTransactionTypeDeferred): @"deferred",
-			@(FRZStoreTransactionTypeImmediate): @"immediate",
 			@(FRZStoreTransactionTypeExclusive): @"exclusive",
 		};
 
@@ -263,13 +281,33 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 		if (previousDatabase != nil) {
 			pthread_setspecific(self.previousDatabaseKey, CFBridgingRetain(previousDatabase));
 		}
+
+		if (withNewTransaction) {
+			txID = [[self transactor] insertNewTransactionIntoDatabase:database error:error];
+			if (txID < 0) return NO;
+
+			long long int *txIDPerm = malloc(sizeof(*txIDPerm));
+			*txIDPerm = txID;
+			pthread_setspecific(self.txIDKey, txIDPerm);
+		}
+	} else {
+		if (withNewTransaction) {
+			long long int *txIDPerm = pthread_getspecific(self.txIDKey);
+			NSAssert(txIDPerm != NULL, @"In a transaction but no txID in the thread. No cool bro.");
+			txID = *txIDPerm;
+		}
 	}
 
-	BOOL success = block(database, error);
+	BOOL success = block(database, txID, error);
 	if (!success) {
 		[database rollback];
 	} else {
 		if ([self decrementTransactionCount] == 0) {
+			if (withNewTransaction) {
+				BOOL success = [[self transactor] updateHeadInDatabase:database toID:txID error:error];
+				if (!success) return NO;
+			}
+
 			FRZDatabase *changedDatabase = [self currentDatabase];
 
 			[database commit];

@@ -61,14 +61,13 @@
 	NSString *tableName = [self.store tableNameForAttribute:attribute];
 	NSAssert(tableName != nil, @"No table name for attribute: %@", attribute);
 
-	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive withNewTransaction:withMetadata error:error block:^(FMDatabase *database, long long txID, NSError **error) {
 		BOOL success = [self createTableWithName:tableName sqliteType:sqliteType database:database error:error];
 		if (!success) return NO;
 
 		if (!withMetadata) return YES;
 
-		// TODO: Do we want to associate attributes with a tx?
-		success = [self insertIntoDatabase:database value:@(type) forAttribute:FRZStoreAttributeTypeAttribute key:attribute transactionID:0 error:error];
+		success = [self insertIntoDatabase:database value:@(type) forAttribute:FRZStoreAttributeTypeAttribute key:attribute transactionID:txID error:error];
 		if (!success) return NO;
 
 		return YES;
@@ -109,7 +108,7 @@
 - (BOOL)performChangesWithError:(NSError **)error block:(BOOL (^)(NSError **error))block {
 	NSParameterAssert(block != NULL);
 
-	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
 		return block(error);
 	}];
 }
@@ -175,23 +174,21 @@
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
-	// We could split some of this work out into a non-exclusive transaction,
-	// but by batching it all in a single transaction we get a much higher write
-	// speed. (~370 w/s vs. ~600 w/s on my computer).
-	//
-	// TODO: Test whether the write cost of splitting it up is made up in read
-	// speed.
-	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
-		sqlite_int64 txID = [self insertNewTransactionIntoDatabase:database error:error];
-		if (txID < 0) return NO;
-
+	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
 		BOOL success = [self insertIntoDatabase:database value:value forAttribute:attribute key:key transactionID:txID error:error];
 		if (!success) return NO;
 
 		[self.store.queuedChanges addObject:[[FRZChange alloc] initWithType:FRZChangeTypeAdd key:key attribute:attribute delta:value]];
 
-		return [self updateHeadInDatabase:database toID:txID error:error];
+		return YES;
 	}];
+}
+
+- (BOOL)updateHeadInDatabase:(FMDatabase *)database toID:(long long int)ID error:(NSError **)error {
+	NSParameterAssert(database != nil);
+
+	// TODO: Do we want to give head updates a transaction ID?
+	return [self insertIntoDatabase:database value:@(ID) forAttribute:FRZStoreHeadTransactionAttribute key:@"head" transactionID:0 error:error];
 }
 
 - (BOOL)addValuesWithKey:(NSString *)key error:(NSError **)error block:(BOOL (^)(FRZSingleKeyTransactor *transactor, NSError **error))block {
@@ -209,7 +206,7 @@
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
-	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
 		FRZDatabase *previousDatabase = [self.store currentDatabase];
 		id currentValue = [previousDatabase valueForKey:key attribute:attribute];
 		if (![currentValue isEqual:value]) {
@@ -218,23 +215,13 @@
 			return NO;
 		}
 
-		sqlite_int64 txID = [self insertNewTransactionIntoDatabase:database error:error];
-		if (txID < 0) return NO;
-
 		BOOL success = [self insertIntoDatabase:database value:NSNull.null forAttribute:attribute key:key transactionID:txID error:error];
 		if (!success) return NO;
 
 		[self.store.queuedChanges addObject:[[FRZChange alloc] initWithType:FRZChangeTypeRemove key:key attribute:attribute delta:value]];
 
-		return [self updateHeadInDatabase:database toID:txID error:error];
+		return YES;
 	}];
-}
-
-- (BOOL)updateHeadInDatabase:(FMDatabase *)database toID:(sqlite_int64)ID error:(NSError **)error {
-	NSParameterAssert(database != nil);
-
-	// TODO: Do we want to give head updates a transaction ID?
-	return [self insertIntoDatabase:database value:@(ID) forAttribute:FRZStoreHeadTransactionAttribute key:@"head" transactionID:0 error:error];
 }
 
 #pragma mark Trimming
@@ -299,7 +286,7 @@
 }
 
 - (BOOL)trim:(NSError **)error {
-	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive error:error block:^(FMDatabase *database, NSError **error) {
+	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive withNewTransaction:NO error:error block:^(FMDatabase *database, long long txID, NSError **error) {
 		BOOL success = [self trimOldKeys:database error:error];
 		if (!success) return NO;
 

@@ -82,7 +82,7 @@
 	NSParameterAssert(attributes != nil);
 
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
-	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
+	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
 		for (NSString *attribute in attributes) {
 			BOOL success = YES;
 			id value = [self valueForAttribute:attribute key:key inDatabase:database success:&success error:error];
@@ -109,7 +109,7 @@
 
 - (NSSet *)allKeys {
 	NSMutableSet *results = [NSMutableSet set];
-	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
+	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
 		for (NSString *attribute in self.allAttributes) {
 			NSString *tableName = [self.store tableNameForAttribute:attribute];
 			NSString *query = [NSString stringWithFormat:@"SELECT key, value FROM %@ WHERE tx_id <= ? ORDER BY tx_id DESC LIMIT 1", tableName];
@@ -138,7 +138,7 @@
 	NSParameterAssert(attribute != nil);
 
 	NSMutableSet *results = [NSMutableSet set];
-	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
+	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
 		NSString *tableName = [self.store tableNameForAttribute:attribute];
 		NSString *query = [NSString stringWithFormat:@"SELECT key, value FROM %@ WHERE tx_id <= ? GROUP BY key ORDER BY tx_id DESC", tableName];
 		FMResultSet *set = [database executeQuery:query, @(self.headID)];
@@ -163,7 +163,7 @@
 	NSParameterAssert(attribute != nil);
 
 	__block id result;
-	[self.store performTransactionType:FRZStoreTransactionTypeDeferred error:NULL block:^(FMDatabase *database, NSError **error) {
+	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
 		BOOL success = NO;
 		result = [self valueForAttribute:attribute key:key inDatabase:database success:&success error:error];
 		return success;
