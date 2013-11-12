@@ -18,6 +18,12 @@ extern NSString * const FRZStoreTransactionDateAttribute;
 // The attribute's type.
 extern NSString * const FRZStoreAttributeTypeAttribute;
 
+// Is the attribute a collection?
+extern NSString * const FRZStoreAttributeIsCollectionAttribute;
+
+// The key of the parent of the collection.
+extern NSString * const FRZStoreAttributeParentAttribute;
+
 // The type of transaction to use.
 //
 //   FRZStoreTransactionTypeDeferred  - Defer lock acquisition until it is

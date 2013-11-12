@@ -39,7 +39,7 @@ it(@"should have a nil database before anything's been added", ^{
 it(@"should keep in-memory stores separate", ^{
 	FRZStore *store1 = [[FRZStore alloc] initInMemory:NULL];
 	static NSString *testAttribute = @"blah";
-	BOOL success = [[store1 transactor] addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
+	BOOL success = [[store1 transactor] addAttribute:testAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
 	expect(success).to.beTruthy();
 
 	FRZStore *store2 = [[FRZStore alloc] initInMemory:NULL];
@@ -55,7 +55,7 @@ it(@"should have a consistent database in different threads", ^{
 	static NSString * const testAttribute = @"blah";
 	static NSString * const testKey = @"test?";
 	FRZStore *store = [[FRZStore alloc] initInMemory:NULL];
-	BOOL success = [[store transactor] addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
+	BOOL success = [[store transactor] addAttribute:testAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
 	expect(success).to.beTruthy();
 
 	success = [[store transactor] addValue:@42 forAttribute:testAttribute key:testKey error:NULL];
@@ -90,7 +90,7 @@ describe(@"changes", ^{
 		transactor = [store transactor];
 		expect(transactor).notTo.beNil();
 
-		BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
+		BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
 		expect(success).to.beTruthy();
 	});
 
@@ -141,10 +141,10 @@ describe(@"changes", ^{
 		static NSString * const testAttribute1 = @"attr1";
 		static NSString * const testAttribute2 = @"attr2";
 
-		BOOL success = [transactor addAttribute:testAttribute1 type:FRZAttributeTypeInteger error:NULL];
+		BOOL success = [transactor addAttribute:testAttribute1 type:FRZAttributeTypeInteger collection:NO error:NULL];
 		expect(success).to.beTruthy();
 
-		success = [transactor addAttribute:testAttribute2 type:FRZAttributeTypeInteger error:NULL];
+		success = [transactor addAttribute:testAttribute2 type:FRZAttributeTypeInteger collection:NO error:NULL];
 		expect(success).to.beTruthy();
 
 		__block FRZDatabase *database;

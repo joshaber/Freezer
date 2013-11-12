@@ -48,10 +48,12 @@
 	return [self keysWithAttribute:FRZStoreAttributeTypeAttribute];
 }
 
-- (id)valueForAttribute:(NSString *)attribute key:(NSString *)key inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error {
+- (id)singleValueForAttribute:(NSString *)attribute key:(NSString *)key inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error {
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 	NSParameterAssert(database != nil);
+
+	FRZAttributeType type = [self typeForAttribute:attribute];
 
 	NSString *tableName = [self.store tableNameForAttribute:attribute];
 	NSAssert(tableName != nil, @"Unknown table name for attribute: %@", attribute);
@@ -68,7 +70,30 @@
 
 	if (![set next]) return nil;
 
-	return [self unpackedValueFromFirstColumn:set attribute:attribute];
+	return [self unpackedValueFromFirstColumn:set type:type];
+}
+
+- (id)valueForAttribute:(NSString *)attribute key:(NSString *)key inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error {
+	NSParameterAssert(attribute != nil);
+	NSParameterAssert(key != nil);
+	NSParameterAssert(database != nil);
+
+	BOOL isCollection = [self isCollectionAttribute:attribute];
+	if (isCollection) {
+		NSSet *keys = [self keysWithAttribute:attribute];
+		NSMutableSet *values = [NSMutableSet set];
+		for (NSString *collectionKey in keys) {
+			NSString *parentKey = [self valueForKey:collectionKey attribute:FRZStoreAttributeParentAttribute];
+			if (![parentKey isEqual:key]) continue;
+
+			id value = [self singleValueForAttribute:attribute key:collectionKey inDatabase:database success:success error:error];
+			[values addObject:value];
+		}
+
+		return values;
+	} else {
+		return [self singleValueForAttribute:attribute key:key inDatabase:database success:success error:error];
+	}
 }
 
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
@@ -172,22 +197,36 @@
 	return result;
 }
 
+- (NSArray *)defaultAttributes {
+	return @[
+		FRZStoreAttributeTypeAttribute,
+		FRZStoreAttributeParentAttribute,
+		FRZStoreAttributeIsCollectionAttribute,
+	];
+}
+
+- (BOOL)isCollectionAttribute:(NSString *)attribute {
+	NSParameterAssert(attribute != nil);
+
+	if ([self.defaultAttributes containsObject:attribute]) return NO;
+
+	return [[self valueForKey:attribute attribute:FRZStoreAttributeIsCollectionAttribute] boolValue];
+}
+
 - (FRZAttributeType)typeForAttribute:(NSString *)attribute {
 	NSParameterAssert(attribute != nil);
 
-	if (attribute == FRZStoreAttributeTypeAttribute) return 0;
+	if ([self.defaultAttributes containsObject:attribute]) return 0;
 
 	return [[self valueForKey:attribute attribute:FRZStoreAttributeTypeAttribute] integerValue];
 }
 
-- (id)unpackedValueFromFirstColumn:(FMResultSet *)set attribute:(NSString *)attribute {
+- (id)unpackedValueFromFirstColumn:(FMResultSet *)set type:(FRZAttributeType)type {
 	NSParameterAssert(set != nil);
-	NSParameterAssert(attribute != nil);
 
 	id value = [set objectForColumnIndex:0];
 	if (value == NSNull.null) return nil;
 
-	FRZAttributeType type = [self typeForAttribute:attribute];
 	if (type == FRZAttributeTypeDate) {
 		return [set dateForColumnIndex:0];
 	} else if (type == FRZAttributeTypeRef) {

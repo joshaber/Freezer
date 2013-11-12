@@ -28,7 +28,7 @@ beforeEach(^{
 	transactor = [store transactor];
 	expect(transactor).notTo.beNil();
 
-	BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
+	BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
 	expect(success).to.beTruthy();
 });
 
@@ -38,7 +38,7 @@ it(@"should be able to generate a new key", ^{
 });
 
 it(@"", ^{
-	BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
+	BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
 	expect(success).to.beTruthy();
 
 	NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
@@ -85,7 +85,7 @@ it(@"should be able to remove values", ^{
 it(@"should only apply changes when the outermost transaction is completed", ^{
 	const id testValue = @42;
 
-	BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
+	BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
 	expect(success).to.beTruthy();
 
 	NSMutableArray *changes = [NSMutableArray array];
@@ -148,6 +148,19 @@ describe(@"-addValuesWithKey:error:block:", ^{
 
 		expect(changes.count).will.equal(2);
 	});
+});
+
+it(@"should support collections", ^{
+	static NSString *collectionAttribute = @"lots";
+	static NSString *collectionKey = @"things";
+	BOOL success = [transactor addAttribute:collectionAttribute type:FRZAttributeTypeString collection:YES error:NULL];
+	expect(success).to.beTruthy();
+
+	success = [transactor addValue:@"other-key" forAttribute:collectionAttribute key:collectionKey error:NULL];
+	expect(success).to.beTruthy();
+
+	success = [transactor removeValue:@"other-key" forAttribute:collectionAttribute key:collectionKey error:NULL];
+	expect(success).to.beTruthy();
 });
 
 SpecEnd
