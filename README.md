@@ -31,19 +31,6 @@ Stores provide a `RACSignal` of changes which are applied to the store. This
 signal can be filtered, throttled, etc. as needed to find out about the changes
 your app cares about.
 
-## Collections
-
-Collections can be seen as just another view on the data. You can use attributes 
-as tags to group keys into collections.
-
-For example:
-
-```objc
-FRZDatabase *database = [store currentDatabase];
-NSSet *keys = [database keysWithAttribute:@"app/hubber"];
-// `keys` is now all the keys that have the `app/hubber` attribute.
-```
-
 ## Thread-safety
 
 Freezer is completely thread-safe. Databases may be read from in any thread and 
