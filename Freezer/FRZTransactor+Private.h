@@ -22,7 +22,7 @@
 // Like -addAttribute:type:error:, but with the option of not inserting the
 // attribute's metadata. This is used to bootstrap the store before it has the
 // attribute attributes (/mind blown).
-- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type withMetadata:(BOOL)withMetadata error:(NSError **)error;
+- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type collection:(BOOL)collection withMetadata:(BOOL)withMetadata error:(NSError **)error;
 
 // Insert a new transaction into the database.
 //

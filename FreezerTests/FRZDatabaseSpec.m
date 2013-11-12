@@ -22,7 +22,7 @@ beforeEach(^{
 	store = [[FRZStore alloc] initInMemory:NULL];
 
 	FRZTransactor *transactor = [store transactor];
-	BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger error:NULL];
+	BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
 	expect(success).to.beTruthy();
 
 	success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
@@ -137,7 +137,7 @@ describe(@"-keysWithAttribute:", ^{
 		expect(database).notTo.beNil();
 
 		static NSString * const randomAttribute = @"some bullshit";
-		BOOL success = [[store transactor] addAttribute:randomAttribute type:FRZAttributeTypeInteger error:NULL];
+		BOOL success = [[store transactor] addAttribute:randomAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
 		expect(success).to.beTruthy();
 
 		NSSet *keys = [database keysWithAttribute:randomAttribute];
@@ -171,7 +171,7 @@ describe(@"-valueForKey:attribute:", ^{
 		expect(database).notTo.beNil();
 
 		static NSString * const randomAttribute = @"some bullshit";
-		BOOL success = [[store transactor] addAttribute:randomAttribute type:FRZAttributeTypeInteger error:NULL];
+		BOOL success = [[store transactor] addAttribute:randomAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
 		expect(success).to.beTruthy();
 
 		id value = [database valueForKey:testValue attribute:randomAttribute];
@@ -189,7 +189,7 @@ describe(@"special types", ^{
 
 	it(@"should be able to add and get dates", ^{
 		static NSString * const dateAttribute = @"date";
-		BOOL success = [transactor addAttribute:dateAttribute type:FRZAttributeTypeDate error:NULL];
+		BOOL success = [transactor addAttribute:dateAttribute type:FRZAttributeTypeDate collection:NO error:NULL];
 		expect(success).to.beTruthy();
 
 		NSDate *date = [NSDate date];
@@ -205,7 +205,7 @@ describe(@"special types", ^{
 
 	it(@"should be able to add and get refs", ^{
 		static NSString * const refAttribute = @"ref";
-		BOOL success = [transactor addAttribute:refAttribute type:FRZAttributeTypeRef error:NULL];
+		BOOL success = [transactor addAttribute:refAttribute type:FRZAttributeTypeRef collection:NO error:NULL];
 		expect(success).to.beTruthy();
 
 		success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
@@ -221,6 +221,62 @@ describe(@"special types", ^{
 		NSDictionary *expected = @{ testAttribute: testValue };
 		id value = [database valueForKey:key attribute:refAttribute];
 		expect(value).to.equal(expected);
+	});
+
+	it(@"should support collections", ^{
+		static NSString *collectionAttribute = @"lots";
+		static NSString *collectionItemKey = @"things";
+		BOOL success = [transactor addAttribute:collectionAttribute type:FRZAttributeTypeString collection:YES error:NULL];
+		expect(success).to.beTruthy();
+
+		success = [transactor addValue:@"first-key" forAttribute:collectionAttribute key:collectionItemKey error:NULL];
+		expect(success).to.beTruthy();
+
+		success = [transactor addValue:@"second-key" forAttribute:collectionAttribute key:collectionItemKey error:NULL];
+		expect(success).to.beTruthy();
+
+		FRZDatabase *database = [store currentDatabase];
+		expect(database).notTo.beNil();
+
+		NSSet *value = [database valueForKey:collectionItemKey attribute:collectionAttribute];
+		expect(value.count).to.equal(2);
+		expect(value).to.contain(@"first-key");
+		expect(value).to.contain(@"second-key");
+
+		success = [transactor removeValue:@"first-key" forAttribute:collectionAttribute key:collectionItemKey error:NULL];
+		expect(success).to.beTruthy();
+
+		database = [store currentDatabase];
+		expect(database).notTo.beNil();
+
+		value = [database valueForKey:collectionItemKey attribute:collectionAttribute];
+		expect(value.count).to.equal(2);
+		expect(value).to.contain(@"second-key");
+	});
+
+	it(@"should keep collections separate based on parent key", ^{
+		static NSString *collection = @"lots";
+		static NSString *collectionItemKey = @"things";
+		BOOL success = [transactor addAttribute:collection type:FRZAttributeTypeString collection:YES error:NULL];
+		expect(success).to.beTruthy();
+
+		success = [transactor addValue:@"first-key" forAttribute:collection key:collectionItemKey error:NULL];
+		expect(success).to.beTruthy();
+
+		success = [transactor addValue:@"second-key" forAttribute:collection key:collectionItemKey error:NULL];
+		expect(success).to.beTruthy();
+
+		static NSString * const someOtherKey = @"some-other-key";
+		success = [transactor addValue:@"third-key" forAttribute:collection key:someOtherKey error:NULL];
+		expect(success).to.beTruthy();
+
+		FRZDatabase *database = [store currentDatabase];
+		expect(database).notTo.beNil();
+
+		NSSet *value = [database valueForKey:collectionItemKey attribute:collection];
+		expect(value.count).to.equal(2);
+		expect(value).to.contain(@"first-key");
+		expect(value).to.contain(@"second-key");
 	});
 });
 

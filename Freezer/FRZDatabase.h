@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "FRZTransactor.h"
 
 // A database as retrieved from a store.
 @interface FRZDatabase : NSObject <NSCopying>
@@ -49,5 +50,19 @@
 
 // Get all the attributes in the database.
 - (NSSet *)allAttributes;
+
+// Get the type for the given attribute.
+//
+// attribute - The attribute whose type should be found. Cannot be nil.
+//
+// Returns the attribute's type.
+- (FRZAttributeType)typeForAttribute:(NSString *)attribute;
+
+// Is the attribute a collection?
+//
+// attribute - The attribute to check. Cannot be nil.
+//
+// Returns whether the attribute stores a collection.
+- (BOOL)isCollectionAttribute:(NSString *)attribute;
 
 @end

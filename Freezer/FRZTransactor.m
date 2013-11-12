@@ -37,13 +37,13 @@
 
 #pragma mark Attributes
 
-- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type error:(NSError **)error {
+- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type collection:(BOOL)collection error:(NSError **)error {
 	NSParameterAssert(attribute != nil);
 
-	return [self addAttribute:attribute type:type withMetadata:YES error:error];
+	return [self addAttribute:attribute type:type collection:collection withMetadata:YES error:error];
 }
 
-- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type withMetadata:(BOOL)withMetadata error:(NSError **)error {
+- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type collection:(BOOL)collection withMetadata:(BOOL)withMetadata error:(NSError **)error {
 	NSParameterAssert(attribute != nil);
 
 	NSDictionary *typeToSqliteTypeName = @{
@@ -70,7 +70,7 @@
 		success = [self insertIntoDatabase:database value:@(type) forAttribute:FRZStoreAttributeTypeAttribute key:attribute transactionID:txID error:error];
 		if (!success) return NO;
 
-		return YES;
+		return [self insertIntoDatabase:database value:@(collection) forAttribute:FRZStoreAttributeIsCollectionAttribute key:attribute transactionID:txID error:error];
 	}];
 }
 
@@ -174,9 +174,19 @@
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
+	BOOL isCollection = [[self.store currentDatabase] isCollectionAttribute:attribute];
 	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
-		BOOL success = [self insertIntoDatabase:database value:value forAttribute:attribute key:key transactionID:txID error:error];
-		if (!success) return NO;
+		if (isCollection) {
+			NSString *newKey = [self generateNewKey];
+			BOOL success = [self insertIntoDatabase:database value:value forAttribute:attribute key:newKey transactionID:txID error:error];
+			if (!success) return NO;
+
+			success = [self insertIntoDatabase:database value:key forAttribute:FRZStoreAttributeParentAttribute key:newKey transactionID:txID error:error];
+			if (!success) return NO;
+		} else {
+			BOOL success = [self insertIntoDatabase:database value:value forAttribute:attribute key:key transactionID:txID error:error];
+			if (!success) return NO;
+		}
 
 		[self.store.queuedChanges addObject:[[FRZChange alloc] initWithType:FRZChangeTypeAdd key:key attribute:attribute delta:value]];
 
@@ -208,8 +218,17 @@
 
 	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
 		FRZDatabase *previousDatabase = [self.store currentDatabase];
+		BOOL isCollection = [previousDatabase isCollectionAttribute:attribute];
 		id currentValue = [previousDatabase valueForKey:key attribute:attribute];
-		if (![currentValue isEqual:value]) {
+		
+		BOOL validRemoval = NO;
+		if (isCollection) {
+			validRemoval = [currentValue containsObject:value];
+		} else {
+			validRemoval = [currentValue isEqual:value];
+		}
+
+		if (!validRemoval) {
 			NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: NSLocalizedString(@"", @"") };
 			if (error != NULL) *error = [NSError errorWithDomain:FRZErrorDomain code:FRZErrorInvalidValue userInfo:userInfo];
 			return NO;

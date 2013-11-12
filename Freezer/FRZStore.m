@@ -24,6 +24,8 @@ NSString * const FRZStoreHeadTransactionAttribute = @"Freezer/tx/head";
 NSString * const FRZStoreTransactionDateAttribute = @"Freezer/tx/date";
 
 NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
+NSString * const FRZStoreAttributeIsCollectionAttribute = @"Freezer/attribute/is-collection";
+NSString * const FRZStoreAttributeParentAttribute = @"Freezer/attribute/parent";
 
 @interface FRZStore ()
 
@@ -136,13 +138,19 @@ NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 	}
 
 	FRZTransactor *transactor = [self transactor];
-	success = [transactor addAttribute:FRZStoreHeadTransactionAttribute type:FRZAttributeTypeInteger withMetadata:NO error:error];
+	success = [transactor addAttribute:FRZStoreHeadTransactionAttribute type:FRZAttributeTypeInteger collection:NO withMetadata:NO error:error];
 	if (!success) return NO;
 
-	success = [transactor addAttribute:FRZStoreTransactionDateAttribute type:FRZAttributeTypeDate withMetadata:NO error:error];
+	success = [transactor addAttribute:FRZStoreTransactionDateAttribute type:FRZAttributeTypeDate collection:NO withMetadata:NO error:error];
 	if (!success) return NO;
 
-	success = [transactor addAttribute:FRZStoreAttributeTypeAttribute type:FRZAttributeTypeInteger withMetadata:NO error:error];
+	success = [transactor addAttribute:FRZStoreAttributeTypeAttribute type:FRZAttributeTypeInteger collection:NO withMetadata:NO error:error];
+	if (!success) return NO;
+
+	success = [transactor addAttribute:FRZStoreAttributeIsCollectionAttribute type:FRZAttributeTypeInteger collection:NO withMetadata:NO error:error];
+	if (!success) return NO;
+
+	success = [transactor addAttribute:FRZStoreAttributeParentAttribute type:FRZAttributeTypeString collection:NO withMetadata:NO error:error];
 	if (!success) return NO;
 
 	return YES;

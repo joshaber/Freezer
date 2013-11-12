@@ -31,12 +31,13 @@ typedef enum : NSInteger {
 
 // Add an attribute of the given type to the store.
 //
-// attribute - The name of the attribute to add. Cannot be nil.
-// type      - The type of the attribute.
-// error     - The error if one occurred.
+// attribute  - The name of the attribute to add. Cannot be nil.
+// type       - The type of the attribute.
+// collection - Is the attribute a collection of values?
+// error      - The error if one occurred.
 //
 // Returns whether the attribute addition was successful.
-- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type error:(NSError **)error;
+- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type collection:(BOOL)collection error:(NSError **)error;
 
 // Generate a new key to use for adding new values.
 - (NSString *)generateNewKey;
