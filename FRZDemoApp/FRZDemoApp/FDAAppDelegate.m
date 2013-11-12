@@ -21,37 +21,43 @@
 
 	static NSString * const firstNameAttribute = @"user/first-name";
 	static NSString * const lastNameAttribute = @"user/last-name";
-	static NSString * const hubberAttribute = @"user/hubber";
+	static NSString * const hubbersAttribute = @"user/hubbers";
 
+	FRZTransactor *transactor = [self.store transactor];
+	NSString *hubbersKey = [transactor generateNewKey];
 	[[[self.store.changes
 		filter:^ BOOL (FRZChange *change) {
-			return change.type == FRZChangeTypeAdd && [change.attribute isEqual:hubberAttribute];
+			return change.type == FRZChangeTypeAdd && [change.key isEqual:hubbersKey];
 		}]
 		map:^(FRZChange *change) {
-			return change.changedDatabase[change.key];
+			NSString *keyInserted = change.delta;
+			return change.changedDatabase[keyInserted];
 		}]
 		subscribeNext:^(NSDictionary *x) {
 			NSLog(@"%@ is a GitHubber!", x[firstNameAttribute]);
 		}];
 
-	FRZTransactor *transactor = [self.store transactor];
-	[transactor addAttribute:firstNameAttribute type:FRZAttributeTypeString error:NULL];
-	[transactor addAttribute:lastNameAttribute type:FRZAttributeTypeString error:NULL];
-	[transactor addAttribute:hubberAttribute type:FRZAttributeTypeInteger error:NULL];
+	[transactor addAttribute:firstNameAttribute type:FRZAttributeTypeString collection:NO error:NULL];
+	[transactor addAttribute:lastNameAttribute type:FRZAttributeTypeString collection:NO error:NULL];
+	[transactor addAttribute:hubbersAttribute type:FRZAttributeTypeRef collection:YES error:NULL];
 
-	[transactor addValuesWithKey:[transactor generateNewKey] error:NULL block:^(FRZSingleKeyTransactor *transactor, NSError **error) {
+	NSString *joshKey = [transactor generateNewKey];
+	[transactor addValuesWithKey:joshKey error:NULL block:^(FRZSingleKeyTransactor *transactor, NSError **error) {
 		[transactor addValue:@"Josh" forAttribute:firstNameAttribute error:error];
 		[transactor addValue:@"Abernathy" forAttribute:lastNameAttribute error:error];
-		[transactor addValue:@1 forAttribute:hubberAttribute error:error];
 		return YES;
 	}];
 
-	[transactor addValuesWithKey:[transactor generateNewKey] error:NULL block:^(FRZSingleKeyTransactor *transactor, NSError **error) {
+	[transactor addValue:joshKey forAttribute:hubbersAttribute key:hubbersKey error:NULL];
+
+	NSString *dannyKey = [transactor generateNewKey];
+	[transactor addValuesWithKey:dannyKey error:NULL block:^(FRZSingleKeyTransactor *transactor, NSError **error) {
 		[transactor addValue:@"Danny" forAttribute:firstNameAttribute error:error];
 		[transactor addValue:@"Greg" forAttribute:lastNameAttribute error:error];
-		[transactor addValue:@1 forAttribute:hubberAttribute error:error];
 		return YES;
 	}];
+
+	[transactor addValue:dannyKey forAttribute:hubbersAttribute key:hubbersKey error:NULL];
 
 	[transactor addValuesWithKey:[transactor generateNewKey] error:NULL block:^(FRZSingleKeyTransactor *transactor, NSError **error) {
 		[transactor addValue:@"John" forAttribute:firstNameAttribute error:error];
@@ -62,26 +68,19 @@
 	FRZDatabase *database = [self.store currentDatabase];
 	NSLog(@" ");
 	NSLog(@"Hubbers:");
-	NSSet *hubberKeys = [database keysWithAttribute:hubberAttribute];
-	for (NSString *key in hubberKeys) {
-		NSLog(@"* %@ %@", [database valueForKey:key attribute:firstNameAttribute], [database valueForKey:key attribute:lastNameAttribute]);
+	NSSet *hubbers = [database valueForKey:hubbersKey attribute:hubbersAttribute];
+	for (NSDictionary *hubber in hubbers) {
+		NSLog(@"* %@ %@", hubber[firstNameAttribute], hubber[lastNameAttribute]);
 	}
 
-	NSLog(@" ");
-	NSLog(@"Not Hubbers:");
-	NSSet *namedKeys = [database keysWithAttribute:firstNameAttribute];
-	NSMutableSet *nonHubberKeys = [namedKeys mutableCopy];
-	[nonHubberKeys minusSet:hubberKeys];
-	for (NSString *key in nonHubberKeys) {
-		NSLog(@"* %@ %@", [database valueForKey:key attribute:firstNameAttribute], [database valueForKey:key attribute:lastNameAttribute]);
-	}
-
-	[transactor addValuesWithKey:[transactor generateNewKey] error:NULL block:^(FRZSingleKeyTransactor *transactor, NSError **error) {
+	NSString *jssKey = [transactor generateNewKey];
+	[transactor addValuesWithKey:jssKey error:NULL block:^(FRZSingleKeyTransactor *transactor, NSError **error) {
 		[transactor addValue:@"Justin" forAttribute:firstNameAttribute error:error];
 		[transactor addValue:@"Spahr-Summers" forAttribute:lastNameAttribute error:error];
-		[transactor addValue:@1 forAttribute:hubberAttribute error:error];
 		return YES;
 	}];
+
+	[transactor addValue:jssKey forAttribute:hubbersAttribute key:hubbersKey error:NULL];
 }
 
 @end
