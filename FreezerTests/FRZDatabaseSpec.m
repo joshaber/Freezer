@@ -174,7 +174,7 @@ describe(@"-valueForKey:attribute:", ^{
 		BOOL success = [[store transactor] addAttribute:randomAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
 		expect(success).to.beTruthy();
 
-		id value = [database valueForKey:testValue attribute:randomAttribute];
+		id value = [database valueForKey:testKey attribute:randomAttribute];
 		expect(value).to.beNil();
 	});
 });
