@@ -41,6 +41,10 @@ typedef enum : NSInteger {
 
 @interface FRZStore ()
 
+// The database before the transaction began. This is only valid while in a
+// transaction. Terrible things may happen if it's called outside a transaction.
+@property (nonatomic, readonly, strong) FRZDatabase *databaseBeforeTransaction;
+
 // An array of changes which will be delivered after the current transaction has
 // been committed.
 - (NSMutableArray *)queuedChanges;

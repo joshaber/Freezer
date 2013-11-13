@@ -174,7 +174,7 @@
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
-	BOOL isCollection = [[self.store currentDatabase] isCollectionAttribute:attribute];
+	BOOL isCollection = [self.store.databaseBeforeTransaction isCollectionAttribute:attribute];
 	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
 		if (isCollection) {
 			NSString *newKey = [self generateNewKey];
@@ -217,7 +217,7 @@
 	NSParameterAssert(key != nil);
 
 	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
-		FRZDatabase *previousDatabase = [self.store currentDatabase];
+		FRZDatabase *previousDatabase = self.store.databaseBeforeTransaction;
 		BOOL isCollection = [previousDatabase isCollectionAttribute:attribute];
 		id currentValue = [previousDatabase valueForKey:key attribute:attribute];
 		

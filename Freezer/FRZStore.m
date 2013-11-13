@@ -320,7 +320,7 @@ NSString * const FRZStoreAttributeParentAttribute = @"Freezer/attribute/parent";
 
 			[database commit];
 
-			FRZDatabase *previousDatabase = (__bridge id)pthread_getspecific(self.previousDatabaseKey);
+			FRZDatabase *previousDatabase = self.databaseBeforeTransaction;
 
 			NSArray *queuedChanges = [self.queuedChanges copy];
 			[self.queuedChanges removeAllObjects];
@@ -333,6 +333,10 @@ NSString * const FRZStoreAttributeParentAttribute = @"Freezer/attribute/parent";
 	}
 
 	return success;
+}
+
+- (FRZDatabase *)databaseBeforeTransaction {
+	return (__bridge id)pthread_getspecific(self.previousDatabaseKey);
 }
 
 @end
