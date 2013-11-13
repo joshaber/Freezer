@@ -18,6 +18,9 @@
 
 @property (nonatomic, readonly, assign) long long int headID;
 
+// This must only be used while synchronized on it.
+@property (nonatomic, readonly, strong) NSMutableDictionary *cache;
+
 @end
 
 @implementation FRZDatabase
@@ -32,6 +35,7 @@
 
 	_store = store;
 	_headID = headID;
+	_cache = [NSMutableDictionary dictionary];
 
 	return self;
 }
@@ -187,12 +191,25 @@
 	NSParameterAssert(key != nil);
 	NSParameterAssert(attribute != nil);
 
+	@synchronized (self.cache) {
+		NSString *cacheKey = [key stringByAppendingString:attribute];
+		id cachedValue = self.cache[cacheKey];
+		if (cachedValue != nil) return cachedValue;
+	}
+
 	__block id result;
 	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
 		BOOL success = NO;
 		result = [self valueForAttribute:attribute key:key inDatabase:database success:&success error:error];
 		return success;
 	}];
+
+	if (result != nil) {
+		@synchronized (self.cache) {
+			NSString *cacheKey = [key stringByAppendingString:attribute];
+			self.cache[cacheKey] = result;
+		}
+	}
 
 	return result;
 }
