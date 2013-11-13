@@ -174,8 +174,8 @@
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
-	BOOL isCollection = [self.store.databaseBeforeTransaction isCollectionAttribute:attribute];
 	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
+		BOOL isCollection = [self.store.databaseBeforeTransaction isCollectionAttribute:attribute];
 		if (isCollection) {
 			NSString *newKey = [self generateNewKey];
 			BOOL success = [self insertIntoDatabase:database value:value forAttribute:attribute key:newKey transactionID:txID error:error];

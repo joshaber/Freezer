@@ -329,6 +329,8 @@ NSString * const FRZStoreAttributeParentAttribute = @"Freezer/attribute/parent";
 				change.changedDatabase = changedDatabase;
 				[self.changesSubject sendNext:change];
 			}
+
+			pthread_setspecific(self.previousDatabaseKey, NULL);
 		}
 	}
 
