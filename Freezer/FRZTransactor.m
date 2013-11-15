@@ -198,7 +198,6 @@
 - (BOOL)updateHeadInDatabase:(FMDatabase *)database toID:(long long int)ID error:(NSError **)error {
 	NSParameterAssert(database != nil);
 
-	// TODO: Do we want to give head updates a transaction ID?
 	return [self insertIntoDatabase:database value:@(ID) forAttribute:FRZStoreHeadTransactionAttribute key:@"head" transactionID:0 error:error];
 }
 
@@ -307,12 +306,45 @@
 	return YES;
 }
 
+- (BOOL)deleteEverythingButTheLastIDWithTableName:(NSString *)tableName database:(FMDatabase *)database error:(NSError **)error {
+	NSString *query = [NSString stringWithFormat:@"SELECT id FROM %@ ORDER BY id DESC LIMIT 1", tableName];
+	FMResultSet *set = [database executeQuery:query];
+	if (set == nil) {
+		if (error != NULL) *error = database.lastError;
+		return NO;
+	}
+
+	if (![set next]) return YES;
+
+	NSString *headID = [set objectForColumnIndex:0];
+	NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE id != ?", tableName];
+	BOOL success = [database executeUpdate:deleteQuery, headID];
+	if (!success) {
+		if (error != NULL) *error = database.lastError;
+		return NO;
+	}
+
+	return YES;
+}
+
+- (BOOL)trimOldTransactions:(FMDatabase *)database error:(NSError **)error {
+	NSString *tableName = [self.store tableNameForAttribute:FRZStoreTransactionDateAttribute];
+	BOOL success = [self deleteEverythingButTheLastIDWithTableName:tableName database:database error:error];
+	if (!success) return NO;
+
+	tableName = [self.store tableNameForAttribute:FRZStoreHeadTransactionAttribute];
+	return [self deleteEverythingButTheLastIDWithTableName:tableName database:database error:error];
+}
+
 - (BOOL)trim:(NSError **)error {
 	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive withNewTransaction:NO error:error block:^(FMDatabase *database, long long txID, NSError **error) {
 		BOOL success = [self trimOldKeys:database error:error];
 		if (!success) return NO;
 
-		return [self trimOldValues:database error:error];
+		success = [self trimOldValues:database error:error];
+		if (!success) return NO;
+
+		return [self trimOldTransactions:database error:error];
 	}];
 }
 
