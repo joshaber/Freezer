@@ -164,6 +164,12 @@ void FRZStoreReleaseDestructor(void *data) {
 	return YES;
 }
 
+#pragma mark NSObject
+
+- (NSString *)description {
+	return [NSString stringWithFormat:@"<%@: %p> %@", self.class, self, self.databasePath];
+}
+
 #pragma mark Attributes
 
 - (NSString *)tableNameForAttribute:(NSString *)attribute {
