@@ -141,20 +141,20 @@
 	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
 		for (NSString *attribute in self.allAttributes) {
 			NSString *tableName = [self.store tableNameForAttribute:attribute];
-			NSString *query = [NSString stringWithFormat:@"SELECT key, value FROM %@ WHERE tx_id <= ? ORDER BY tx_id DESC LIMIT 1", tableName];
+			NSString *query = [NSString stringWithFormat:@"SELECT key, value FROM %@ WHERE tx_id <= ? GROUP BY key ORDER BY tx_id DESC", tableName];
 			FMResultSet *set = [database executeQuery:query, @(self.headID)];
 			if (set == nil) {
 				if (error != NULL) *error = database.lastError;
 				return NO;
 			}
 
-			if (![set next]) continue;
+			while ([set next]) {
+				id value = set[@"value"];
+				if (value == NSNull.null) continue;
 
-			id value = set[@"value"];
-			if (value == NSNull.null) continue;
-
-			id key = set[@"key"];
-			[results addObject:key];
+				id key = set[@"key"];
+				[results addObject:key];
+			}
 		}
 
 		return YES;
