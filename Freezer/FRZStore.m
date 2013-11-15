@@ -324,6 +324,7 @@ void FRZStoreReleaseDestructor(void *data) {
 	BOOL success = block(database, txID, error);
 	if (!success) {
 		[database rollback];
+		[self decrementTransactionCount];
 	} else {
 		if ([self decrementTransactionCount] == 0) {
 			long long int *txIDPerm = pthread_getspecific(self.txIDKey);
