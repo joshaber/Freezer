@@ -296,7 +296,7 @@
 		}
 
 		NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE id NOT IN (%@)", tableName, [self placeholderWithCount:IDs.count]];
-		BOOL success = [database executeUpdate:deleteQuery, IDs];
+		BOOL success = [database executeUpdate:deleteQuery withArgumentsInArray:IDs];
 		if (!success) {
 			if (error != NULL) *error = database.lastError;
 			return NO;

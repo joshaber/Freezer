@@ -82,4 +82,16 @@ typedef enum : NSInteger {
 // Returns whether the changes were successful.
 - (BOOL)performChangesWithError:(NSError **)error block:(BOOL (^)(NSError **error))block;
 
+// Trim old keys and values from the store.
+//
+// Note that this *does* effectively change existing databases in place. This
+// makes it a dangerous operation that should only be done when you can
+// guarantee that there are no FRZDatabase instances alive. Meaning it's
+// probably best to do this at the app launch or quit.
+//
+// error - The error if one occurred.
+//
+// Returns whether the trim was successful.
+- (BOOL)trim:(NSError **)error;
+
 @end

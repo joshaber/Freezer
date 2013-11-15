@@ -163,4 +163,20 @@ it(@"should support collections", ^{
 	expect(success).to.beTruthy();
 });
 
+it(@"should trim", ^{
+	BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
+	expect(success).to.beTruthy();
+
+	FRZDatabase *database = [store currentDatabase];
+	expect(database).notTo.beNil();
+	expect([database valueForKey:testKey attribute:testAttribute]).to.equal(testValue);
+
+	success = [transactor trim:NULL];
+	expect(success).to.beTruthy();
+
+	database = [store currentDatabase];
+	expect(database).notTo.beNil();
+	expect([database valueForKey:testKey attribute:testAttribute]).to.equal(testValue);
+});
+
 SpecEnd
