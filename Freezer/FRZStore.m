@@ -289,7 +289,8 @@ void FRZStoreReleaseDestructor(void *data) {
 	if (database == nil) return NO;
 
 	long long int txID = -1;
-	if ([self incrementTransactionCount] == 1) {
+	NSUInteger transactionCount = [self incrementTransactionCount];
+	if (transactionCount == 1) {
 		NSDictionary *transactionTypeToName = @{
 			@(FRZStoreTransactionTypeDeferred): @"deferred",
 			@(FRZStoreTransactionTypeExclusive): @"exclusive",
@@ -325,7 +326,8 @@ void FRZStoreReleaseDestructor(void *data) {
 		[database rollback];
 	} else {
 		if ([self decrementTransactionCount] == 0) {
-			if (withNewTransaction) {
+			long long int *txIDPerm = pthread_getspecific(self.txIDKey);
+			if (txIDPerm != NULL) {
 				BOOL success = [[self transactor] updateHeadInDatabase:database toID:txID error:error];
 				if (!success) return NO;
 			}
@@ -344,12 +346,11 @@ void FRZStoreReleaseDestructor(void *data) {
 				[self.changesSubject sendNext:change];
 			}
 
-			long long int *txIDPerm = pthread_getspecific(self.txIDKey);
 			free(txIDPerm);
 			pthread_setspecific(self.txIDKey, NULL);
 
 			void *database = pthread_getspecific(self.previousDatabaseKey);
-			CFRelease(database);
+			if (database != NULL) CFRelease(database);
 			pthread_setspecific(self.previousDatabaseKey, NULL);
 		}
 	}
