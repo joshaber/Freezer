@@ -245,9 +245,7 @@
 
 #pragma mark Trimming
 
-- (NSString *)deleteQueryForTable:(NSString *)table placeholderCount:(NSUInteger)placeholderCount {
-	NSParameterAssert(table != nil);
-
+- (NSString *)placeholderWithCount:(NSUInteger)placeholderCount {
 	NSMutableString *placeholder = [NSMutableString string];
 	for (NSUInteger i = 0; i < placeholderCount; i++) {
 		if (i == 0) {
@@ -257,16 +255,17 @@
 		}
 	}
 
-	return [NSString stringWithFormat:@"DELETE FROM %@ WHERE key NOT IN (%@)", table, placeholder];
+	return placeholder;
 }
 
 - (BOOL)trimOldKeys:(FMDatabase *)database error:(NSError **)error {
-	FRZDatabase *currentDatabase = [self.store currentDatabase];
+	// 1. Get all the keys in the head of the database.
+	// 2. Delete any entries with a key not in that set.
+	FRZDatabase *currentDatabase = self.store.databaseBeforeTransaction;
 	NSArray *keys = currentDatabase.allKeys.allObjects;
-	NSSet *attributes = currentDatabase.allAttributes;
-	for (NSString *attribute in attributes) {
+	for (NSString *attribute in currentDatabase.allAttributes) {
 		NSString *tableName = [self.store tableNameForAttribute:attribute];
-		NSString *query = [self deleteQueryForTable:tableName placeholderCount:keys.count];
+		NSString *query = [NSString stringWithFormat:@"DELETE FROM %@ WHERE key NOT IN (%@)", tableName, [self placeholderWithCount:keys.count]];
 		BOOL success = [database executeUpdate:query withArgumentsInArray:keys];
 		if (!success) {
 			if (error != NULL) *error = database.lastError;
@@ -278,23 +277,26 @@
 }
 
 - (BOOL)trimOldValues:(FMDatabase *)database error:(NSError **)error {
-	FRZDatabase *currentDatabase = [self.store currentDatabase];
-	NSSet *attributes = currentDatabase.allAttributes;
-	for (NSString *attribute in attributes) {
+	// 1. Get the IDs for all the latest values for the keys.
+	// 2. Delete any entries with an ID not in that set.
+	FRZDatabase *currentDatabase = self.store.databaseBeforeTransaction;
+	for (NSString *attribute in currentDatabase.allAttributes) {
 		NSString *tableName = [self.store tableNameForAttribute:attribute];
-		NSString *query = [NSString stringWithFormat:@"SELECT id FROM %@ WHERE key = ? AND tx_id <= ? ORDER BY tx_id DESC LIMIT 1", tableName];
+		NSString *query = [NSString stringWithFormat:@"SELECT id FROM %@ GROUP BY key ORDER BY tx_id DESC", tableName];
 		FMResultSet *set = [database executeQuery:query];
 		if (set == nil) {
 			if (error != NULL) *error = database.lastError;
 			return NO;
 		}
 
-		if (![set next]) continue;
+		NSMutableArray *IDs = [NSMutableArray array];
+		while ([set next]) {
+			id ID = [set objectForColumnIndex:0];
+			[IDs addObject:ID];
+		}
 
-		NSNumber *topID = [set objectForColumnIndex:0];
-
-		query = [NSString stringWithFormat:@"DELETE FROM %@ WHERE id != ?", tableName];
-		BOOL success = [database executeUpdate:query, topID];
+		NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE id NOT IN (%@)", tableName, [self placeholderWithCount:IDs.count]];
+		BOOL success = [database executeUpdate:deleteQuery, IDs];
 		if (!success) {
 			if (error != NULL) *error = database.lastError;
 			return NO;
