@@ -73,13 +73,21 @@ NSString * const FRZStoreAttributeParentAttribute = @"Freezer/attribute/parent";
 
 	_changesSubject = [RACSubject subject];
 
-	pthread_key_create(&_activeTransactionCountKey, NULL);
-	pthread_key_create(&_queuedChangesKey, NULL);
-	pthread_key_create(&_currentDatabaseKey, NULL);
-	pthread_key_create(&_previousDatabaseKey, NULL);
-	pthread_key_create(&_txIDKey, NULL);
+	pthread_key_create(&_activeTransactionCountKey, FRZStoreMallocDestructor);
+	pthread_key_create(&_queuedChangesKey, FRZStoreReleaseDestructor);
+	pthread_key_create(&_currentDatabaseKey, FRZStoreReleaseDestructor);
+	pthread_key_create(&_previousDatabaseKey, FRZStoreReleaseDestructor);
+	pthread_key_create(&_txIDKey, FRZStoreMallocDestructor);
 
 	return self;
+}
+
+void FRZStoreMallocDestructor(void *data) {
+	free(data);
+}
+
+void FRZStoreReleaseDestructor(void *data) {
+	CFRelease(data);
 }
 
 - (id)initInMemory:(NSError **)error {
@@ -330,6 +338,12 @@ NSString * const FRZStoreAttributeParentAttribute = @"Freezer/attribute/parent";
 				[self.changesSubject sendNext:change];
 			}
 
+			long long int *txIDPerm = pthread_getspecific(self.txIDKey);
+			free(txIDPerm);
+			pthread_setspecific(self.txIDKey, NULL);
+
+			void *database = pthread_getspecific(self.previousDatabaseKey);
+			CFRelease(database);
 			pthread_setspecific(self.previousDatabaseKey, NULL);
 		}
 	}
