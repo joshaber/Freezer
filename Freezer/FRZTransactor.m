@@ -309,12 +309,9 @@
 
 - (BOOL)trim:(NSError **)error {
 	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive withNewTransaction:NO error:error block:^(FMDatabase *database, long long txID, NSError **error) {
-#if 0
 		BOOL success = [self trimOldKeys:database error:error];
 		if (!success) return NO;
 
-		return YES;
-#endif
 		return [self trimOldValues:database error:error];
 	}];
 }
