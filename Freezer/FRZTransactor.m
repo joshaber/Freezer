@@ -65,6 +65,7 @@
 		BOOL success = [self createTableWithName:tableName sqliteType:sqliteType database:database error:error];
 		if (!success) return NO;
 
+		if (database.changes < 1) return YES;
 		if (!withMetadata) return YES;
 
 		success = [self insertIntoDatabase:database value:@(type) forAttribute:FRZStoreAttributeTypeAttribute key:attribute transactionID:txID error:error];
