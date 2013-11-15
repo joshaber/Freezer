@@ -219,7 +219,7 @@
 	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
 		FRZDatabase *previousDatabase = self.store.databaseBeforeTransaction;
 		BOOL isCollection = [previousDatabase isCollectionAttribute:attribute];
-		id currentValue = [previousDatabase valueForKey:key attribute:attribute];
+		id currentValue = [previousDatabase valueForKey:key attribute:attribute resolveReferences:NO];
 		
 		BOOL validRemoval = NO;
 		if (isCollection) {
@@ -229,7 +229,8 @@
 		}
 
 		if (!validRemoval) {
-			NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: NSLocalizedString(@"", @"") };
+			NSString *description = [NSString stringWithFormat:NSLocalizedString(@"Given value (%@) does not match current value (%@)", @""), value, currentValue];
+			NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: description };
 			if (error != NULL) *error = [NSError errorWithDomain:FRZErrorDomain code:FRZErrorInvalidValue userInfo:userInfo];
 			return NO;
 		}

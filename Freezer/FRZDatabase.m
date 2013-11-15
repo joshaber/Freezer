@@ -52,7 +52,7 @@
 	return [self keysWithAttribute:FRZStoreAttributeTypeAttribute];
 }
 
-- (id)singleValueForAttribute:(NSString *)attribute key:(NSString *)key inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error {
+- (id)singleValueForAttribute:(NSString *)attribute key:(NSString *)key resolveRef:(BOOL)resolveRef inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error {
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 	NSParameterAssert(database != nil);
@@ -74,10 +74,10 @@
 
 	if (![set next]) return nil;
 
-	return [self unpackedValueFromFirstColumn:set type:type];
+	return [self unpackedValueFromFirstColumn:set type:type resolveRef:resolveRef];
 }
 
-- (id)valueForAttribute:(NSString *)attribute key:(NSString *)key inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error {
+- (id)valueForAttribute:(NSString *)attribute key:(NSString *)key inDatabase:(FMDatabase *)database resolveReferences:(BOOL)resolveReferences success:(BOOL *)success error:(NSError **)error {
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 	NSParameterAssert(database != nil);
@@ -90,13 +90,13 @@
 			NSString *parentKey = [self valueForKey:collectionKey attribute:FRZStoreAttributeParentAttribute];
 			if (![parentKey isEqual:key]) continue;
 
-			id value = [self singleValueForAttribute:attribute key:collectionKey inDatabase:database success:success error:error];
+			id value = [self singleValueForAttribute:attribute key:collectionKey resolveRef:resolveReferences inDatabase:database success:success error:error];
 			[values addObject:value];
 		}
 
 		return values;
 	} else {
-		return [self singleValueForAttribute:attribute key:key inDatabase:database success:success error:error];
+		return [self singleValueForAttribute:attribute key:key resolveRef:resolveReferences inDatabase:database success:success error:error];
 	}
 }
 
@@ -114,7 +114,7 @@
 	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
 		for (NSString *attribute in attributes) {
 			BOOL success = YES;
-			id value = [self valueForAttribute:attribute key:key inDatabase:database success:&success error:error];
+			id value = [self valueForAttribute:attribute key:key inDatabase:database resolveReferences:YES success:&success error:error];
 			if (value == nil && !success) return NO;
 			if (value == nil) continue;
 
@@ -191,8 +191,15 @@
 	NSParameterAssert(key != nil);
 	NSParameterAssert(attribute != nil);
 
+	return [self valueForKey:key attribute:attribute resolveReferences:YES];
+}
+
+- (id)valueForKey:(NSString *)key attribute:(NSString *)attribute resolveReferences:(BOOL)resolveReferences {
+	NSParameterAssert(key != nil);
+	NSParameterAssert(attribute != nil);
+
+	NSString *cacheKey = [NSString stringWithFormat:@"%@-%@-%d", key, attribute, resolveReferences];
 	@synchronized (self.cache) {
-		NSString *cacheKey = [key stringByAppendingString:attribute];
 		id cachedValue = self.cache[cacheKey];
 		if (cachedValue != nil) return cachedValue;
 	}
@@ -200,13 +207,12 @@
 	__block id result;
 	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
 		BOOL success = NO;
-		result = [self valueForAttribute:attribute key:key inDatabase:database success:&success error:error];
+		result = [self valueForAttribute:attribute key:key inDatabase:database resolveReferences:resolveReferences success:&success error:error];
 		return success;
 	}];
 
 	if (result != nil) {
 		@synchronized (self.cache) {
-			NSString *cacheKey = [key stringByAppendingString:attribute];
 			self.cache[cacheKey] = result;
 		}
 	}
@@ -238,7 +244,7 @@
 	return [[self valueForKey:attribute attribute:FRZStoreAttributeTypeAttribute] integerValue];
 }
 
-- (id)unpackedValueFromFirstColumn:(FMResultSet *)set type:(FRZAttributeType)type {
+- (id)unpackedValueFromFirstColumn:(FMResultSet *)set type:(FRZAttributeType)type resolveRef:(BOOL)resolveRef {
 	NSParameterAssert(set != nil);
 
 	id value = [set objectForColumnIndex:0];
@@ -246,7 +252,7 @@
 
 	if (type == FRZAttributeTypeDate) {
 		return [set dateForColumnIndex:0];
-	} else if (type == FRZAttributeTypeRef) {
+	} else if (type == FRZAttributeTypeRef && resolveRef) {
 		return self[value];
 	}
 

@@ -32,13 +32,24 @@
 // Returns a set of NSString keys.
 - (NSSet *)keysWithAttribute:(NSString *)attribute;
 
-// Find the value for the given attribute of the given key.
+// Find the value for the given attribute of the given key. If the attribute is
+// of the type FRZAttributeTypeRef, then the reference is resolved.
 //
 // key       - The key whose attribute should be looked up. Cannot be nil.
 // attribute - The attribute to look up. Cannot be nil.
 //
 // Returns the value.
 - (id)valueForKey:(NSString *)key attribute:(NSString *)attribute;
+
+// Find the value for the given attribute of the given key.
+//
+// key               - The key whose attribute should be looked up. Cannot be
+//                     nil.
+// attribute         - The attribute to look up. Cannot be nil.
+// resolveReferences - Should references be resolved?
+//
+// Returns the value.
+- (id)valueForKey:(NSString *)key attribute:(NSString *)attribute resolveReferences:(BOOL)resolveReferences;
 
 // Find the values for the given attributes of the given key.
 //
