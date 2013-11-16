@@ -19,7 +19,7 @@ changes in place.
 
 Freezer does not store objects. Instead, it stores an arbitrary collection of 
 attribute-value pairs, grouped by a key. Attributes have a fixed type and must
-be added to the store before being used. (See `-[FRZStore addAttribute:type:error:]`.)
+be added to the store before being used. (See `-[FRZStore addAttribute:type:collection:error:]`.)
 
 A collection of attributes, grouped by key, may be transformed into, for example,
 a [Mantle](https://github.com/github/Mantle) model object. But note that model 
@@ -38,11 +38,10 @@ Freezer is completely thread-safe. Databases may be read from in any thread and
 
 ## If the database is immutable... does that mean the store grows without bound?
 
-[Yuuuuuuuuuup](http://www.youtube.com/watch?v=zu9ZxzsWchg). That's less than 
-ideal.
+[Yuuuuuuuuuup](http://www.youtube.com/watch?v=zu9ZxzsWchg). But you can call 
+`-[FRZTransactor trim:]` to trim the store down to the latest database.
 
 ## Should I use this?
 
 [Nooooooooope](http://www.youtube.com/watch?v=mJXYMDu6dpY). Or at least not yet. 
-Freezer's still in a constant state of flux. Also, the above thing about the 
-store growing without bound.
+Freezer's still in a constant state of flux.
