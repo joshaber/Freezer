@@ -38,4 +38,17 @@ typedef enum : NSInteger {
 // The database after the change was applied.
 @property (nonatomic, readonly, copy) FRZDatabase *changedDatabase;
 
+// Initializes the receiver with the given properties.
+//
+// type             - The type of change.
+// key              - The key whose value of attribute was changed. Cannot be
+//                    nil.
+// attribute        - The attribute whose value was changed. Cannot be nil.
+// delta            - The delta for the change. Cannot be nil.
+// previousDatabase - The database before the change. May be nil.
+// changedDatabase  - The database after the change. Cannot be nil.
+//
+// Returns the initialized object.
+- (id)initWithType:(FRZChangeType)type key:(NSString *)key attribute:(NSString *)attribute delta:(id)delta previousDatabase:(FRZDatabase *)previousDatabase changedDatabase:(FRZDatabase *)changedDatabase;
+
 @end
