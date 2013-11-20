@@ -235,8 +235,23 @@
 			return NO;
 		}
 
-		BOOL success = [self insertIntoDatabase:database value:NSNull.null forAttribute:attribute key:key transactionID:txID error:error];
-		if (!success) return NO;
+		if (isCollection) {
+			NSSet *keys = [previousDatabase keysWithAttribute:attribute];
+			for (NSString *key in keys) {
+				BOOL success = YES;
+				id singleValue = [previousDatabase singleValueForAttribute:attribute key:key resolveRef:NO inDatabase:database success:&success error:error];
+				if (!success) return NO;
+				if (![singleValue isEqual:value]) continue;
+
+				success = [self insertIntoDatabase:database value:NSNull.null forAttribute:attribute key:key transactionID:txID error:error];
+				if (!success) return NO;
+
+				break;
+			}
+		} else {
+			BOOL success = [self insertIntoDatabase:database value:NSNull.null forAttribute:attribute key:key transactionID:txID error:error];
+			if (!success) return NO;
+		}
 
 		[self.store.queuedChanges addObject:[[FRZChange alloc] initWithType:FRZChangeTypeRemove key:key attribute:attribute delta:value]];
 

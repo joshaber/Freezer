@@ -161,6 +161,9 @@ it(@"should support collections", ^{
 
 	success = [transactor removeValue:@"other-key" forAttribute:collectionAttribute key:collectionKey error:NULL];
 	expect(success).to.beTruthy();
+
+	NSDictionary *value = [store currentDatabase][collectionKey];
+	expect([value[collectionAttribute] count]).to.equal(0);
 });
 
 it(@"should trim", ^{

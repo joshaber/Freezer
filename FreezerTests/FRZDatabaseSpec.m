@@ -250,7 +250,7 @@ describe(@"special types", ^{
 		expect(database).notTo.beNil();
 
 		value = [database valueForKey:collectionItemKey attribute:collectionAttribute];
-		expect(value.count).to.equal(2);
+		expect(value.count).to.equal(1);
 		expect(value).to.contain(@"second-key");
 	});
 
