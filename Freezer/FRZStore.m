@@ -322,13 +322,15 @@ void FRZStoreReleaseDestructor(void *data) {
 	}
 
 	BOOL success = block(database, txID, error);
+	transactionCount = [self decrementTransactionCount];
+
+	BOOL cleanUp = NO;
 	if (!success) {
 		[database rollback];
-		[self decrementTransactionCount];
+		cleanUp = YES;
 	} else {
-		if ([self decrementTransactionCount] == 0) {
-			long long int *txIDPerm = pthread_getspecific(self.txIDKey);
-			if (txIDPerm != NULL) {
+		if (transactionCount == 0) {
+			if (txID >= 0) {
 				BOOL success = [[self transactor] updateHeadInDatabase:database toID:txID error:error];
 				if (!success) return NO;
 			}
@@ -338,7 +340,6 @@ void FRZStoreReleaseDestructor(void *data) {
 			[database commit];
 
 			FRZDatabase *previousDatabase = self.databaseBeforeTransaction;
-
 			NSArray *queuedChanges = [self.queuedChanges copy];
 			[self.queuedChanges removeAllObjects];
 			for (FRZChange *change in queuedChanges) {
@@ -347,13 +348,18 @@ void FRZStoreReleaseDestructor(void *data) {
 				[self.changesSubject sendNext:change];
 			}
 
-			free(txIDPerm);
-			pthread_setspecific(self.txIDKey, NULL);
-
-			void *database = pthread_getspecific(self.previousDatabaseKey);
-			if (database != NULL) CFRelease(database);
-			pthread_setspecific(self.previousDatabaseKey, NULL);
+			cleanUp = YES;
 		}
+	}
+
+	if (cleanUp) {
+		long long int *txIDPerm = pthread_getspecific(self.txIDKey);
+		pthread_setspecific(self.txIDKey, NULL);
+		free(txIDPerm);
+
+		void *database = pthread_getspecific(self.previousDatabaseKey);
+		pthread_setspecific(self.previousDatabaseKey, NULL);
+		if (database != NULL) CFRelease(database);
 	}
 
 	return success;
