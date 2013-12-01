@@ -84,17 +84,10 @@
 
 	BOOL isCollection = [self isCollectionAttribute:attribute];
 	if (isCollection) {
-		NSSet *keys = [self keysWithAttribute:attribute];
-		NSMutableSet *values = [NSMutableSet set];
-		for (NSString *collectionKey in keys) {
-			NSString *parentKey = [self valueForKey:collectionKey attribute:FRZStoreAttributeParentAttribute];
-			if (![parentKey isEqual:key]) continue;
+		NSData *data = [self singleValueForAttribute:attribute key:key resolveRef:resolveReferences inDatabase:database success:success error:error];
+		if (data == nil) return nil;
 
-			id value = [self singleValueForAttribute:attribute key:collectionKey resolveRef:resolveReferences inDatabase:database success:success error:error];
-			[values addObject:value];
-		}
-
-		return values;
+		return [NSKeyedUnarchiver unarchiveObjectWithData:data];
 	} else {
 		return [self singleValueForAttribute:attribute key:key resolveRef:resolveReferences inDatabase:database success:success error:error];
 	}
@@ -223,7 +216,6 @@
 - (NSArray *)defaultAttributes {
 	return @[
 		FRZStoreAttributeTypeAttribute,
-		FRZStoreAttributeParentAttribute,
 		FRZStoreAttributeIsCollectionAttribute,
 	];
 }

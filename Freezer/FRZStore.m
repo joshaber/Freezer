@@ -25,7 +25,6 @@ NSString * const FRZStoreTransactionDateAttribute = @"Freezer/tx/date";
 
 NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
 NSString * const FRZStoreAttributeIsCollectionAttribute = @"Freezer/attribute/is-collection";
-NSString * const FRZStoreAttributeParentAttribute = @"Freezer/attribute/parent";
 
 @interface FRZStore ()
 
@@ -158,8 +157,6 @@ void FRZStoreReleaseDestructor(void *data) {
 	success = [transactor addAttribute:FRZStoreAttributeIsCollectionAttribute type:FRZAttributeTypeInteger collection:NO withMetadata:NO error:error];
 	if (!success) return NO;
 
-	success = [transactor addAttribute:FRZStoreAttributeParentAttribute type:FRZAttributeTypeString collection:NO withMetadata:NO error:error];
-	if (!success) return NO;
 
 	return YES;
 }

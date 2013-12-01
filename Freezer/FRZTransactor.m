@@ -55,7 +55,7 @@
 		@(FRZAttributeTypeRef): @"TEXT",
 	};
 
-	NSString *sqliteType = typeToSqliteTypeName[@(type)];
+	NSString *sqliteType = (collection ? @"BLOB" : typeToSqliteTypeName[@(type)]);
 	NSAssert(sqliteType != nil, @"Unknown type: %ld", type);
 
 	NSString *tableName = [self.store tableNameForAttribute:attribute];
@@ -178,12 +178,10 @@
 	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
 		BOOL isCollection = [self.store.databaseBeforeTransaction isCollectionAttribute:attribute];
 		if (isCollection) {
-			NSString *newKey = [self generateNewKey];
-			BOOL success = [self insertIntoDatabase:database value:value forAttribute:attribute key:newKey transactionID:txID error:error];
-			if (!success) return NO;
-
-			success = [self insertIntoDatabase:database value:key forAttribute:FRZStoreAttributeParentAttribute key:newKey transactionID:txID error:error];
-			if (!success) return NO;
+			NSSet *existingValue = [self.store.databaseBeforeTransaction valueForKey:key attribute:attribute resolveReferences:NO] ?: [NSSet set];
+			NSSet *newValue = [existingValue setByAddingObject:value];
+			NSData *newData = [NSKeyedArchiver archivedDataWithRootObject:newValue];
+			return [self insertIntoDatabase:database value:newData forAttribute:attribute key:key transactionID:txID error:error];
 		} else {
 			BOOL success = [self insertIntoDatabase:database value:value forAttribute:attribute key:key transactionID:txID error:error];
 			if (!success) return NO;
@@ -236,18 +234,17 @@
 		}
 
 		if (isCollection) {
-			NSSet *keys = [previousDatabase keysWithAttribute:attribute];
-			for (NSString *key in keys) {
-				BOOL success = YES;
-				id singleValue = [previousDatabase singleValueForAttribute:attribute key:key resolveRef:NO inDatabase:database success:&success error:error];
-				if (!success) return NO;
-				if (![singleValue isEqual:value]) continue;
-
-				success = [self insertIntoDatabase:database value:NSNull.null forAttribute:attribute key:key transactionID:txID error:error];
-				if (!success) return NO;
-
-				break;
+			NSMutableSet *newSet = [currentValue mutableCopy];
+			[newSet removeObject:value];
+			id newValue;
+			if (newSet.count < 1) {
+				newValue = NSNull.null;
+			} else {
+				newValue = [NSKeyedArchiver archivedDataWithRootObject:newSet];
 			}
+
+			BOOL success = [self insertIntoDatabase:database value:newValue forAttribute:attribute key:key transactionID:txID error:error];
+			if (!success) return NO;
 		} else {
 			BOOL success = [self insertIntoDatabase:database value:NSNull.null forAttribute:attribute key:key transactionID:txID error:error];
 			if (!success) return NO;
