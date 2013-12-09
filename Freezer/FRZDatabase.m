@@ -57,13 +57,7 @@
 	NSParameterAssert(key != nil);
 	NSParameterAssert(database != nil);
 
-	FRZAttributeType type = [self typeForAttribute:attribute];
-
-	NSString *tableName = [self.store tableNameForAttribute:attribute];
-	NSAssert(tableName != nil, @"Unknown table name for attribute: %@", attribute);
-
-	NSString *query = [NSString stringWithFormat:@"SELECT value FROM %@ WHERE key = ? AND tx_id <= ? ORDER BY tx_id DESC LIMIT 1", tableName];
-	FMResultSet *set = [database executeQuery:query, key, @(self.headID)];
+	FMResultSet *set = [database executeQuery:@"SELECT value FROM data WHERE key = ? AND attribute = ? AND tx_id <= ? ORDER BY tx_id DESC LIMIT 1", key, attribute, @(self.headID)];
 	if (set == nil) {
 		if (error != NULL) *error = database.lastError;
 		if (success != NULL) *success = NO;
@@ -74,7 +68,11 @@
 
 	if (![set next]) return nil;
 
-	return [self unpackedValueFromFirstColumn:set type:type resolveRef:resolveRef];
+	FRZAttributeType type = [self typeForAttribute:attribute];
+	id value = [self unpackedValueFromData:[set objectForColumnIndex:0] type:type resolveRef:resolveRef];
+	if (value == NSNull.null) return nil;
+
+	return value;
 }
 
 - (id)valueForAttribute:(NSString *)attribute key:(NSString *)key inDatabase:(FMDatabase *)database resolveReferences:(BOOL)resolveReferences success:(BOOL *)success error:(NSError **)error {
@@ -82,15 +80,7 @@
 	NSParameterAssert(key != nil);
 	NSParameterAssert(database != nil);
 
-	BOOL isCollection = [self isCollectionAttribute:attribute];
-	if (isCollection) {
-		NSData *data = [self singleValueForAttribute:attribute key:key resolveRef:resolveReferences inDatabase:database success:success error:error];
-		if (data == nil) return nil;
-
-		return [NSKeyedUnarchiver unarchiveObjectWithData:data];
-	} else {
-		return [self singleValueForAttribute:attribute key:key resolveRef:resolveReferences inDatabase:database success:success error:error];
-	}
+	return [self singleValueForAttribute:attribute key:key resolveRef:resolveReferences inDatabase:database success:success error:error];
 }
 
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
@@ -133,16 +123,15 @@
 	NSMutableSet *results = [NSMutableSet set];
 	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
 		for (NSString *attribute in self.allAttributes) {
-			NSString *tableName = [self.store tableNameForAttribute:attribute];
-			NSString *query = [NSString stringWithFormat:@"SELECT key, value FROM %@ WHERE tx_id <= ? GROUP BY key ORDER BY tx_id DESC", tableName];
-			FMResultSet *set = [database executeQuery:query, @(self.headID)];
+			FMResultSet *set = [database executeQuery:@"SELECT key, value FROM data WHERE tx_id <= ? GROUP BY key ORDER BY tx_id DESC", @(self.headID)];
 			if (set == nil) {
 				if (error != NULL) *error = database.lastError;
 				return NO;
 			}
 
 			while ([set next]) {
-				id value = set[@"value"];
+				NSData *data = set[@"value"];
+				id value = [self unpackedValueFromData:data type:FRZAttributeTypeBlob resolveRef:NO];
 				if (value == NSNull.null) continue;
 
 				id key = set[@"key"];
@@ -161,13 +150,12 @@
 
 	NSMutableSet *results = [NSMutableSet set];
 	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
-		NSString *tableName = [self.store tableNameForAttribute:attribute];
-		NSString *query = [NSString stringWithFormat:@"SELECT key, value FROM %@ WHERE tx_id <= ? GROUP BY key ORDER BY tx_id DESC", tableName];
-		FMResultSet *set = [database executeQuery:query, @(self.headID)];
+		FMResultSet *set = [database executeQuery:@"SELECT key, value FROM data WHERE attribute = ? AND tx_id <= ? GROUP BY key ORDER BY tx_id DESC", attribute, @(self.headID)];
 		if (set == nil) return NO;
 
 		while ([set next]) {
-			id value = set[@"value"];
+			NSData *data = set[@"value"];
+			id value = [self unpackedValueFromData:data type:FRZAttributeTypeBlob resolveRef:NO];
 			if (value == NSNull.null) continue;
 
 			id key = set[@"key"];
@@ -236,15 +224,11 @@
 	return [[self valueForKey:attribute attribute:FRZStoreAttributeTypeAttribute] integerValue];
 }
 
-- (id)unpackedValueFromFirstColumn:(FMResultSet *)set type:(FRZAttributeType)type resolveRef:(BOOL)resolveRef {
-	NSParameterAssert(set != nil);
+- (id)unpackedValueFromData:(NSData *)data type:(FRZAttributeType)type resolveRef:(BOOL)resolveRef {
+	NSParameterAssert(data != nil);
 
-	id value = [set objectForColumnIndex:0];
-	if (value == NSNull.null) return nil;
-
-	if (type == FRZAttributeTypeDate) {
-		return [set dateForColumnIndex:0];
-	} else if (type == FRZAttributeTypeRef && resolveRef) {
+	id value = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+	if (type == FRZAttributeTypeRef && resolveRef) {
 		return self[value];
 	}
 

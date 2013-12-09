@@ -51,13 +51,6 @@ typedef enum : NSInteger {
 // Returns the ID.
 - (long long int)headID;
 
-// Convert from an attribute name to the Sqlite table name.
-//
-// attribute - The Freezer attribute name. Cannot be nil.
-//
-// Returns the Sqlite table name.
-- (NSString *)tableNameForAttribute:(NSString *)attribute;
-
 // Perform some reads within a transaction.
 //
 // error - The error if one occurred.

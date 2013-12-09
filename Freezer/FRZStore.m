@@ -144,19 +144,20 @@ void FRZStoreReleaseDestructor(void *data) {
 		return NO;
 	}
 
-	FRZTransactor *transactor = [self transactor];
-	success = [transactor addAttribute:FRZStoreHeadTransactionAttribute type:FRZAttributeTypeInteger collection:NO withMetadata:NO error:error];
-	if (!success) return NO;
+	NSString *schema =
+		@"CREATE TABLE IF NOT EXISTS data("
+		"id INTEGER PRIMARY KEY AUTOINCREMENT,"
+		"key STRING NOT NULL,"
+		"attribute STRING NOT NULL,"
+		"value BLOB,"
+		"tx_id INTEGER NOT NULL"
+	");";
 
-	success = [transactor addAttribute:FRZStoreTransactionDateAttribute type:FRZAttributeTypeDate collection:NO withMetadata:NO error:error];
-	if (!success) return NO;
-
-	success = [transactor addAttribute:FRZStoreAttributeTypeAttribute type:FRZAttributeTypeInteger collection:NO withMetadata:NO error:error];
-	if (!success) return NO;
-
-	success = [transactor addAttribute:FRZStoreAttributeIsCollectionAttribute type:FRZAttributeTypeInteger collection:NO withMetadata:NO error:error];
-	if (!success) return NO;
-
+	success = [database executeUpdate:schema];
+	if (!success) {
+		if (error != NULL) *error = database.lastError;
+		return NO;
+	}
 
 	return YES;
 }
@@ -167,26 +168,7 @@ void FRZStoreReleaseDestructor(void *data) {
 	return [NSString stringWithFormat:@"<%@: %p> %@", self.class, self, self.databasePath];
 }
 
-#pragma mark Attributes
-
-- (NSString *)tableNameForAttribute:(NSString *)attribute {
-	NSParameterAssert(attribute != nil);
-
-	return [NSString stringWithFormat:@"[%@]", attribute];
-}
-
 #pragma mark Properties
-
-- (NSString *)selectHeadValueQuery {
-	static dispatch_once_t onceToken;
-	static NSString *query;
-	dispatch_once(&onceToken, ^{
-		NSString *tableName = [self tableNameForAttribute:FRZStoreHeadTransactionAttribute];
-		query = [NSString stringWithFormat:@"SELECT value FROM %@ WHERE key = 'head' ORDER BY id DESC LIMIT 1", tableName];
-	});
-
-	return query;
-}
 
 - (long long int)headID {
 	// NB: This can't go through the standard FRZDatabase method of retrieval
@@ -195,12 +177,13 @@ void FRZStoreReleaseDestructor(void *data) {
 	FMDatabase *database = [self databaseForCurrentThread:NULL];
 	if (database == nil) return -1;
 
-	NSString *query = self.selectHeadValueQuery;
-	FMResultSet *set = [database executeQuery:query];
+	FMResultSet *set = [database executeQuery:@"SELECT value FROM data WHERE key = 'head' ORDER BY id DESC LIMIT 1"];
 	if (set == nil) return -1;
 	if (![set next]) return -1;
 
-	return [set longLongIntForColumnIndex:0];
+	NSData *data = [set objectForColumnIndex:0];
+	NSNumber *ID = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+	return ID.longLongValue;
 }
 
 - (FRZDatabase *)currentDatabase {
