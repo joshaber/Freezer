@@ -50,7 +50,7 @@ typedef enum : NSInteger {
 // error     - The error if one occurs.
 //
 // Returns whether the add was successful.
-- (BOOL)addValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
+- (BOOL)addValue:(id<NSCoding>)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
 
 // Add many attribute-value pairs to a key within a single transaction.
 //
