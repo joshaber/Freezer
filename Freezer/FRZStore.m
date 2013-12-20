@@ -144,6 +144,16 @@ void FRZStoreReleaseDestructor(void *data) {
 		return NO;
 	}
 
+	success = [self createTable:database error:error];
+	if (!success) return NO;
+
+	success = [self createIndexes:database error:error];
+	if (!success) return NO;
+
+	return YES;
+}
+
+- (BOOL)createTable:(FMDatabase *)database error:(NSError **)error {
 	NSString *schema =
 		@"CREATE TABLE IF NOT EXISTS data("
 		"id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -153,7 +163,32 @@ void FRZStoreReleaseDestructor(void *data) {
 		"tx_id INTEGER NOT NULL"
 	");";
 
-	success = [database executeUpdate:schema];
+	BOOL success = [database executeUpdate:schema];
+	if (!success) {
+		if (error != NULL) *error = database.lastError;
+		return NO;
+	}
+
+	return YES;
+}
+
+- (BOOL)createIndexes:(FMDatabase *)database error:(NSError **)error {
+		NSString *index = @"CREATE INDEX IF NOT EXISTS data_index ON data (tx_id DESC)";
+	BOOL success = [database executeUpdate:index];
+	if (!success) {
+		if (error != NULL) *error = database.lastError;
+		return NO;
+	}
+
+	index = @"CREATE INDEX IF NOT EXISTS key_index ON data (key)";
+	success = [database executeUpdate:index];
+	if (!success) {
+		if (error != NULL) *error = database.lastError;
+		return NO;
+	}
+
+	index = @"CREATE INDEX IF NOT EXISTS attr_index ON data (attribute)";
+	success = [database executeUpdate:index];
 	if (!success) {
 		if (error != NULL) *error = database.lastError;
 		return NO;
