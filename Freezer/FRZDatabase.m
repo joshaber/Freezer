@@ -113,10 +113,28 @@
 - (id)valueForKey:(NSString *)key {
 	NSParameterAssert(key != nil);
 
-	NSSet *allAttributes = self.allAttributes;
-	if (allAttributes == nil) return nil;
+	NSMutableDictionary *results = [NSMutableDictionary dictionary];
+	BOOL success = [self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
+		FMResultSet *set = [database executeQuery:@"SELECT attribute, value FROM data WHERE key = ? AND tx_id <= ? GROUP BY attribute ORDER BY tx_id DESC", key, @(self.headID)];
+		if (set == nil) return NO;
 
-	return [self valuesForKey:key attributes:allAttributes.allObjects];
+		while ([set next]) {
+			NSData *data = set[@"value"];
+			id attribute = set[@"attribute"];
+			FRZAttributeType type = [self typeForAttribute:attribute];
+			id value = [self unpackedValueFromData:data type:type resolveRef:YES];
+			if (value == NSNull.null) continue;
+
+			results[attribute] = value;
+		}
+
+		return YES;
+	}];
+
+	if (!success) return nil;
+	if (results.count < 1) return nil;
+
+	return results;
 }
 
 - (NSSet *)allKeys {
