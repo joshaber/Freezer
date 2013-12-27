@@ -7,6 +7,7 @@
 //
 
 #import "FRZStore.h"
+#import "FRZStore+Private.h"
 #import "FRZTransactor.h"
 #import "FRZDatabase.h"
 #import "FRZChange.h"
@@ -167,6 +168,66 @@ describe(@"changes", ^{
 			testAttribute2: @7,
 		};
 		expect(database[testKey]).to.equal(expected);
+	});
+});
+
+describe(@"trimming", ^{
+	static NSString * const testAttribute = @"test-attr";
+	static NSString * const testKey = @"test-key";
+	const id testValue = @42;
+
+	__block FRZStore *store;
+	__block FRZTransactor *transactor;
+
+	beforeEach(^{
+		store = [[FRZStore alloc] initInMemory:NULL];
+		transactor = [store transactor];
+
+		BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
+		expect(success).to.beTruthy();
+	});
+
+	it(@"should remove deleted entries", ^{
+		long long int startingEntryCount = [store entryCount];
+
+		BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
+		expect(success).to.beTruthy();
+		expect([store entryCount]).to.beGreaterThan(startingEntryCount);
+
+		success = [transactor removeValue:testValue forAttribute:testAttribute key:testKey error:NULL];
+		expect(success).to.beTruthy();
+
+		success = [transactor trim:NULL];
+		expect(success).to.beTruthy();
+
+		expect([store entryCount]).to.equal(startingEntryCount);
+	});
+
+	it(@"should remove old entries", ^{
+		BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
+		expect(success).to.beTruthy();
+
+		long long int startingEntryCount = [store entryCount];
+
+		success = [transactor addValue:@43 forAttribute:testAttribute key:testKey error:NULL];
+		expect(success).to.beTruthy();
+		expect([store entryCount]).to.beGreaterThan(startingEntryCount);
+
+		success = [transactor trim:NULL];
+		expect(success).to.beTruthy();
+
+		expect([store entryCount]).to.equal(startingEntryCount);
+	});
+
+	it(@"shouldn't trim the latest values", ^{
+		BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
+		expect(success).to.beTruthy();
+
+		const id latest = @43;
+		success = [transactor addValue:latest forAttribute:testAttribute key:testKey error:NULL];
+		expect(success).to.beTruthy();
+
+		expect([store currentDatabase][testKey][testAttribute]).to.equal(latest);
 	});
 });
 
