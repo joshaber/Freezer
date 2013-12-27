@@ -37,7 +37,7 @@
 
 #pragma mark Adding
 
-- (BOOL)addValue:(id)value forAttribute:(NSString *)attribute error:(NSError **)error {
+- (BOOL)addValue:(id<NSCoding>)value forAttribute:(NSString *)attribute error:(NSError **)error {
 	NSParameterAssert(value != nil);
 	NSParameterAssert(attribute != nil);
 
