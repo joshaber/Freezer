@@ -119,8 +119,8 @@
 		if (set == nil) return NO;
 
 		while ([set next]) {
-			NSData *data = set[@"value"];
-			id attribute = set[@"attribute"];
+			NSData *data = set[1];
+			id attribute = set[0];
 			FRZAttributeType type = [self typeForAttribute:attribute];
 			id value = [self unpackedValueFromData:data type:type resolveRef:YES];
 			if (value == NSNull.null) continue;
@@ -148,11 +148,11 @@
 			}
 
 			while ([set next]) {
-				NSData *data = set[@"value"];
+				NSData *data = set[1];
 				id value = [self unpackedValueFromData:data type:FRZAttributeTypeBlob resolveRef:NO];
 				if (value == NSNull.null) continue;
 
-				id key = set[@"key"];
+				id key = set[0];
 				[results addObject:key];
 			}
 		}
@@ -172,11 +172,11 @@
 		if (set == nil) return NO;
 
 		while ([set next]) {
-			NSData *data = set[@"value"];
+			NSData *data = set[1];
 			id value = [self unpackedValueFromData:data type:FRZAttributeTypeBlob resolveRef:NO];
 			if (value == NSNull.null) continue;
 
-			id key = set[@"key"];
+			id key = set[0];
 			[results addObject:key];
 		}
 
