@@ -121,24 +121,18 @@ void FRZStoreReleaseDestructor(void *data) {
 
 	database.shouldCacheStatements = YES;
 
-	BOOL success = [database executeUpdate:@"PRAGMA legacy_file_format = 0;"];
-	if (!success) {
-		if (error != NULL) *error = database.lastError;
-		return NO;
-	}
+	BOOL success = [self executeUpdate:@"PRAGMA legacy_file_format = 0" withDatabase:database error:error];
+	if (!success) return NO;
 
-	success = [database executeUpdate:@"PRAGMA synchronous = NORMAL;"];
-	if (!success) {
-		if (error != NULL) *error = database.lastError;
-		return NO;
-	}
+	success = [self executeUpdate:@"PRAGMA synchronous = NORMAL" withDatabase:database error:error];
+	if (!success) return NO;
 
 	// Write-ahead logging is usually faster and offers better concurrency.
 	//
 	// Note that we're using -executeQuery: here, instead of -executeUpdate: The
 	// result of turning on WAL is a row, which really rustles FMDB's jimmies if
 	// done from -executeUpdate. So we pacify it by setting WAL in a "query."
-	FMResultSet *set = [database executeQuery:@"PRAGMA journal_mode = WAL;"];
+	FMResultSet *set = [database executeQuery:@"PRAGMA journal_mode = WAL"];
 	if (set == nil) {
 		if (error != NULL) *error = database.lastError;
 		return NO;
@@ -156,25 +150,23 @@ void FRZStoreReleaseDestructor(void *data) {
 - (BOOL)createTable:(FMDatabase *)database error:(NSError **)error {
 	NSString *schema =
 		@"CREATE TABLE IF NOT EXISTS data("
-		"id INTEGER PRIMARY KEY AUTOINCREMENT,"
-		"key STRING NOT NULL,"
-		"attribute STRING NOT NULL,"
-		"value BLOB,"
-		"tx_id INTEGER NOT NULL"
-	");";
+			"id INTEGER PRIMARY KEY AUTOINCREMENT,"
+			"key STRING NOT NULL,"
+			"attribute STRING NOT NULL,"
+			"value BLOB,"
+			"tx_id INTEGER NOT NULL"
+		");";
 
-	BOOL success = [database executeUpdate:schema];
-	if (!success) {
-		if (error != NULL) *error = database.lastError;
-		return NO;
-	}
-
-	return YES;
+	return [self executeUpdate:schema withDatabase:database error:error];
 }
 
 - (BOOL)createIndex:(FMDatabase *)database error:(NSError **)error {
 	NSString *index = @"CREATE INDEX IF NOT EXISTS lookup_index ON data (key, attribute, tx_id)";
-	BOOL success = [database executeUpdate:index];
+	return [self executeUpdate:index withDatabase:database error:error];
+}
+
+- (BOOL)executeUpdate:(NSString *)update withDatabase:(FMDatabase *)database error:(NSError **)error {
+	BOOL success = [database executeUpdate:update];
 	if (!success) {
 		if (error != NULL) *error = database.lastError;
 		return NO;
@@ -299,7 +291,7 @@ void FRZStoreReleaseDestructor(void *data) {
 
 		NSString *transactionTypeName = transactionTypeToName[@(transactionType)];
 		NSAssert(transactionTypeName != nil, @"Unrecognized transaction type: %ld", transactionType);
-		[database executeUpdate:[NSString stringWithFormat:@"begin %@ transaction", transactionTypeName]];
+		[database executeUpdate:[NSString stringWithFormat:@"BEGIN %@ TRANSACTION", transactionTypeName]];
 
 		FRZDatabase *previousDatabase = [self currentDatabase];
 		if (previousDatabase != nil) {

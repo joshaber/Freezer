@@ -79,4 +79,13 @@ typedef enum : NSInteger {
 //                   Cannot be nil.
 - (BOOL)performTransactionType:(FRZStoreTransactionType)transactionType withNewTransaction:(BOOL)withNewTransaction error:(NSError **)error block:(BOOL (^)(FMDatabase *database, long long int txID, NSError **error))block;
 
+// Execute the SQLite update statement.
+//
+// update   - The update query to run. Cannot be nil.
+// database - The database on which the statement should be run. Cannot be nil.
+// error    - The error if one occurred.
+//
+// Returns whether the query ran successfully.
+- (BOOL)executeUpdate:(NSString *)update withDatabase:(FMDatabase *)database error:(NSError **)error;
+
 @end
