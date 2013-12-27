@@ -51,12 +51,13 @@ typedef enum : NSInteger {
 // Returns the ID.
 - (long long int)headID;
 
-// Convert from an attribute name to the Sqlite table name.
+// The number of entries in the store.
 //
-// attribute - The Freezer attribute name. Cannot be nil.
+// Note that this is for the entire store, including transactions and other
+// Freezer-specific data. This should only be used for testing and debugging.
 //
-// Returns the Sqlite table name.
-- (NSString *)tableNameForAttribute:(NSString *)attribute;
+// Returns the number of entries.
+- (long long int)entryCount;
 
 // Perform some reads within a transaction.
 //
@@ -85,5 +86,14 @@ typedef enum : NSInteger {
 // block           - The block in which database actions can be performed.
 //                   Cannot be nil.
 - (BOOL)performTransactionType:(FRZStoreTransactionType)transactionType withNewTransaction:(BOOL)withNewTransaction error:(NSError **)error block:(BOOL (^)(FMDatabase *database, long long int txID, NSError **error))block;
+
+// Execute the SQLite update statement.
+//
+// update   - The update query to run. Cannot be nil.
+// database - The database on which the statement should be run. Cannot be nil.
+// error    - The error if one occurred.
+//
+// Returns whether the query ran successfully.
+- (BOOL)executeUpdate:(NSString *)update withDatabase:(FMDatabase *)database error:(NSError **)error;
 
 @end

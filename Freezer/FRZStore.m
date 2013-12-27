@@ -121,42 +121,56 @@ void FRZStoreReleaseDestructor(void *data) {
 
 	database.shouldCacheStatements = YES;
 
-	BOOL success = [database executeUpdate:@"PRAGMA legacy_file_format = 0;"];
-	if (!success) {
-		if (error != NULL) *error = database.lastError;
-		return NO;
-	}
+	BOOL success = [self executeUpdate:@"PRAGMA legacy_file_format = 0" withDatabase:database error:error];
+	if (!success) return NO;
 
-	success = [database executeUpdate:@"PRAGMA synchronous = NORMAL;"];
-	if (!success) {
-		if (error != NULL) *error = database.lastError;
-		return NO;
-	}
+	success = [self executeUpdate:@"PRAGMA synchronous = NORMAL" withDatabase:database error:error];
+	if (!success) return NO;
 
 	// Write-ahead logging is usually faster and offers better concurrency.
 	//
 	// Note that we're using -executeQuery: here, instead of -executeUpdate: The
 	// result of turning on WAL is a row, which really rustles FMDB's jimmies if
 	// done from -executeUpdate. So we pacify it by setting WAL in a "query."
-	FMResultSet *set = [database executeQuery:@"PRAGMA journal_mode = WAL;"];
+	FMResultSet *set = [database executeQuery:@"PRAGMA journal_mode = WAL"];
 	if (set == nil) {
 		if (error != NULL) *error = database.lastError;
 		return NO;
 	}
 
-	FRZTransactor *transactor = [self transactor];
-	success = [transactor addAttribute:FRZStoreHeadTransactionAttribute type:FRZAttributeTypeInteger collection:NO withMetadata:NO error:error];
+	success = [self createTable:database error:error];
 	if (!success) return NO;
 
-	success = [transactor addAttribute:FRZStoreTransactionDateAttribute type:FRZAttributeTypeDate collection:NO withMetadata:NO error:error];
+	success = [self createIndex:database error:error];
 	if (!success) return NO;
 
-	success = [transactor addAttribute:FRZStoreAttributeTypeAttribute type:FRZAttributeTypeInteger collection:NO withMetadata:NO error:error];
-	if (!success) return NO;
+	return YES;
+}
 
-	success = [transactor addAttribute:FRZStoreAttributeIsCollectionAttribute type:FRZAttributeTypeInteger collection:NO withMetadata:NO error:error];
-	if (!success) return NO;
+- (BOOL)createTable:(FMDatabase *)database error:(NSError **)error {
+	NSString *schema =
+		@"CREATE TABLE IF NOT EXISTS data("
+			"id INTEGER PRIMARY KEY AUTOINCREMENT,"
+			"key STRING NOT NULL,"
+			"attribute STRING NOT NULL,"
+			"value BLOB,"
+			"tx_id INTEGER NOT NULL"
+		");";
 
+	return [self executeUpdate:schema withDatabase:database error:error];
+}
+
+- (BOOL)createIndex:(FMDatabase *)database error:(NSError **)error {
+	NSString *index = @"CREATE INDEX IF NOT EXISTS lookup_index ON data (key, attribute, tx_id)";
+	return [self executeUpdate:index withDatabase:database error:error];
+}
+
+- (BOOL)executeUpdate:(NSString *)update withDatabase:(FMDatabase *)database error:(NSError **)error {
+	BOOL success = [database executeUpdate:update];
+	if (!success) {
+		if (error != NULL) *error = database.lastError;
+		return NO;
+	}
 
 	return YES;
 }
@@ -167,26 +181,7 @@ void FRZStoreReleaseDestructor(void *data) {
 	return [NSString stringWithFormat:@"<%@: %p> %@", self.class, self, self.databasePath];
 }
 
-#pragma mark Attributes
-
-- (NSString *)tableNameForAttribute:(NSString *)attribute {
-	NSParameterAssert(attribute != nil);
-
-	return [NSString stringWithFormat:@"[%@]", attribute];
-}
-
 #pragma mark Properties
-
-- (NSString *)selectHeadValueQuery {
-	static dispatch_once_t onceToken;
-	static NSString *query;
-	dispatch_once(&onceToken, ^{
-		NSString *tableName = [self tableNameForAttribute:FRZStoreHeadTransactionAttribute];
-		query = [NSString stringWithFormat:@"SELECT value FROM %@ WHERE key = 'head' ORDER BY id DESC LIMIT 1", tableName];
-	});
-
-	return query;
-}
 
 - (long long int)headID {
 	// NB: This can't go through the standard FRZDatabase method of retrieval
@@ -195,12 +190,25 @@ void FRZStoreReleaseDestructor(void *data) {
 	FMDatabase *database = [self databaseForCurrentThread:NULL];
 	if (database == nil) return -1;
 
-	NSString *query = self.selectHeadValueQuery;
-	FMResultSet *set = [database executeQuery:query];
+	FMResultSet *set = [database executeQuery:@"SELECT value FROM data WHERE key = 'head' ORDER BY id DESC LIMIT 1"];
 	if (set == nil) return -1;
 	if (![set next]) return -1;
 
-	return [set longLongIntForColumnIndex:0];
+	NSData *data = set[0];
+	NSNumber *ID = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+	return ID.longLongValue;
+}
+
+- (long long int)entryCount {
+	FMDatabase *database = [self databaseForCurrentThread:NULL];
+	if (database == nil) return -1;
+
+	FMResultSet *set = [database executeQuery:@"SELECT COUNT(*) FROM data"];
+	if (set == nil) return -1;
+	if (![set next]) return -1;
+
+	NSNumber *count = set[0];
+	return count.longLongValue;
 }
 
 - (FRZDatabase *)currentDatabase {
@@ -295,7 +303,7 @@ void FRZStoreReleaseDestructor(void *data) {
 
 		NSString *transactionTypeName = transactionTypeToName[@(transactionType)];
 		NSAssert(transactionTypeName != nil, @"Unrecognized transaction type: %ld", transactionType);
-		[database executeUpdate:[NSString stringWithFormat:@"begin %@ transaction", transactionTypeName]];
+		[database executeUpdate:[NSString stringWithFormat:@"BEGIN %@ TRANSACTION", transactionTypeName]];
 
 		FRZDatabase *previousDatabase = [self currentDatabase];
 		if (previousDatabase != nil) {

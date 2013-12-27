@@ -40,63 +40,12 @@
 - (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type collection:(BOOL)collection error:(NSError **)error {
 	NSParameterAssert(attribute != nil);
 
-	return [self addAttribute:attribute type:type collection:collection withMetadata:YES error:error];
-}
-
-- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type collection:(BOOL)collection withMetadata:(BOOL)withMetadata error:(NSError **)error {
-	NSParameterAssert(attribute != nil);
-
-	NSDictionary *typeToSqliteTypeName = @{
-		@(FRZAttributeTypeInteger): @"INTEGER",
-		@(FRZAttributeTypeReal): @"REAL",
-		@(FRZAttributeTypeString): @"TEXT",
-		@(FRZAttributeTypeBlob): @"BLOB",
-		@(FRZAttributeTypeDate): @"DATETIME",
-		@(FRZAttributeTypeRef): @"TEXT",
-	};
-
-	NSString *sqliteType = (collection ? @"BLOB" : typeToSqliteTypeName[@(type)]);
-	NSAssert(sqliteType != nil, @"Unknown type: %ld", type);
-
-	NSString *tableName = [self.store tableNameForAttribute:attribute];
-	NSAssert(tableName != nil, @"No table name for attribute: %@", attribute);
-
-	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive withNewTransaction:withMetadata error:error block:^(FMDatabase *database, long long txID, NSError **error) {
-		BOOL success = [self createTableWithName:tableName sqliteType:sqliteType database:database error:error];
-		if (!success) return NO;
-
-		if (database.changes < 1) return YES;
-		if (!withMetadata) return YES;
-
-		success = [self insertIntoDatabase:database value:@(type) forAttribute:FRZStoreAttributeTypeAttribute key:attribute transactionID:txID error:error];
+	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive withNewTransaction:YES error:error block:^(FMDatabase *database, long long txID, NSError **error) {
+		BOOL success = [self insertIntoDatabase:database value:@(type) forAttribute:FRZStoreAttributeTypeAttribute key:attribute transactionID:txID error:error];
 		if (!success) return NO;
 
 		return [self insertIntoDatabase:database value:@(collection) forAttribute:FRZStoreAttributeIsCollectionAttribute key:attribute transactionID:txID error:error];
 	}];
-}
-
-- (BOOL)createTableWithName:(NSString *)name sqliteType:(NSString *)sqliteType database:(FMDatabase *)database error:(NSError **)error {
-	NSParameterAssert(name != nil);
-	NSParameterAssert(sqliteType != nil);
-	NSParameterAssert(database != nil);
-
-	NSString *schemaTemplate =
-		@"CREATE TABLE IF NOT EXISTS %@("
-		"id INTEGER PRIMARY KEY AUTOINCREMENT,"
-		"key STRING NOT NULL,"
-		"attribute STRING NOT NULL,"
-		"value %@,"
-		"tx_id INTEGER NOT NULL"
-	");";
-
-	NSString *schema = [NSString stringWithFormat:schemaTemplate, name, sqliteType];
-	BOOL success = [database executeUpdate:schema];
-	if (!success) {
-		if (error != NULL) *error = database.lastError;
-		return NO;
-	}
-	
-	return YES;
 }
 
 #pragma mark Changing
@@ -121,40 +70,16 @@
 	return [NSError errorWithDomain:FRZErrorDomain code:FRZErrorInvalidAttribute userInfo:userInfo];
 }
 
-- (NSString *)insertQueryForAttribute:(NSString *)attribute {
-	static dispatch_once_t onceToken;
-	static NSMutableDictionary *lookup;
-	static dispatch_queue_t queue;
-	dispatch_once(&onceToken, ^{
-		lookup = [NSMutableDictionary dictionary];
-		queue = dispatch_queue_create("blah", 0);
-	});
-
-	__block NSString *query;
-	dispatch_sync(queue, ^{
-		query = lookup[attribute];
-		if (query != nil) return;
-
-		NSString *tableName = [self.store tableNameForAttribute:attribute];
-		query = [NSString stringWithFormat:@"INSERT INTO %@ (attribute, value, key, tx_id) VALUES (?, ?, ?, ?)", tableName];
-		lookup[attribute] = query;
-	});
-
-	return query;
-}
-
 - (BOOL)insertIntoDatabase:(FMDatabase *)database value:(id)value forAttribute:(NSString *)attribute key:(NSString *)key transactionID:(long long int)transactionID error:(NSError **)error {
 	NSParameterAssert(database != nil);
 	NSParameterAssert(value != nil);
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
-	NSString *query = [self insertQueryForAttribute:attribute];
-	BOOL success = [database executeUpdate:query, attribute, value, key, @(transactionID)];
+	NSData *data = [NSKeyedArchiver archivedDataWithRootObject:value];
+	BOOL success = [database executeUpdate:@"INSERT INTO data (attribute, value, key, tx_id) VALUES (?, ?, ?, ?)", attribute, data, key, @(transactionID)];
 	if (!success) {
-		// We're really just guessing that the error is invalid attribute. FMDB
-		// doesn't wrap errors in any meaningful way.
-		if (error != NULL) *error = [self invalidAttributeErrorWithError:database.lastError];
+		if (error != NULL) *error = database.lastError;
 		return NO;
 	}
 
@@ -170,7 +95,7 @@
 	return database.lastInsertRowId;
 }
 
-- (BOOL)addValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error {
+- (BOOL)addValue:(id<NSCoding>)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error {
 	NSParameterAssert(value != nil);
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
@@ -180,8 +105,7 @@
 		if (isCollection) {
 			NSSet *existingValue = [self.store.databaseBeforeTransaction valueForKey:key attribute:attribute resolveReferences:NO] ?: [NSSet set];
 			NSSet *newValue = [existingValue setByAddingObject:value];
-			NSData *newData = [NSKeyedArchiver archivedDataWithRootObject:newValue];
-			return [self insertIntoDatabase:database value:newData forAttribute:attribute key:key transactionID:txID error:error];
+			return [self insertIntoDatabase:database value:newValue forAttribute:attribute key:key transactionID:txID error:error];
 		} else {
 			BOOL success = [self insertIntoDatabase:database value:value forAttribute:attribute key:key transactionID:txID error:error];
 			if (!success) return NO;
@@ -240,7 +164,7 @@
 			if (newSet.count < 1) {
 				newValue = NSNull.null;
 			} else {
-				newValue = [NSKeyedArchiver archivedDataWithRootObject:newSet];
+				newValue = newSet;
 			}
 
 			BOOL success = [self insertIntoDatabase:database value:newValue forAttribute:attribute key:key transactionID:txID error:error];
@@ -272,31 +196,30 @@
 }
 
 - (BOOL)trimOldKeys:(FMDatabase *)database error:(NSError **)error {
+	// Remove the keys of deleted entries.
+	//
 	// 1. Get all the keys in the head of the database.
 	// 2. Delete any entries with a key not in that set.
 	FRZDatabase *currentDatabase = self.store.databaseBeforeTransaction;
 	NSArray *keys = currentDatabase.allKeys.allObjects;
-	for (NSString *attribute in currentDatabase.allAttributes) {
-		NSString *tableName = [self.store tableNameForAttribute:attribute];
-		NSString *query = [NSString stringWithFormat:@"DELETE FROM %@ WHERE key NOT IN (%@)", tableName, [self placeholderWithCount:keys.count]];
-		BOOL success = [database executeUpdate:query withArgumentsInArray:keys];
-		if (!success) {
-			if (error != NULL) *error = database.lastError;
-			return NO;
-		}
+	NSString *query = [NSString stringWithFormat:@"DELETE FROM data WHERE key NOT IN (%@)", [self placeholderWithCount:keys.count]];
+	BOOL success = [database executeUpdate:query withArgumentsInArray:keys];
+	if (!success) {
+		if (error != NULL) *error = database.lastError;
+		return NO;
 	}
 
 	return YES;
 }
 
 - (BOOL)trimOldValues:(FMDatabase *)database error:(NSError **)error {
+	// Remove old values of existing entries.
+	//
 	// 1. Get the IDs for all the latest values for the keys.
 	// 2. Delete any entries with an ID not in that set.
 	FRZDatabase *currentDatabase = self.store.databaseBeforeTransaction;
 	for (NSString *attribute in currentDatabase.allAttributes) {
-		NSString *tableName = [self.store tableNameForAttribute:attribute];
-		NSString *query = [NSString stringWithFormat:@"SELECT id FROM %@ GROUP BY key ORDER BY tx_id DESC", tableName];
-		FMResultSet *set = [database executeQuery:query];
+		FMResultSet *set = [database executeQuery:@"SELECT id FROM data WHERE attribute = ? GROUP BY key ORDER BY tx_id DESC", attribute];
 		if (set == nil) {
 			if (error != NULL) *error = database.lastError;
 			return NO;
@@ -304,12 +227,12 @@
 
 		NSMutableArray *IDs = [NSMutableArray array];
 		while ([set next]) {
-			id ID = [set objectForColumnIndex:0];
+			id ID = set[0];
 			[IDs addObject:ID];
 		}
 
-		NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE id NOT IN (%@)", tableName, [self placeholderWithCount:IDs.count]];
-		BOOL success = [database executeUpdate:deleteQuery withArgumentsInArray:IDs];
+		NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM data WHERE attribute = ? AND id NOT IN (%@)", [self placeholderWithCount:IDs.count]];
+		BOOL success = [database executeUpdate:deleteQuery withArgumentsInArray:[@[ attribute ] arrayByAddingObjectsFromArray:IDs]];
 		if (!success) {
 			if (error != NULL) *error = database.lastError;
 			return NO;
@@ -319,9 +242,8 @@
 	return YES;
 }
 
-- (BOOL)deleteEverythingButTheLastIDWithTableName:(NSString *)tableName database:(FMDatabase *)database error:(NSError **)error {
-	NSString *query = [NSString stringWithFormat:@"SELECT id FROM %@ ORDER BY id DESC LIMIT 1", tableName];
-	FMResultSet *set = [database executeQuery:query];
+- (BOOL)deleteEverythingButTheLastIDWithAttribute:(NSString *)attribute database:(FMDatabase *)database error:(NSError **)error {
+	FMResultSet *set = [database executeQuery:@"SELECT id FROM data WHERE attribute = ? ORDER BY id DESC LIMIT 1", attribute];
 	if (set == nil) {
 		if (error != NULL) *error = database.lastError;
 		return NO;
@@ -329,9 +251,8 @@
 
 	if (![set next]) return YES;
 
-	NSString *headID = [set objectForColumnIndex:0];
-	NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE id != ?", tableName];
-	BOOL success = [database executeUpdate:deleteQuery, headID];
+	NSString *headID = set[0];
+	BOOL success = [database executeUpdate:@"DELETE FROM data WHERE attribute = ? AND id != ?", attribute, headID];
 	if (!success) {
 		if (error != NULL) *error = database.lastError;
 		return NO;
@@ -341,12 +262,10 @@
 }
 
 - (BOOL)trimOldTransactions:(FMDatabase *)database error:(NSError **)error {
-	NSString *tableName = [self.store tableNameForAttribute:FRZStoreTransactionDateAttribute];
-	BOOL success = [self deleteEverythingButTheLastIDWithTableName:tableName database:database error:error];
+	BOOL success = [self deleteEverythingButTheLastIDWithAttribute:FRZStoreTransactionDateAttribute database:database error:error];
 	if (!success) return NO;
 
-	tableName = [self.store tableNameForAttribute:FRZStoreHeadTransactionAttribute];
-	return [self deleteEverythingButTheLastIDWithTableName:tableName database:database error:error];
+	return [self deleteEverythingButTheLastIDWithAttribute:FRZStoreHeadTransactionAttribute database:database error:error];
 }
 
 - (BOOL)trim:(NSError **)error {
