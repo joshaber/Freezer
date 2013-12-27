@@ -12,15 +12,21 @@
 
 @property (nonatomic, readonly, strong) FRZStore *store;
 
+@property (nonatomic, readonly, copy) NSString *path;
+
 @end
 
 @implementation FDAAppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
-	NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSUUID UUID] UUIDString]];
-	_store = [[FRZStore alloc] initWithURL:[NSURL fileURLWithPath:path] error:NULL];
+	_path = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSUUID UUID] UUIDString]];
+	_store = [[FRZStore alloc] initWithURL:[NSURL fileURLWithPath:self.path] error:NULL];
 
 	[self testPerformance];
+}
+
+- (void)applicationWillTerminate:(NSNotification *)notification {
+	[NSFileManager.defaultManager removeItemAtPath:self.path error:NULL];
 }
 
 - (void)testStuff {
