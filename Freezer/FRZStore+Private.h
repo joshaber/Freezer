@@ -51,6 +51,14 @@ typedef enum : NSInteger {
 // Returns the ID.
 - (long long int)headID;
 
+// The number of entries in the store.
+//
+// Note that this is for the entire store, including transactions and other
+// Freezer-specific data. This should only be used for testing and debugging.
+//
+// Returns the number of entries.
+- (long long int)entryCount;
+
 // Perform some reads within a transaction.
 //
 // error - The error if one occurred.

@@ -199,6 +199,18 @@ void FRZStoreReleaseDestructor(void *data) {
 	return ID.longLongValue;
 }
 
+- (long long int)entryCount {
+	FMDatabase *database = [self databaseForCurrentThread:NULL];
+	if (database == nil) return -1;
+
+	FMResultSet *set = [database executeQuery:@"SELECT COUNT(*) FROM data"];
+	if (set == nil) return -1;
+	if (![set next]) return -1;
+
+	NSNumber *count = set[0];
+	return count.longLongValue;
+}
+
 - (FRZDatabase *)currentDatabase {
 	long long int headID = [self headID];
 	if (headID < 0) return nil;
