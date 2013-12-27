@@ -207,6 +207,9 @@ describe(@"trimming", ^{
 		BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
 		expect(success).to.beTruthy();
 
+		success = [transactor trim:NULL];
+		expect(success).to.beTruthy();
+
 		long long int startingEntryCount = [store entryCount];
 
 		success = [transactor addValue:@43 forAttribute:testAttribute key:testKey error:NULL];
@@ -225,6 +228,9 @@ describe(@"trimming", ^{
 
 		const id latest = @43;
 		success = [transactor addValue:latest forAttribute:testAttribute key:testKey error:NULL];
+		expect(success).to.beTruthy();
+
+		success = [transactor trim:NULL];
 		expect(success).to.beTruthy();
 
 		expect([store currentDatabase][testKey][testAttribute]).to.equal(latest);
