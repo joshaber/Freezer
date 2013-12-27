@@ -196,80 +196,76 @@
 }
 
 - (BOOL)trimOldKeys:(FMDatabase *)database error:(NSError **)error {
-//	// 1. Get all the keys in the head of the database.
-//	// 2. Delete any entries with a key not in that set.
-//	FRZDatabase *currentDatabase = self.store.databaseBeforeTransaction;
-//	NSArray *keys = currentDatabase.allKeys.allObjects;
-//	for (NSString *attribute in currentDatabase.allAttributes) {
-//		NSString *tableName = [self.store tableNameForAttribute:attribute];
-//		NSString *query = [NSString stringWithFormat:@"DELETE FROM %@ WHERE key NOT IN (%@)", tableName, [self placeholderWithCount:keys.count]];
-//		BOOL success = [database executeUpdate:query withArgumentsInArray:keys];
-//		if (!success) {
-//			if (error != NULL) *error = database.lastError;
-//			return NO;
-//		}
-//	}
+	// Remove the keys of deleted entries.
+	//
+	// 1. Get all the keys in the head of the database.
+	// 2. Delete any entries with a key not in that set.
+	FRZDatabase *currentDatabase = self.store.databaseBeforeTransaction;
+	NSArray *keys = currentDatabase.allKeys.allObjects;
+	NSString *query = [NSString stringWithFormat:@"DELETE FROM data WHERE key NOT IN (%@)", [self placeholderWithCount:keys.count]];
+	BOOL success = [database executeUpdate:query withArgumentsInArray:keys];
+	if (!success) {
+		if (error != NULL) *error = database.lastError;
+		return NO;
+	}
 
 	return YES;
 }
 
 - (BOOL)trimOldValues:(FMDatabase *)database error:(NSError **)error {
-//	// 1. Get the IDs for all the latest values for the keys.
-//	// 2. Delete any entries with an ID not in that set.
-//	FRZDatabase *currentDatabase = self.store.databaseBeforeTransaction;
-//	for (NSString *attribute in currentDatabase.allAttributes) {
-//		NSString *query = [NSString stringWithFormat:@"SELECT id FROM %@ GROUP BY key ORDER BY tx_id DESC", tableName];
-//		FMResultSet *set = [database executeQuery:@"SELECT id FROM %@ GROUP BY key ORDER BY tx_id DESC"];
-//		if (set == nil) {
-//			if (error != NULL) *error = database.lastError;
-//			return NO;
-//		}
-//
-//		NSMutableArray *IDs = [NSMutableArray array];
-//		while ([set next]) {
-//			id ID = [set objectForColumnIndex:0];
-//			[IDs addObject:ID];
-//		}
-//
-//		NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE id NOT IN (%@)", tableName, [self placeholderWithCount:IDs.count]];
-//		BOOL success = [database executeUpdate:deleteQuery withArgumentsInArray:IDs];
-//		if (!success) {
-//			if (error != NULL) *error = database.lastError;
-//			return NO;
-//		}
-//	}
+	// Remove old values of existing entries.
+	//
+	// 1. Get the IDs for all the latest values for the keys.
+	// 2. Delete any entries with an ID not in that set.
+	FRZDatabase *currentDatabase = self.store.databaseBeforeTransaction;
+	for (NSString *attribute in currentDatabase.allAttributes) {
+		FMResultSet *set = [database executeQuery:@"SELECT id FROM data WHERE attribute = ? GROUP BY key ORDER BY tx_id DESC", attribute];
+		if (set == nil) {
+			if (error != NULL) *error = database.lastError;
+			return NO;
+		}
+
+		NSMutableArray *IDs = [NSMutableArray array];
+		while ([set next]) {
+			id ID = [set objectForColumnIndex:0];
+			[IDs addObject:ID];
+		}
+
+		NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM data WHERE attribute = ? AND id NOT IN (%@)", [self placeholderWithCount:IDs.count]];
+		BOOL success = [database executeUpdate:deleteQuery withArgumentsInArray:[@[ attribute ] arrayByAddingObjectsFromArray:IDs]];
+		if (!success) {
+			if (error != NULL) *error = database.lastError;
+			return NO;
+		}
+	}
 
 	return YES;
 }
 
-- (BOOL)deleteEverythingButTheLastIDWithTableName:(NSString *)tableName database:(FMDatabase *)database error:(NSError **)error {
-//	NSString *query = [NSString stringWithFormat:@"SELECT id FROM %@ ORDER BY id DESC LIMIT 1", tableName];
-//	FMResultSet *set = [database executeQuery:query];
-//	if (set == nil) {
-//		if (error != NULL) *error = database.lastError;
-//		return NO;
-//	}
-//
-//	if (![set next]) return YES;
-//
-//	NSString *headID = [set objectForColumnIndex:0];
-//	NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE id != ?", tableName];
-//	BOOL success = [database executeUpdate:deleteQuery, headID];
-//	if (!success) {
-//		if (error != NULL) *error = database.lastError;
-//		return NO;
-//	}
+- (BOOL)deleteEverythingButTheLastIDWithAttribute:(NSString *)attribute database:(FMDatabase *)database error:(NSError **)error {
+	FMResultSet *set = [database executeQuery:@"SELECT id FROM data WHERE attribute = ? ORDER BY id DESC LIMIT 1", attribute];
+	if (set == nil) {
+		if (error != NULL) *error = database.lastError;
+		return NO;
+	}
+
+	if (![set next]) return YES;
+
+	NSString *headID = [set objectForColumnIndex:0];
+	BOOL success = [database executeUpdate:@"DELETE FROM data WHERE attribute = ? AND id != ?", attribute, headID];
+	if (!success) {
+		if (error != NULL) *error = database.lastError;
+		return NO;
+	}
 
 	return YES;
 }
 
 - (BOOL)trimOldTransactions:(FMDatabase *)database error:(NSError **)error {
-//	NSString *tableName = [self.store tableNameForAttribute:FRZStoreTransactionDateAttribute];
-//	BOOL success = [self deleteEverythingButTheLastIDWithTableName:tableName database:database error:error];
-//	if (!success) return NO;
-//
-//	tableName = [self.store tableNameForAttribute:FRZStoreHeadTransactionAttribute];
-//	return [self deleteEverythingButTheLastIDWithTableName:tableName database:database error:error];
+	BOOL success = [self deleteEverythingButTheLastIDWithAttribute:FRZStoreTransactionDateAttribute database:database error:error];
+	if (!success) return NO;
+
+	return [self deleteEverythingButTheLastIDWithAttribute:FRZStoreHeadTransactionAttribute database:database error:error];
 	return YES;
 }
 
