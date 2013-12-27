@@ -70,12 +70,13 @@
 	return [NSError errorWithDomain:FRZErrorDomain code:FRZErrorInvalidAttribute userInfo:userInfo];
 }
 
-- (BOOL)insertIntoDatabase:(FMDatabase *)database data:(NSData *)data forAttribute:(NSString *)attribute key:(NSString *)key transactionID:(long long int)transactionID error:(NSError **)error {
+- (BOOL)insertIntoDatabase:(FMDatabase *)database value:(id)value forAttribute:(NSString *)attribute key:(NSString *)key transactionID:(long long int)transactionID error:(NSError **)error {
 	NSParameterAssert(database != nil);
-	NSParameterAssert(data != nil);
+	NSParameterAssert(value != nil);
 	NSParameterAssert(attribute != nil);
 	NSParameterAssert(key != nil);
 
+	NSData *data = [NSKeyedArchiver archivedDataWithRootObject:value];
 	BOOL success = [database executeUpdate:@"INSERT INTO data (attribute, value, key, tx_id) VALUES (?, ?, ?, ?)", attribute, data, key, @(transactionID)];
 	if (!success) {
 		if (error != NULL) *error = database.lastError;
@@ -83,15 +84,6 @@
 	}
 
 	return YES;
-}
-
-- (BOOL)insertIntoDatabase:(FMDatabase *)database value:(id)value forAttribute:(NSString *)attribute key:(NSString *)key transactionID:(long long int)transactionID error:(NSError **)error {
-	NSParameterAssert(database != nil);
-	NSParameterAssert(value != nil);
-	NSParameterAssert(attribute != nil);
-	NSParameterAssert(key != nil);
-
-	return [self insertIntoDatabase:database data:[NSKeyedArchiver archivedDataWithRootObject:value] forAttribute:attribute key:key transactionID:transactionID error:error];
 }
 
 - (long long int)insertNewTransactionIntoDatabase:(FMDatabase *)database error:(NSError **)error {
