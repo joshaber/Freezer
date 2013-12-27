@@ -173,22 +173,8 @@ void FRZStoreReleaseDestructor(void *data) {
 }
 
 - (BOOL)createIndexes:(FMDatabase *)database error:(NSError **)error {
-		NSString *index = @"CREATE INDEX IF NOT EXISTS data_index ON data (tx_id DESC)";
+	NSString *index = @"CREATE INDEX IF NOT EXISTS lookup_index ON data (key, attribute, tx_id)";
 	BOOL success = [database executeUpdate:index];
-	if (!success) {
-		if (error != NULL) *error = database.lastError;
-		return NO;
-	}
-
-	index = @"CREATE INDEX IF NOT EXISTS key_index ON data (key)";
-	success = [database executeUpdate:index];
-	if (!success) {
-		if (error != NULL) *error = database.lastError;
-		return NO;
-	}
-
-	index = @"CREATE INDEX IF NOT EXISTS attr_index ON data (attribute)";
-	success = [database executeUpdate:index];
 	if (!success) {
 		if (error != NULL) *error = database.lastError;
 		return NO;
