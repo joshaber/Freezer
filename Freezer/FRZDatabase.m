@@ -69,7 +69,7 @@
 	if (![set next]) return nil;
 
 	FRZAttributeType type = [self typeForAttribute:attribute];
-	id value = [self unpackedValueFromData:[set objectForColumnIndex:0] type:type resolveRef:resolveRef];
+	id value = [self unpackedValueFromData:set[0] type:type resolveRef:resolveRef];
 	if (value == NSNull.null) return nil;
 
 	return value;

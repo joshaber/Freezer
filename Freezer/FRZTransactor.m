@@ -227,7 +227,7 @@
 
 		NSMutableArray *IDs = [NSMutableArray array];
 		while ([set next]) {
-			id ID = [set objectForColumnIndex:0];
+			id ID = set[0];
 			[IDs addObject:ID];
 		}
 
@@ -251,7 +251,7 @@
 
 	if (![set next]) return YES;
 
-	NSString *headID = [set objectForColumnIndex:0];
+	NSString *headID = set[0];
 	BOOL success = [database executeUpdate:@"DELETE FROM data WHERE attribute = ? AND id != ?", attribute, headID];
 	if (!success) {
 		if (error != NULL) *error = database.lastError;
@@ -266,7 +266,6 @@
 	if (!success) return NO;
 
 	return [self deleteEverythingButTheLastIDWithAttribute:FRZStoreHeadTransactionAttribute database:database error:error];
-	return YES;
 }
 
 - (BOOL)trim:(NSError **)error {

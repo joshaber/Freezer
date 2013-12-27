@@ -194,7 +194,7 @@ void FRZStoreReleaseDestructor(void *data) {
 	if (set == nil) return -1;
 	if (![set next]) return -1;
 
-	NSData *data = [set objectForColumnIndex:0];
+	NSData *data = set[0];
 	NSNumber *ID = [NSKeyedUnarchiver unarchiveObjectWithData:data];
 	return ID.longLongValue;
 }
