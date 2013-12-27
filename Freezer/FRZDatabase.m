@@ -113,6 +113,11 @@
 - (id)valueForKey:(NSString *)key {
 	NSParameterAssert(key != nil);
 
+	@synchronized (self.cache) {
+		id cachedValue = self.cache[key];
+		if (cachedValue != nil) return cachedValue;
+	}
+
 	NSMutableDictionary *results = [NSMutableDictionary dictionary];
 	BOOL success = [self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
 		FMResultSet *set = [database executeQuery:@"SELECT attribute, value FROM data WHERE key = ? AND tx_id <= ? GROUP BY attribute ORDER BY tx_id DESC", key, @(self.headID)];
@@ -133,6 +138,12 @@
 
 	if (!success) return nil;
 	if (results.count < 1) return nil;
+
+	if (results != nil) {
+		@synchronized (self.cache) {
+			self.cache[key] = results;
+		}
+	}
 
 	return results;
 }
