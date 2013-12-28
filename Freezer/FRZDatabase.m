@@ -11,6 +11,7 @@
 #import "FMDatabase.h"
 #import "FRZStore+Private.h"
 #import "FRZTransactor+Private.h"
+#import "FRZQuery+Private.h"
 
 @interface FRZDatabase ()
 
@@ -250,6 +251,12 @@
 	}
 
 	return value;
+}
+
+- (FRZQuery *)query {
+	return [[FRZQuery alloc] initWithDatabase:self queryStringBlock:^{
+		return @"";
+	}];
 }
 
 @end
