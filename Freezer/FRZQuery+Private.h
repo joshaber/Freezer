@@ -12,6 +12,11 @@
 
 @interface FRZQuery ()
 
-- (id)initWithDatabase:(FRZDatabase *)database queryStringBlock:(NSString * (^)(void))queryStringBlock;
+// Initializes the query with the given database.
+//
+// database - The database which the query will query. Cannot be nil.
+//
+// Returns the initialized object.
+- (id)initWithDatabase:(FRZDatabase *)database;
 
 @end

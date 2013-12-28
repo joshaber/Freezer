@@ -254,9 +254,7 @@
 }
 
 - (FRZQuery *)query {
-	return [[FRZQuery alloc] initWithDatabase:self queryStringBlock:^{
-		return @"";
-	}];
+	return [[FRZQuery alloc] initWithDatabase:self];
 }
 
 @end

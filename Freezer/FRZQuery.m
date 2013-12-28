@@ -15,7 +15,7 @@
 
 @property (nonatomic, readonly, strong) FRZDatabase *database;
 
-@property (nonatomic, readonly, copy) NSString * (^queryStringBlock)(void);
+@property (nonatomic, readonly, copy) NSString *filterFunctionName;
 
 @end
 
@@ -23,14 +23,20 @@
 
 #pragma mark Lifecycle
 
-- (id)initWithDatabase:(FRZDatabase *)database queryStringBlock:(NSString * (^)(void))queryStringBlock {
+- (void)dealloc {
+	// TODO: Remove the function.
+}
+
+- (id)initWithDatabase:(FRZDatabase *)database {
 	NSParameterAssert(database != nil);
 
 	self = [super init];
 	if (self == nil) return nil;
 
 	_database = database;
-	_queryStringBlock = [queryStringBlock copy];
+
+	NSString *UUID = [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""];
+	_filterFunctionName = [@"FRZQueryFilter" stringByAppendingString:UUID];
 
 	return self;
 }
@@ -42,40 +48,43 @@ void FRZQueryCallback(sqlite3_context *context, int argc, sqlite3_value **argv) 
 	if (block != NULL) block(context, argc, argv);
 };
 
-- (FRZQuery *)filter:(BOOL (^)(NSString *key, NSString *attribute, id value))block {
-	NSString *functionName = @"urmom";//[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""];
-	[self.database.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
-		id intermediateBlock = ^(sqlite3_context *context, int argc, sqlite3_value **argv) {
-			NSData *keyData = [NSData dataWithBytes:sqlite3_value_blob(argv[0]) length:sqlite3_value_bytes(argv[0])];
-			NSString *key = [[NSString alloc] initWithData:keyData encoding:NSUTF8StringEncoding];
+- (void)setFilter:(BOOL (^)(NSString *key, NSString *attribute, id value))block {
+	_filter = [block copy];
 
-			NSData *attributeData = [NSData dataWithBytes:sqlite3_value_blob(argv[1]) length:sqlite3_value_bytes(argv[1])];
-			NSString *attribute = [[NSString alloc] initWithData:attributeData encoding:NSUTF8StringEncoding];
+	FMDatabase *database = [self.database.store databaseForCurrentThread:NULL];
+	id intermediateBlock = ^(sqlite3_context *context, int argc, sqlite3_value **argv) {
+		NSData *keyData = [NSData dataWithBytes:sqlite3_value_blob(argv[0]) length:sqlite3_value_bytes(argv[0])];
+		NSString *key = [[NSString alloc] initWithData:keyData encoding:NSUTF8StringEncoding];
 
-			NSData *valueData = [NSData dataWithBytes:sqlite3_value_blob(argv[2]) length:sqlite3_value_bytes(argv[2])];
-			id value = [NSKeyedUnarchiver unarchiveObjectWithData:valueData];
+		NSData *attributeData = [NSData dataWithBytes:sqlite3_value_blob(argv[1]) length:sqlite3_value_bytes(argv[1])];
+		NSString *attribute = [[NSString alloc] initWithData:attributeData encoding:NSUTF8StringEncoding];
 
-			BOOL result = block(key, attribute, value);
-			sqlite3_result_int(context, result);
-		};
-		sqlite3_create_function(database.sqliteHandle, functionName.UTF8String, -1, SQLITE_UTF8, (void *)CFBridgingRetain([intermediateBlock copy]), &FRZQueryCallback, NULL, NULL);
-		return YES;
-	}];
+		NSData *valueData = [NSData dataWithBytes:sqlite3_value_blob(argv[2]) length:sqlite3_value_bytes(argv[2])];
+		id value = [NSKeyedUnarchiver unarchiveObjectWithData:valueData];
 
-	return [[self.class alloc] initWithDatabase:self.database queryStringBlock:^{
-		return [NSString stringWithFormat:@"%@(key, attribute, value)", functionName];
-	}];
+		BOOL result = block(key, attribute, value);
+		sqlite3_result_int(context, result);
+	};
+
+	sqlite3_create_function(database.sqliteHandle, self.filterFunctionName.UTF8String, -1, SQLITE_UTF8, (void *)CFBridgingRetain([intermediateBlock copy]), &FRZQueryCallback, NULL, NULL);
+}
+
+- (NSString *)buildQuery {
+	NSString *filterString = (self.filterFunctionName.length > 0 ? [NSString stringWithFormat:@"AND %@(key, attribute, value)", self.filterFunctionName] : @"");
+	NSString *takeString = (self.take > 0 ? [NSString stringWithFormat:@"LIMIT %lu", self.take] : @"");
+	NSString *baseQueryTemplate = @"SELECT key FROM data WHERE tx_id <= ? %@ GROUP BY attribute ORDER BY tx_id DESC %@";
+	return [NSString stringWithFormat:baseQueryTemplate, filterString, takeString];
 }
 
 - (NSArray *)allKeys {
 	NSMutableArray *keys = [NSMutableArray array];
 	BOOL success = [self.database.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
-		NSString *query = [NSString stringWithFormat:@"SELECT key FROM data WHERE tx_id <= ? AND %@ GROUP BY attribute ORDER BY tx_id DESC", self.queryStringBlock()];
-		FMResultSet *set = [database executeQuery:query, @(self.database.headID)];
+		FMResultSet *set = [database executeQuery:[self buildQuery], @(self.database.headID)];
 		if (set == nil) return NO;
 
 		while ([set next]) {
-			[keys addObject:set[0]];
+			NSString *key = set[0];
+			[keys addObject:key];
 		}
 
 		return YES;

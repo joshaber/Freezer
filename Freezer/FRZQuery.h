@@ -10,8 +10,13 @@
 
 @interface FRZQuery : NSObject
 
-- (FRZQuery *)filter:(BOOL (^)(NSString *key, NSString *attribute, id value))block;
+// The block used to filter the results.
+@property (nonatomic, copy) BOOL (^filter)(NSString *key, NSString *attribute, id value);
 
+// The number of results to take.
+@property (nonatomic, assign) NSUInteger take;
+
+// Get all the keys which pass `filter` and are limited by `take`.
 - (NSArray *)allKeys;
 
 @end

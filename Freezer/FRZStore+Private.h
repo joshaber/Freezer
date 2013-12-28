@@ -96,4 +96,11 @@ typedef enum : NSInteger {
 // Returns whether the query ran successfully.
 - (BOOL)executeUpdate:(NSString *)update withDatabase:(FMDatabase *)database error:(NSError **)error;
 
+// Get the database for the current thread.
+//
+// error - The error if one occurred.
+//
+// Returns the database or nil if an error occurred.
+- (FMDatabase *)databaseForCurrentThread:(NSError **)error;
+
 @end

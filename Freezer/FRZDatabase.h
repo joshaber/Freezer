@@ -78,7 +78,7 @@
 // Returns whether the attribute stores a collection.
 - (BOOL)isCollectionAttribute:(NSString *)attribute;
 
-
+// Create and return a new query to search the database.
 - (FRZQuery *)query;
 
 @end
