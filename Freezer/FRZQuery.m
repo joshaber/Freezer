@@ -24,7 +24,8 @@
 #pragma mark Lifecycle
 
 - (void)dealloc {
-	// TODO: Remove the function.
+	FMDatabase *database = [self.database.store databaseForCurrentThread:NULL];
+	sqlite3_create_function_v2(database.sqliteHandle, self.filterFunctionName.UTF8String, -1, SQLITE_UTF8, NULL, NULL, NULL, NULL, NULL);
 }
 
 - (id)initWithDatabase:(FRZDatabase *)database {
@@ -43,10 +44,14 @@
 
 #pragma mark Querying
 
-void FRZQueryCallback(sqlite3_context *context, int argc, sqlite3_value **argv) {
+void FRZQueryFilterCallback(sqlite3_context *context, int argc, sqlite3_value **argv) {
 	void (^block)(sqlite3_context *context, int argc, sqlite3_value **argv) = (__bridge id)sqlite3_user_data(context);
 	if (block != NULL) block(context, argc, argv);
 };
+
+void FRZQueryFilterCleanup(void *context) {
+	CFBridgingRelease(context);
+}
 
 - (void)setFilter:(BOOL (^)(NSString *key, NSString *attribute, id value))block {
 	_filter = [block copy];
@@ -66,7 +71,7 @@ void FRZQueryCallback(sqlite3_context *context, int argc, sqlite3_value **argv) 
 		sqlite3_result_int(context, result);
 	};
 
-	sqlite3_create_function(database.sqliteHandle, self.filterFunctionName.UTF8String, -1, SQLITE_UTF8, (void *)CFBridgingRetain([intermediateBlock copy]), &FRZQueryCallback, NULL, NULL);
+	sqlite3_create_function_v2(database.sqliteHandle, self.filterFunctionName.UTF8String, -1, SQLITE_UTF8, (void *)CFBridgingRetain([intermediateBlock copy]), &FRZQueryFilterCallback, NULL, NULL, &FRZQueryFilterCleanup);
 }
 
 - (NSString *)buildQuery {
