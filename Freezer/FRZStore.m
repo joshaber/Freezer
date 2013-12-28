@@ -42,6 +42,8 @@ NSString * const FRZStoreAttributeIsCollectionAttribute = @"Freezer/attribute/is
 
 @property (nonatomic, readonly, assign) pthread_key_t txIDKey;
 
+@property (atomic, strong) FRZDatabase *cachedCurrentDatabase;
+
 @end
 
 @implementation FRZStore
@@ -212,10 +214,13 @@ void FRZStoreReleaseDestructor(void *data) {
 }
 
 - (FRZDatabase *)currentDatabase {
+	if (self.cachedCurrentDatabase != nil) return self.cachedCurrentDatabase;
+
 	long long int headID = [self headID];
 	if (headID < 0) return nil;
 
-	return [[FRZDatabase alloc] initWithStore:self headID:headID];
+	self.cachedCurrentDatabase = [[FRZDatabase alloc] initWithStore:self headID:headID];
+	return self.cachedCurrentDatabase;
 }
 
 - (FMDatabase *)databaseForCurrentThread:(NSError **)error {
@@ -340,6 +345,7 @@ void FRZStoreReleaseDestructor(void *data) {
 				if (!success) return NO;
 			}
 
+			self.cachedCurrentDatabase = nil;
 			FRZDatabase *changedDatabase = [self currentDatabase];
 
 			[database commit];
