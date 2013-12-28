@@ -24,6 +24,8 @@
 #pragma mark Lifecycle
 
 - (void)dealloc {
+	// TODO: This is problematic because it requires that the query be
+	// deallocated on the same thread on which the function was created.
 	FMDatabase *database = [self.database.store databaseForCurrentThread:NULL];
 	sqlite3_create_function_v2(database.sqliteHandle, self.filterFunctionName.UTF8String, -1, SQLITE_UTF8, NULL, NULL, NULL, NULL, NULL);
 }
@@ -56,6 +58,8 @@ void FRZQueryFilterCleanup(void *context) {
 - (void)setFilter:(BOOL (^)(NSString *key, NSString *attribute, id value))block {
 	_filter = [block copy];
 
+	// TODO: This is problematic because the function will only be available to
+	// this database.
 	FMDatabase *database = [self.database.store databaseForCurrentThread:NULL];
 	id intermediateBlock = ^(sqlite3_context *context, int argc, sqlite3_value **argv) {
 		NSData *keyData = [NSData dataWithBytes:sqlite3_value_blob(argv[0]) length:sqlite3_value_bytes(argv[0])];
