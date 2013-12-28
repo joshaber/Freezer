@@ -14,10 +14,6 @@
 
 @interface FRZDatabase ()
 
-@property (nonatomic, readonly, strong) FRZStore *store;
-
-@property (nonatomic, readonly, assign) long long int headID;
-
 @property (nonatomic, readonly, strong) NSCache *lookupCache;
 
 @end
