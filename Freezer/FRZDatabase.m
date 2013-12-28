@@ -18,8 +18,7 @@
 
 @property (nonatomic, readonly, assign) long long int headID;
 
-// This must only be used while synchronized on it.
-@property (nonatomic, readonly, strong) NSMutableDictionary *cache;
+@property (nonatomic, readonly, strong) NSCache *lookupCache;
 
 @end
 
@@ -35,7 +34,8 @@
 
 	_store = store;
 	_headID = headID;
-	_cache = [NSMutableDictionary dictionary];
+	_lookupCache = [[NSCache alloc] init];
+	_lookupCache.name = @"com.Freezer.FRZDatabase.lookupCache";
 
 	return self;
 }
@@ -113,10 +113,8 @@
 - (id)valueForKey:(NSString *)key {
 	NSParameterAssert(key != nil);
 
-	@synchronized (self.cache) {
-		id cachedValue = self.cache[key];
-		if (cachedValue != nil) return cachedValue;
-	}
+	id cachedValue = [self.lookupCache objectForKey:key];
+	if (cachedValue != nil) return cachedValue;
 
 	NSMutableDictionary *results = [NSMutableDictionary dictionary];
 	BOOL success = [self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
@@ -140,9 +138,7 @@
 	if (results.count < 1) return nil;
 
 	if (results != nil) {
-		@synchronized (self.cache) {
-			self.cache[key] = results;
-		}
+		[self.lookupCache setObject:results forKey:key];
 	}
 
 	return results;
@@ -209,10 +205,8 @@
 	NSParameterAssert(attribute != nil);
 
 	NSString *cacheKey = [NSString stringWithFormat:@"%@-%@-%d", key, attribute, resolveReferences];
-	@synchronized (self.cache) {
-		id cachedValue = self.cache[cacheKey];
-		if (cachedValue != nil) return cachedValue;
-	}
+	id cachedValue = [self.lookupCache objectForKey:cacheKey];
+	if (cachedValue != nil) return cachedValue;
 
 	__block id result;
 	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
@@ -222,9 +216,7 @@
 	}];
 
 	if (result != nil) {
-		@synchronized (self.cache) {
-			self.cache[cacheKey] = result;
-		}
+		[self.lookupCache setObject:result forKey:cacheKey];
 	}
 
 	return result;
