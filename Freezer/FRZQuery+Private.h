@@ -14,9 +14,18 @@
 
 // Initializes the query with the given database.
 //
-// database - The database which the query will query. Cannot be nil.
+// database - The database to query. Cannot be nil.
 //
 // Returns the initialized object.
 - (id)initWithDatabase:(FRZDatabase *)database;
+
+// Initializes the query with the given database, filter, and take limit.
+//
+// database - The database to query. Cannot be nil.
+// filter   - The filter block. May be nil.
+// take     - The take limit. 0 means unlimited.
+//
+// Returns the initialized object.
+- (id)initWithDatabase:(FRZDatabase *)database filter:(BOOL (^)(NSString *key, NSString *attribute, id value))filter take:(NSUInteger)take;
 
 @end

@@ -10,13 +10,28 @@
 
 @interface FRZQuery : NSObject
 
-// The block used to filter the results.
-@property (nonatomic, copy) BOOL (^filter)(NSString *key, NSString *attribute, id value);
+// Creates a new query based on the receiver which filters using the given
+// block.
+//
+// Note that this will replace the receiver's `filter` block, if it has one.
+//
+// filter - The block used to filter results. Cannot be nil.
+//
+// Returns the new query.
+- (instancetype)filter:(BOOL (^)(NSString *key, NSString *attribute, id value))filter;
 
-// The number of results to take.
-@property (nonatomic, assign) NSUInteger take;
+// Creates a new query based on the receiver which will take only `take` number
+// of results.
+//
+// Note that this will replace the receiver's `take`, if one has been set.
+//
+// take - The number of results to take before stopping. 0 means take all
+//        results.
+//
+// Returns the new query.
+- (instancetype)take:(NSUInteger)take;
 
 // Get all the keys which pass `filter` and are limited by `take`.
-- (NSArray *)allKeys;
+- (NSSet *)allKeys;
 
 @end

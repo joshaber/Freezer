@@ -143,10 +143,9 @@
 	static NSString * const testKey = @"test-key";
 	[transactor addValue:@42 forAttribute:testAttribute key:testKey error:NULL];
 
-	FRZQuery *query = [[self.store currentDatabase] query];
-	query.filter = ^(NSString *key, NSString *attribute, id value) {
+	FRZQuery *query = [[[self.store currentDatabase] query] filter:^(NSString *key, NSString *attribute, id value) {
 		return [value isEqual:@42];
-	};
+	}];
 	NSLog(@"%@", [query allKeys]);
 }
 

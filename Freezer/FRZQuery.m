@@ -15,20 +15,17 @@
 
 @property (nonatomic, readonly, strong) FRZDatabase *database;
 
-@property (nonatomic, readonly, copy) NSString *filterFunctionName;
+@property (nonatomic, readonly, copy) BOOL (^filter)(NSString *, NSString *, id);
+
+@property (nonatomic, readonly, assign) NSUInteger take;
+
+@property (atomic, copy) NSSet *results;
 
 @end
 
 @implementation FRZQuery
 
 #pragma mark Lifecycle
-
-- (void)dealloc {
-	// TODO: This is problematic because it requires that the query be
-	// deallocated on the same thread on which the function was created.
-	FMDatabase *database = [self.database.store databaseForCurrentThread:NULL];
-	sqlite3_create_function_v2(database.sqliteHandle, self.filterFunctionName.UTF8String, -1, SQLITE_UTF8, NULL, NULL, NULL, NULL, NULL);
-}
 
 - (id)initWithDatabase:(FRZDatabase *)database {
 	NSParameterAssert(database != nil);
@@ -38,13 +35,30 @@
 
 	_database = database;
 
-	NSString *UUID = [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""];
-	_filterFunctionName = [@"FRZQueryFilter" stringByAppendingString:UUID];
+	return self;
+}
+
+- (id)initWithDatabase:(FRZDatabase *)database filter:(BOOL (^)(NSString *key, NSString *attribute, id value))filter take:(NSUInteger)take {
+	self = [self initWithDatabase:database];
+	if (self == nil) return nil;
+
+	_filter = [filter copy];
+	_take = take;
 
 	return self;
 }
 
 #pragma mark Querying
+
+- (instancetype)filter:(BOOL (^)(NSString *key, NSString *attribute, id value))filter {
+	NSParameterAssert(filter != NULL);
+
+	return [[self.class alloc] initWithDatabase:self.database filter:filter take:self.take];
+}
+
+- (instancetype)take:(NSUInteger)take {
+	return [[self.class alloc] initWithDatabase:self.database filter:self.filter take:take];
+}
 
 void FRZQueryFilterCallback(sqlite3_context *context, int argc, sqlite3_value **argv) {
 	void (^block)(sqlite3_context *context, int argc, sqlite3_value **argv) = (__bridge id)sqlite3_user_data(context);
@@ -52,14 +66,12 @@ void FRZQueryFilterCallback(sqlite3_context *context, int argc, sqlite3_value **
 };
 
 void FRZQueryFilterCleanup(void *context) {
-	CFBridgingRelease(context);
+	if (context != NULL) CFRelease(context);
 }
 
-- (void)setFilter:(BOOL (^)(NSString *key, NSString *attribute, id value))block {
-	_filter = [block copy];
+- (BOOL)withFilterFunction:(BOOL (^)(NSString *functionName))block {
+	if (self.filter == NULL) return block(nil);
 
-	// TODO: This is problematic because the function will only be available to
-	// this database.
 	FMDatabase *database = [self.database.store databaseForCurrentThread:NULL];
 	id intermediateBlock = ^(sqlite3_context *context, int argc, sqlite3_value **argv) {
 		NSData *keyData = [NSData dataWithBytes:sqlite3_value_blob(argv[0]) length:sqlite3_value_bytes(argv[0])];
@@ -71,37 +83,53 @@ void FRZQueryFilterCleanup(void *context) {
 		NSData *valueData = [NSData dataWithBytes:sqlite3_value_blob(argv[2]) length:sqlite3_value_bytes(argv[2])];
 		id value = [NSKeyedUnarchiver unarchiveObjectWithData:valueData];
 
-		BOOL result = block(key, attribute, value);
+		BOOL result = self.filter(key, attribute, value);
 		sqlite3_result_int(context, result);
 	};
 
-	sqlite3_create_function_v2(database.sqliteHandle, self.filterFunctionName.UTF8String, -1, SQLITE_UTF8, (void *)CFBridgingRetain([intermediateBlock copy]), &FRZQueryFilterCallback, NULL, NULL, &FRZQueryFilterCleanup);
+	NSString *UUID = [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""];
+	NSString *functionName = [@"FRZQueryFilter" stringByAppendingString:UUID];
+
+	sqlite3_create_function_v2(database.sqliteHandle, functionName.UTF8String, 3, SQLITE_UTF8, (void *)CFBridgingRetain([intermediateBlock copy]), &FRZQueryFilterCallback, NULL, NULL, &FRZQueryFilterCleanup);
+
+	BOOL success = block(functionName);
+
+	sqlite3_create_function_v2(database.sqliteHandle, functionName.UTF8String, 3, SQLITE_UTF8, NULL, NULL, NULL, NULL, NULL);
+
+	return success;
 }
 
-- (NSString *)buildQuery {
-	NSString *filterString = (self.filterFunctionName.length > 0 ? [NSString stringWithFormat:@"AND %@(key, attribute, value)", self.filterFunctionName] : @"");
-	NSString *takeString = (self.take > 0 ? [NSString stringWithFormat:@"LIMIT %lu", self.take] : @"");
-	NSString *baseQueryTemplate = @"SELECT key FROM data WHERE tx_id <= ? %@ GROUP BY attribute ORDER BY tx_id DESC %@";
+- (NSString *)buildQueryWithFilterFunctionName:(NSString *)filterFunctionName {
+	NSString *filterString = (filterFunctionName.length > 0 ? [NSString stringWithFormat:@"AND %@(key, attribute, value)", filterFunctionName] : @"");
+	NSString *takeString = (self.take > 0 ? [NSString stringWithFormat:@"LIMIT %lu", (unsigned long)self.take] : @"");
+	NSString *baseQueryTemplate = @"SELECT key FROM data WHERE tx_id <= ? %@ GROUP BY key ORDER BY tx_id DESC %@";
 	return [NSString stringWithFormat:baseQueryTemplate, filterString, takeString];
 }
 
-- (NSArray *)allKeys {
-	NSMutableArray *keys = [NSMutableArray array];
+- (NSSet *)allKeys {
+	if (self.results != nil) return self.results;
+
+	NSMutableSet *keys = [NSMutableSet set];
 	BOOL success = [self.database.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
-		FMResultSet *set = [database executeQuery:[self buildQuery], @(self.database.headID)];
-		if (set == nil) return NO;
+		return [self withFilterFunction:^(NSString *functionName) {
+			NSString *query = [self buildQueryWithFilterFunctionName:functionName];
+			FMResultSet *set = [database executeQuery:query, @(self.database.headID)];
+			if (set == nil) return NO;
 
-		while ([set next]) {
-			NSString *key = set[0];
-			[keys addObject:key];
-		}
+			while ([set next]) {
+				NSString *key = [set stringForColumnIndex:0];
+				[keys addObject:key];
+			}
 
-		return YES;
+			return YES;
+		}];
 	}];
 
 	if (!success) return nil;
 
-	return keys;
+	self.results = keys;
+
+	return self.results;
 }
 
 @end
