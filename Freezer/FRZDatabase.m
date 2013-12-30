@@ -11,12 +11,9 @@
 #import "FMDatabase.h"
 #import "FRZStore+Private.h"
 #import "FRZTransactor+Private.h"
+#import "FRZQuery+Private.h"
 
 @interface FRZDatabase ()
-
-@property (nonatomic, readonly, strong) FRZStore *store;
-
-@property (nonatomic, readonly, assign) long long int headID;
 
 @property (nonatomic, readonly, strong) NSCache *lookupCache;
 
@@ -254,6 +251,10 @@
 	}
 
 	return value;
+}
+
+- (FRZQuery *)query {
+	return [[FRZQuery alloc] initWithDatabase:self];
 }
 
 @end

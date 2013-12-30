@@ -13,6 +13,12 @@
 
 @interface FRZDatabase ()
 
+// The store to which the database belongs.
+@property (nonatomic, readonly, strong) FRZStore *store;
+
+// The head ID to which the database points.
+@property (nonatomic, readonly, assign) long long int headID;
+
 // Initializes the database with the given store and the transaction ID of the
 // current head of the store.
 //

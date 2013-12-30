@@ -22,7 +22,7 @@
 	_path = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSUUID UUID] UUIDString]];
 	_store = [[FRZStore alloc] initWithURL:[NSURL fileURLWithPath:self.path] error:NULL];
 
-	[self testPerformance];
+	[self testQuery];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification {
@@ -132,6 +132,21 @@
 	}];
 
 	NSLog(@"Reads/sec: %lu", reads);
+}
+
+- (void)testQuery {
+	FRZTransactor *transactor = [self.store transactor];
+
+	static NSString * const testAttribute = @"test-attr";
+	[transactor addAttribute:testAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
+
+	static NSString * const testKey = @"test-key";
+	[transactor addValue:@42 forAttribute:testAttribute key:testKey error:NULL];
+
+	FRZQuery *query = [[[self.store currentDatabase] query] filter:^(NSString *key, NSString *attribute, id value) {
+		return [value isEqual:@42];
+	}];
+	NSLog(@"%@", [query allKeys]);
 }
 
 @end
