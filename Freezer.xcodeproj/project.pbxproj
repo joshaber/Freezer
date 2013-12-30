@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		88287CA0186E78CA0085B2D2 /* FRZQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 88287C9E186E78CA0085B2D2 /* FRZQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		88287CA1186E78CA0085B2D2 /* FRZQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 88287C9F186E78CA0085B2D2 /* FRZQuery.m */; };
+		88AF6387187130B300EB5E29 /* FRZQuerySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AF6386187130B300EB5E29 /* FRZQuerySpec.m */; };
 		88EFB67F182D9BC500DF807A /* FRZSingleKeyTransactor.h in Headers */ = {isa = PBXBuildFile; fileRef = 88EFB67D182D9BC500DF807A /* FRZSingleKeyTransactor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		88EFB680182D9BC500DF807A /* FRZSingleKeyTransactor.m in Sources */ = {isa = PBXBuildFile; fileRef = 88EFB67E182D9BC500DF807A /* FRZSingleKeyTransactor.m */; };
 		88FD309F182B25A8004CFDD4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8884947418063DDA00477836 /* Cocoa.framework */; };
@@ -240,6 +241,7 @@
 		888495401806410700477836 /* FRZDatabase+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZDatabase+Private.h"; sourceTree = "<group>"; };
 		888495411806431400477836 /* FRZTransactor+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZTransactor+Private.h"; sourceTree = "<group>"; };
 		888495421806437D00477836 /* FRZStore+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZStore+Private.h"; sourceTree = "<group>"; };
+		88AF6386187130B300EB5E29 /* FRZQuerySpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZQuerySpec.m; sourceTree = "<group>"; };
 		88B3F8EC182AE14B00C0415E /* FRZChange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZChange.h; sourceTree = "<group>"; };
 		88B3F8ED182AE14B00C0415E /* FRZChange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZChange.m; sourceTree = "<group>"; };
 		88B3F8EF182AE1B700C0415E /* FRZChange+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZChange+Private.h"; sourceTree = "<group>"; };
@@ -462,6 +464,7 @@
 				88FD3108182B27DA004CFDD4 /* FRZStoreSpec.m */,
 				88FD3112182B28BA004CFDD4 /* FRZDatabaseSpec.m */,
 				88FD3115182B28CE004CFDD4 /* FRZTransactorSpec.m */,
+				88AF6386187130B300EB5E29 /* FRZQuerySpec.m */,
 				88FD30B5182B25A8004CFDD4 /* Supporting Files */,
 			);
 			path = FreezerTests;
@@ -779,6 +782,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88AF6387187130B300EB5E29 /* FRZQuerySpec.m in Sources */,
 				88FD3113182B28BA004CFDD4 /* FRZDatabaseSpec.m in Sources */,
 				88FD3116182B28CE004CFDD4 /* FRZTransactorSpec.m in Sources */,
 				88FD3109182B27DA004CFDD4 /* FRZStoreSpec.m in Sources */,
