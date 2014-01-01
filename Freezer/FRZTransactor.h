@@ -82,7 +82,8 @@ typedef enum : NSInteger {
 // Returns whether the changes were successful.
 - (BOOL)performChangesWithError:(NSError **)error block:(BOOL (^)(NSError **error))block;
 
-// Trim old keys and values from the store.
+// Trim all old keys and values from the store so that only the latest values
+// are left.
 //
 // Note that this *does* effectively change existing databases in place. This
 // makes it a dangerous operation that should only be done when you can
@@ -92,6 +93,6 @@ typedef enum : NSInteger {
 // error - The error if one occurred.
 //
 // Returns whether the trim was successful.
-- (BOOL)trim:(NSError **)error;
+- (BOOL)trimToLatest:(NSError **)error;
 
 @end

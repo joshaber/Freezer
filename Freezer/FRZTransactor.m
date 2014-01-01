@@ -268,7 +268,7 @@
 	return [self deleteEverythingButTheLastIDWithAttribute:FRZStoreHeadTransactionAttribute database:database error:error];
 }
 
-- (BOOL)trim:(NSError **)error {
+- (BOOL)trimToLatest:(NSError **)error {
 	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive withNewTransaction:NO error:error block:^(FMDatabase *database, long long txID, NSError **error) {
 		BOOL success = [self trimOldKeys:database error:error];
 		if (!success) return NO;

@@ -197,7 +197,7 @@ describe(@"trimming", ^{
 		success = [transactor removeValue:testValue forAttribute:testAttribute key:testKey error:NULL];
 		expect(success).to.beTruthy();
 
-		success = [transactor trim:NULL];
+		success = [transactor trimToLatest:NULL];
 		expect(success).to.beTruthy();
 
 		expect([store entryCount]).to.equal(startingEntryCount);
@@ -207,7 +207,7 @@ describe(@"trimming", ^{
 		BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
 		expect(success).to.beTruthy();
 
-		success = [transactor trim:NULL];
+		success = [transactor trimToLatest:NULL];
 		expect(success).to.beTruthy();
 
 		long long int startingEntryCount = [store entryCount];
@@ -216,7 +216,7 @@ describe(@"trimming", ^{
 		expect(success).to.beTruthy();
 		expect([store entryCount]).to.beGreaterThan(startingEntryCount);
 
-		success = [transactor trim:NULL];
+		success = [transactor trimToLatest:NULL];
 		expect(success).to.beTruthy();
 
 		expect([store entryCount]).to.equal(startingEntryCount);
@@ -230,7 +230,7 @@ describe(@"trimming", ^{
 		success = [transactor addValue:latest forAttribute:testAttribute key:testKey error:NULL];
 		expect(success).to.beTruthy();
 
-		success = [transactor trim:NULL];
+		success = [transactor trimToLatest:NULL];
 		expect(success).to.beTruthy();
 
 		expect([store currentDatabase][testKey][testAttribute]).to.equal(latest);

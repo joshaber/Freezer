@@ -174,7 +174,7 @@ it(@"should trim", ^{
 	expect(database).notTo.beNil();
 	expect([database valueForKey:testKey attribute:testAttribute]).to.equal(testValue);
 
-	success = [transactor trim:NULL];
+	success = [transactor trimToLatest:NULL];
 	expect(success).to.beTruthy();
 
 	database = [store currentDatabase];
