@@ -22,7 +22,7 @@
 	_path = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSUUID UUID] UUIDString]];
 	_store = [[FRZStore alloc] initWithURL:[NSURL fileURLWithPath:self.path] error:NULL];
 
-	[self testQuery];
+	[self testStuff];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification {
