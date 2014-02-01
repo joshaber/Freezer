@@ -22,11 +22,11 @@ typedef enum : NSInteger {
 // The type of the change.
 @property (nonatomic, readonly, assign) FRZChangeType type;
 
+// The ID which was changed.
+@property (nonatomic, readonly, copy) NSString *ID;
+
 // The key which was changed.
 @property (nonatomic, readonly, copy) NSString *key;
-
-// The attribute which was changed.
-@property (nonatomic, readonly, copy) NSString *attribute;
 
 // The value which was added or removed.
 @property (nonatomic, readonly, strong) id delta;
@@ -41,14 +41,13 @@ typedef enum : NSInteger {
 // Initializes the receiver with the given properties.
 //
 // type             - The type of change.
-// key              - The key whose value of attribute was changed. Cannot be
-//                    nil.
-// attribute        - The attribute whose value was changed. Cannot be nil.
+// ID               - The ID whose value of key was changed. Cannot be nil.
+// key              - The key whose value was changed. Cannot be nil.
 // delta            - The delta for the change. Cannot be nil.
 // previousDatabase - The database before the change. May be nil.
 // changedDatabase  - The database after the change. Cannot be nil.
 //
 // Returns the initialized object.
-- (id)initWithType:(FRZChangeType)type key:(NSString *)key attribute:(NSString *)attribute delta:(id)delta previousDatabase:(FRZDatabase *)previousDatabase changedDatabase:(FRZDatabase *)changedDatabase;
+- (id)initWithType:(FRZChangeType)type ID:(NSString *)ID key:(NSString *)key delta:(id)delta previousDatabase:(FRZDatabase *)previousDatabase changedDatabase:(FRZDatabase *)changedDatabase;
 
 @end

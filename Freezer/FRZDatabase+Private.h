@@ -28,16 +28,16 @@
 // Returns the initialized object.
 - (id)initWithStore:(FRZStore *)store headID:(long long int)headID;
 
-// Get the single value for the given attribute and key in the database.
+// Get the single value for the given key and ID in the database.
 //
+// ID         - The ID whose value should be retrieved. Cannot be nil.
 // key        - The key whose value should be retrieved. Cannot be nil.
-// attribute  - The attribute whose value should be retrieved. Cannot be nil.
 // resolveRef - Should references be resolved?
 // database   - The database to use for the lookup.
 // success    - Was the lookup successful?
 // error      - The error if one occurred.
 //
 // Returns the value.
-- (id)singleValueForAttribute:(NSString *)attribute key:(NSString *)key resolveRef:(BOOL)resolveRef inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error;
+- (id)singleValueForKey:(NSString *)key ID:(NSString *)ID resolveRef:(BOOL)resolveRef inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error;
 
 @end

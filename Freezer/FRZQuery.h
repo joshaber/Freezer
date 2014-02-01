@@ -18,7 +18,7 @@
 // filter - The block used to filter results. Cannot be nil.
 //
 // Returns the new query.
-- (instancetype)filter:(BOOL (^)(NSString *key, NSString *attribute, id value))filter;
+- (instancetype)filter:(BOOL (^)(NSString *ID, NSString *key, id value))filter;
 
 // Creates a new query based on the receiver which will take only `take` number
 // of results.
@@ -31,7 +31,7 @@
 // Returns the new query.
 - (instancetype)take:(NSUInteger)take;
 
-// Get all the keys which pass `filter` and are limited by `take`.
-- (NSSet *)allKeys;
+// Get all the IDs which pass `filter` and are limited by `take`.
+- (NSSet *)allIDs;
 
 @end

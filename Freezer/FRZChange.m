@@ -14,10 +14,10 @@
 
 #pragma mark Lifecycle
 
-- (id)initWithType:(FRZChangeType)type key:(NSString *)key attribute:(NSString *)attribute delta:(id)delta previousDatabase:(FRZDatabase *)previousDatabase changedDatabase:(FRZDatabase *)changedDatabase {
+- (id)initWithType:(FRZChangeType)type ID:(NSString *)ID key:(NSString *)key delta:(id)delta previousDatabase:(FRZDatabase *)previousDatabase changedDatabase:(FRZDatabase *)changedDatabase {
 	NSParameterAssert(changedDatabase != nil);
 
-	self = [self initWithType:type key:key attribute:attribute delta:delta];
+	self = [self initWithType:type ID:ID key:key delta:delta];
 	if (self == nil) return nil;
 
 	_previousDatabase = previousDatabase;
@@ -26,17 +26,17 @@
 	return self;
 }
 
-- (id)initWithType:(FRZChangeType)type key:(NSString *)key attribute:(NSString *)attribute delta:(id)delta {
+- (id)initWithType:(FRZChangeType)type ID:(NSString *)ID key:(NSString *)key delta:(id)delta {
+	NSParameterAssert(ID != nil);
 	NSParameterAssert(key != nil);
-	NSParameterAssert(attribute != nil);
 	NSParameterAssert(delta != nil);
 
 	self = [super init];
 	if (self == nil) return nil;
 
 	_type = type;
+	_ID = [ID copy];
 	_key = [key copy];
-	_attribute = [attribute copy];
 	_delta = delta;
 
 	return self;
@@ -51,7 +51,7 @@
 	};
 	NSString *typeName = typeToTypeName[@(self.type)];
 
-	return [NSString stringWithFormat:@"<%@: %p> type: %@, key: %@, attribute: %@, delta: %@", self.class, self, typeName, self.key, self.attribute, self.delta];
+	return [NSString stringWithFormat:@"<%@: %p> type: %@, ID: %@, key: %@, delta: %@", self.class, self, typeName, self.ID, self.key, self.delta];
 }
 
 #pragma mark NSCopying

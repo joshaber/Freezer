@@ -17,14 +17,14 @@
 
 NSString * const FRZErrorDomain = @"FRZErrorDomain";
 
-const NSInteger FRZErrorInvalidAttribute = -1;
+const NSInteger FRZErrorInvalidKey = -1;
 const NSInteger FRZErrorInvalidValue = -2;
 
-NSString * const FRZStoreHeadTransactionAttribute = @"Freezer/tx/head";
-NSString * const FRZStoreTransactionDateAttribute = @"Freezer/tx/date";
+NSString * const FRZStoreHeadTransactionKey = @"Freezer/tx/head";
+NSString * const FRZStoreTransactionDateKey = @"Freezer/tx/date";
 
-NSString * const FRZStoreAttributeTypeAttribute = @"Freezer/attribute/type";
-NSString * const FRZStoreAttributeIsCollectionAttribute = @"Freezer/attribute/is-collection";
+NSString * const FRZStoreKeyTypeKey = @"Freezer/key/type";
+NSString * const FRZStoreKeyIsCollectionKey = @"Freezer/key/is-collection";
 
 @interface FRZStore ()
 
@@ -153,8 +153,8 @@ void FRZStoreReleaseDestructor(void *data) {
 	NSString *schema =
 		@"CREATE TABLE IF NOT EXISTS data("
 			"id INTEGER PRIMARY KEY AUTOINCREMENT,"
+			"frz_id STRING NOT NULL,"
 			"key STRING NOT NULL,"
-			"attribute STRING NOT NULL,"
 			"value BLOB,"
 			"tx_id INTEGER NOT NULL"
 		");";
@@ -163,7 +163,7 @@ void FRZStoreReleaseDestructor(void *data) {
 }
 
 - (BOOL)createIndex:(FMDatabase *)database error:(NSError **)error {
-	NSString *index = @"CREATE INDEX IF NOT EXISTS lookup_index ON data (key, attribute, tx_id)";
+	NSString *index = @"CREATE INDEX IF NOT EXISTS lookup_index ON data (frz_id, key, tx_id)";
 	return [self executeUpdate:index withDatabase:database error:error];
 }
 
@@ -192,7 +192,7 @@ void FRZStoreReleaseDestructor(void *data) {
 	FMDatabase *database = [self databaseForCurrentThread:NULL];
 	if (database == nil) return -1;
 
-	FMResultSet *set = [database executeQuery:@"SELECT value FROM data WHERE key = 'head' ORDER BY id DESC LIMIT 1"];
+	FMResultSet *set = [database executeQuery:@"SELECT value FROM data WHERE frz_id = 'head' ORDER BY id DESC LIMIT 1"];
 	if (set == nil) return -1;
 	if (![set next]) return -1;
 
