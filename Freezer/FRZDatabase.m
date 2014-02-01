@@ -66,7 +66,8 @@
 	if (![set next]) return nil;
 
 	FRZType type = [self typeForKey:key];
-	id value = [self unpackedValueFromData:set[0] type:type resolveRef:resolveRef];
+	BOOL isCollection = [self isCollectionKey:key];
+	id value = [self unpackedValueFromData:set[0] type:type isCollection:isCollection resolveRef:resolveRef];
 	if (value == NSNull.null) return nil;
 
 	return value;
@@ -122,7 +123,8 @@
 			NSData *data = set[1];
 			id key = set[0];
 			FRZType type = [self typeForKey:key];
-			id value = [self unpackedValueFromData:data type:type resolveRef:YES];
+			BOOL isCollection = [self isCollectionKey:key];
+			id value = [self unpackedValueFromData:data type:type isCollection:isCollection resolveRef:YES];
 			if (value == NSNull.null) continue;
 
 			results[key] = value;
@@ -153,7 +155,7 @@
 
 			while ([set next]) {
 				NSData *data = set[1];
-				id value = [self unpackedValueFromData:data type:FRZTypeBlob resolveRef:NO];
+				id value = [self unpackedValueFromData:data type:FRZTypeBlob isCollection:NO resolveRef:NO];
 				if (value == NSNull.null) continue;
 
 				id key = set[0];
@@ -177,7 +179,7 @@
 
 		while ([set next]) {
 			NSData *data = set[1];
-			id value = [self unpackedValueFromData:data type:FRZTypeBlob resolveRef:NO];
+			id value = [self unpackedValueFromData:data type:FRZTypeBlob isCollection:NO resolveRef:NO];
 			if (value == NSNull.null) continue;
 
 			id key = set[0];
@@ -242,12 +244,22 @@
 	return [[self valueForID:key key:FRZStoreKeyTypeKey] integerValue];
 }
 
-- (id)unpackedValueFromData:(NSData *)data type:(FRZType)type resolveRef:(BOOL)resolveRef {
+- (id)unpackedValueFromData:(NSData *)data type:(FRZType)type isCollection:(BOOL)isCollection resolveRef:(BOOL)resolveRef {
 	NSParameterAssert(data != nil);
 
 	id value = [NSKeyedUnarchiver unarchiveObjectWithData:data];
 	if (type == FRZTypeRef && resolveRef) {
-		return self[value];
+		if (isCollection) {
+			NSMutableSet *set = [NSMutableSet set];
+			for (NSString *ID in value) {
+				id nestedValue = self[ID];
+				if (nestedValue != nil) [set addObject:nestedValue];
+			}
+
+			return set;
+		} else {
+			return self[value];
+		}
 	}
 
 	return value;
