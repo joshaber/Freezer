@@ -105,7 +105,8 @@
 		if (isCollection) {
 			NSSet *existingValue = [self.store.databaseBeforeTransaction valueForID:ID key:key resolveReferences:NO] ?: [NSSet set];
 			NSSet *newValue = [existingValue setByAddingObject:value];
-			return [self insertIntoDatabase:database value:newValue forKey:key ID:ID transactionID:txID error:error];
+			BOOL success = [self insertIntoDatabase:database value:newValue forKey:key ID:ID transactionID:txID error:error];
+			if (!success) return NO;
 		} else {
 			BOOL success = [self insertIntoDatabase:database value:value forKey:key ID:ID transactionID:txID error:error];
 			if (!success) return NO;
