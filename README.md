@@ -15,13 +15,18 @@ current database or get a transactor to perform changes.
 changes in place.
 * `FRZTransactor` is responsible for adding or removing values from the store.
 
-## Attributes
+## IDs
+
+IDs are used to group key-value pairs into a single entity. They can be any 
+arbitrary string.
+
+## Keys
 
 Freezer does not store objects. Instead, it stores an arbitrary collection of 
-attribute-value pairs, grouped by a key. Attributes have a fixed type and must
-be added to the store before being used. (See `-[FRZStore addAttribute:type:collection:error:]`.)
+key-value pairs, grouped by an ID. Keys have a fixed type and must
+be added to the store before being used. (See `-[FRZStore addKey:type:collection:error:]`.)
 
-A collection of attributes, grouped by key, may be transformed into, for example,
+A collection of keys, grouped by ID, may be transformed into, for example,
 a [Mantle](https://github.com/github/Mantle) model object. But note that model 
 object is simply a view on the data. It is not the thing itself.
 

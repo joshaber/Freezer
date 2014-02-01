@@ -8,71 +8,71 @@
 
 #import <Foundation/Foundation.h>
 
-@class FRZSingleKeyTransactor;
+@class FRZSingleIDTransactor;
 
-// The valid attribute types.
-//   FRZAttributeTypeInteger    - Integer type.
-//   FRZAttributeTypeReal       - Real numbers type.
-//   FRZAttributeTypeString     - String type.
-//   FRZAttributeTypeBlob       - Data blob type.
-//   FRZAttributeTypeDate       - Date type.
-//   FRZAttributeTypeRef        - Reference to another key.
+// The valid key types.
+//   FRZTypeInteger - Integer type.
+//   FRZTypeReal    - Real numbers type.
+//   FRZTypeString  - String type.
+//   FRZTypeBlob    - Data blob type.
+//   FRZTypeDate    - Date type.
+//   FRZTypeRef     - Reference to another key.
 typedef enum : NSInteger {
-	FRZAttributeTypeInteger = 1,
-	FRZAttributeTypeReal,
-	FRZAttributeTypeString,
-	FRZAttributeTypeBlob,
-	FRZAttributeTypeDate,
-	FRZAttributeTypeRef,
-} FRZAttributeType;
+	FRZTypeInteger = 1,
+	FRZTypeReal = 2,
+	FRZTypeString = 3,
+	FRZTypeBlob = 4,
+	FRZTypeDate = 5,
+	FRZTypeRef = 6,
+} FRZType;
 
 // The transactor is responsible for effecting change to the store.
 @interface FRZTransactor : NSObject
 
-// Add an attribute of the given type to the store.
+// Add an key of the given type to the store.
 //
-// attribute  - The name of the attribute to add. Cannot be nil.
-// type       - The type of the attribute.
-// collection - Is the attribute a collection of values?
+// key        - The name of the key to add. Cannot be nil.
+// type       - The type of the key.
+// collection - Is the key a collection of values?
 // error      - The error if one occurred.
 //
-// Returns whether the attribute addition was successful.
-- (BOOL)addAttribute:(NSString *)attribute type:(FRZAttributeType)type collection:(BOOL)collection error:(NSError **)error;
+// Returns whether the key addition was successful.
+- (BOOL)addKey:(NSString *)key type:(FRZType)type collection:(BOOL)collection error:(NSError **)error;
 
-// Generate a new key to use for adding new values.
-- (NSString *)generateNewKey;
+// Generate a new ID to use for adding new values.
+- (NSString *)generateNewID;
 
-// Adds a new value for the given attribute, associated with the given key.
+// Adds a new value for the given key, associated with the given ID.
 //
-// value     - The value to add. Cannot be nil.
-// attribute - The attribute whose value will be added as `value`. Cannot be nil.
-// key       - The key to associate with the attribute and value. Cannot be nil.
-// error     - The error if one occurs.
+// value - The value to add. Cannot be nil.
+// key   - The key whose value will be added as `value`. Cannot be nil.
+// ID    - The ID to associate with the key and value. Cannot be nil.
+// error - The error if one occurs.
 //
 // Returns whether the add was successful.
-- (BOOL)addValue:(id<NSCoding>)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
+- (BOOL)addValue:(id<NSCoding>)value forKey:(NSString *)key ID:(NSString *)ID error:(NSError **)error;
 
-// Add many attribute-value pairs to a key within a single transaction.
+// Add many key-value pairs to an ID within a single transaction.
 //
-// key   - The key to add to. Cannot be nil.
+// ID    - The ID to add to. Cannot be nil.
 // error - The error if one occurred.
 // block - The block in which adds will be performed. Cannot be nil.
 //
 // Returns whether the adds were successful.
-- (BOOL)addValuesWithKey:(NSString *)key error:(NSError **)error block:(BOOL (^)(FRZSingleKeyTransactor *transactor, NSError **error))block;
+- (BOOL)addValuesWithID:(NSString *)ID error:(NSError **)error block:(BOOL (^)(FRZSingleIDTransactor *transactor, NSError **error))block;
 
-// Removes the value for the given attribute and key, but only if the given
-// value matches the current value. If the current value does not match the
-// given value, then the method returns NO and the error code will be
+// Removes the value for the given key and ID, but only if the given value
+// matches the current value. If the current value does not match the given
+// value, then the method returns NO and the error code will be
 // FRZErrorInvalidValue.
 //
-// value     - The value which should be removed. Cannot be nil.
-// attribute - The attribute whose value should be removed. Cannot be nil.
-// key       - The key whose associated attribute will be removed. Cannot be nil.
-// error     - The error if one occurs.
+// value - The value which should be removed. Cannot be nil.
+// key   - The key whose value should be removed. Cannot be nil.
+// ID    - The ID whose associated key will be removed. Cannot be nil.
+// error - The error if one occurs.
 //
 // Returns whether the removal was successful.
-- (BOOL)removeValue:(id)value forAttribute:(NSString *)attribute key:(NSString *)key error:(NSError **)error;
+- (BOOL)removeValue:(id)value forKey:(NSString *)key ID:(NSString *)ID error:(NSError **)error;
 
 // Perform changes to the store within the given block.
 //
@@ -82,7 +82,7 @@ typedef enum : NSInteger {
 // Returns whether the changes were successful.
 - (BOOL)performChangesWithError:(NSError **)error block:(BOOL (^)(NSError **error))block;
 
-// Trim old keys and values from the store.
+// Trim old IDs and values from the store.
 //
 // Note that this *does* effectively change existing databases in place. This
 // makes it a dangerous operation that should only be done when you can

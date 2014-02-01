@@ -10,8 +10,8 @@
 		88287CA0186E78CA0085B2D2 /* FRZQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 88287C9E186E78CA0085B2D2 /* FRZQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		88287CA1186E78CA0085B2D2 /* FRZQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 88287C9F186E78CA0085B2D2 /* FRZQuery.m */; };
 		88AF6387187130B300EB5E29 /* FRZQuerySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AF6386187130B300EB5E29 /* FRZQuerySpec.m */; };
-		88EFB67F182D9BC500DF807A /* FRZSingleKeyTransactor.h in Headers */ = {isa = PBXBuildFile; fileRef = 88EFB67D182D9BC500DF807A /* FRZSingleKeyTransactor.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		88EFB680182D9BC500DF807A /* FRZSingleKeyTransactor.m in Sources */ = {isa = PBXBuildFile; fileRef = 88EFB67E182D9BC500DF807A /* FRZSingleKeyTransactor.m */; };
+		88EFB67F182D9BC500DF807A /* FRZSingleIDTransactor.h in Headers */ = {isa = PBXBuildFile; fileRef = 88EFB67D182D9BC500DF807A /* FRZSingleIDTransactor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		88EFB680182D9BC500DF807A /* FRZSingleIDTransactor.m in Sources */ = {isa = PBXBuildFile; fileRef = 88EFB67E182D9BC500DF807A /* FRZSingleIDTransactor.m */; };
 		88FD309F182B25A8004CFDD4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8884947418063DDA00477836 /* Cocoa.framework */; };
 		88FD30AF182B25A8004CFDD4 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8884949318063DDA00477836 /* XCTest.framework */; };
 		88FD30B0182B25A8004CFDD4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8884947418063DDA00477836 /* Cocoa.framework */; };
@@ -245,9 +245,9 @@
 		88B3F8EC182AE14B00C0415E /* FRZChange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZChange.h; sourceTree = "<group>"; };
 		88B3F8ED182AE14B00C0415E /* FRZChange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZChange.m; sourceTree = "<group>"; };
 		88B3F8EF182AE1B700C0415E /* FRZChange+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZChange+Private.h"; sourceTree = "<group>"; };
-		88EFB67D182D9BC500DF807A /* FRZSingleKeyTransactor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZSingleKeyTransactor.h; sourceTree = "<group>"; };
-		88EFB67E182D9BC500DF807A /* FRZSingleKeyTransactor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZSingleKeyTransactor.m; sourceTree = "<group>"; };
-		88EFB693182D9BD200DF807A /* FRZSingleKeyTransactor+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZSingleKeyTransactor+Private.h"; sourceTree = "<group>"; };
+		88EFB67D182D9BC500DF807A /* FRZSingleIDTransactor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZSingleIDTransactor.h; sourceTree = "<group>"; };
+		88EFB67E182D9BC500DF807A /* FRZSingleIDTransactor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZSingleIDTransactor.m; sourceTree = "<group>"; };
+		88EFB693182D9BD200DF807A /* FRZSingleIDTransactor+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZSingleIDTransactor+Private.h"; sourceTree = "<group>"; };
 		88FD309E182B25A8004CFDD4 /* Freezer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Freezer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		88FD30A7182B25A8004CFDD4 /* Freezer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Freezer.h; sourceTree = "<group>"; };
 		88FD30AE182B25A8004CFDD4 /* FreezerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FreezerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -370,9 +370,9 @@
 				8884953D18063F5300477836 /* FRZTransactor.h */,
 				888495411806431400477836 /* FRZTransactor+Private.h */,
 				8884953E18063F5300477836 /* FRZTransactor.m */,
-				88EFB67D182D9BC500DF807A /* FRZSingleKeyTransactor.h */,
-				88EFB693182D9BD200DF807A /* FRZSingleKeyTransactor+Private.h */,
-				88EFB67E182D9BC500DF807A /* FRZSingleKeyTransactor.m */,
+				88EFB67D182D9BC500DF807A /* FRZSingleIDTransactor.h */,
+				88EFB693182D9BD200DF807A /* FRZSingleIDTransactor+Private.h */,
+				88EFB67E182D9BC500DF807A /* FRZSingleIDTransactor.m */,
 				88B3F8EC182AE14B00C0415E /* FRZChange.h */,
 				88B3F8EF182AE1B700C0415E /* FRZChange+Private.h */,
 				88B3F8ED182AE14B00C0415E /* FRZChange.m */,
@@ -517,7 +517,7 @@
 				88FD30D5182B2669004CFDD4 /* FRZDatabase.h in Headers */,
 				88FD30D6182B2669004CFDD4 /* FRZTransactor.h in Headers */,
 				88287CA0186E78CA0085B2D2 /* FRZQuery.h in Headers */,
-				88EFB67F182D9BC500DF807A /* FRZSingleKeyTransactor.h in Headers */,
+				88EFB67F182D9BC500DF807A /* FRZSingleIDTransactor.h in Headers */,
 				88FD30D7182B2669004CFDD4 /* FRZChange.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -771,7 +771,7 @@
 			files = (
 				88FD30D0182B265C004CFDD4 /* FRZStore.m in Sources */,
 				88287CA1186E78CA0085B2D2 /* FRZQuery.m in Sources */,
-				88EFB680182D9BC500DF807A /* FRZSingleKeyTransactor.m in Sources */,
+				88EFB680182D9BC500DF807A /* FRZSingleIDTransactor.m in Sources */,
 				88FD30D1182B265C004CFDD4 /* FRZDatabase.m in Sources */,
 				88FD30D2182B265C004CFDD4 /* FRZTransactor.m in Sources */,
 				88FD30D3182B265C004CFDD4 /* FRZChange.m in Sources */,

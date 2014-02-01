@@ -9,6 +9,6 @@
 #import <Freezer/FRZStore.h>
 #import <Freezer/FRZDatabase.h>
 #import <Freezer/FRZTransactor.h>
-#import <Freezer/FRZSingleKeyTransactor.h>
+#import <Freezer/FRZSingleIDTransactor.h>
 #import <Freezer/FRZChange.h>
 #import <Freezer/FRZQuery.h>

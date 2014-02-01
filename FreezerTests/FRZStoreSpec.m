@@ -39,13 +39,13 @@ it(@"should have a nil database before anything's been added", ^{
 
 it(@"should keep in-memory stores separate", ^{
 	FRZStore *store1 = [[FRZStore alloc] initInMemory:NULL];
-	static NSString *testAttribute = @"blah";
-	BOOL success = [[store1 transactor] addAttribute:testAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
+	static NSString *testKey = @"blah";
+	BOOL success = [[store1 transactor] addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
 	expect(success).to.beTruthy();
 
 	FRZStore *store2 = [[FRZStore alloc] initInMemory:NULL];
 
-	success = [[store1 transactor] addValue:@42 forAttribute:testAttribute key:@"test?" error:NULL];
+	success = [[store1 transactor] addValue:@42 forKey:testKey ID:@"test?" error:NULL];
 	expect(success).to.beTruthy();
 
 	FRZDatabase *database = [store2 currentDatabase];
@@ -53,24 +53,24 @@ it(@"should keep in-memory stores separate", ^{
 });
 
 it(@"should have a consistent database in different threads", ^{
-	static NSString * const testAttribute = @"blah";
-	static NSString * const testKey = @"test?";
+	static NSString * const testKey = @"blah";
+	static NSString * const testID = @"test?";
 	FRZStore *store = [[FRZStore alloc] initInMemory:NULL];
-	BOOL success = [[store transactor] addAttribute:testAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
+	BOOL success = [[store transactor] addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
 	expect(success).to.beTruthy();
 
-	success = [[store transactor] addValue:@42 forAttribute:testAttribute key:testKey error:NULL];
+	success = [[store transactor] addValue:@42 forKey:testKey ID:testID error:NULL];
 	expect(success).to.beTruthy();
 
 	FRZDatabase *database = [store currentDatabase];
-	NSDictionary *value = database[testKey];
+	NSDictionary *value = database[testID];
 	expect(value).notTo.beNil();
 
 	__block BOOL done = NO;
 	__block NSDictionary *threadValue;
 	dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
 		FRZDatabase *database = [store currentDatabase];
-		threadValue = database[testKey];
+		threadValue = database[testID];
 		done = YES;
 	});
 
@@ -79,7 +79,7 @@ it(@"should have a consistent database in different threads", ^{
 });
 
 describe(@"changes", ^{
-	static NSString * const testAttribute = @"test-attr";
+	static NSString * const testKey = @"test-key";
 
 	__block FRZStore *store;
 	__block FRZTransactor *transactor;
@@ -91,7 +91,7 @@ describe(@"changes", ^{
 		transactor = [store transactor];
 		expect(transactor).notTo.beNil();
 
-		BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
+		BOOL success = [transactor addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
 		expect(success).to.beTruthy();
 	});
 
@@ -102,18 +102,18 @@ describe(@"changes", ^{
 		}];
 
 		const id value = @42;
-		static NSString * const testKey = @"test-key";
-		[transactor addValue:@41 forAttribute:testAttribute key:testKey error:NULL];
-		[transactor addValue:value forAttribute:testAttribute key:testKey error:NULL];
+		static NSString * const testID = @"test-id";
+		[transactor addValue:@41 forKey:testKey ID:testID error:NULL];
+		[transactor addValue:value forKey:testKey ID:testID error:NULL];
 		expect(changes.count).will.equal(2);
 
 		FRZChange *change = changes.lastObject;
 		expect(change.type).to.equal(FRZChangeTypeAdd);
 		expect(change.delta).to.equal(value);
-		expect(change.attribute).to.equal(testAttribute);
+		expect(change.ID).to.equal(testID);
 		expect(change.key).to.equal(testKey);
-		expect(change.previousDatabase[testKey][testAttribute]).notTo.equal(value);
-		expect(change.changedDatabase[testKey][testAttribute]).to.equal(value);
+		expect(change.previousDatabase[testID][testKey]).notTo.equal(value);
+		expect(change.changedDatabase[testID][testKey]).to.equal(value);
 	});
 
 	it(@"should send removes as they occur", ^{
@@ -123,29 +123,29 @@ describe(@"changes", ^{
 		}];
 
 		const id value = @42;
-		static NSString * const testKey = @"test-key";
-		[transactor addValue:value forAttribute:testAttribute key:testKey error:NULL];
-		[transactor removeValue:value forAttribute:testAttribute key:testKey error:NULL];
+		static NSString * const testID = @"test-id";
+		[transactor addValue:value forKey:testKey ID:testID error:NULL];
+		[transactor removeValue:value forKey:testKey ID:testID error:NULL];
 		expect(changes.count).will.equal(2);
 
 		FRZChange *change = changes.lastObject;
 		expect(change.type).to.equal(FRZChangeTypeRemove);
 		expect(change.delta).to.equal(value);
-		expect(change.attribute).to.equal(testAttribute);
+		expect(change.ID).to.equal(testID);
 		expect(change.key).to.equal(testKey);
-		expect(change.previousDatabase[testKey][testAttribute]).to.equal(value);
-		expect(change.changedDatabase[testKey][testAttribute]).to.beNil();
+		expect(change.previousDatabase[testID][testKey]).to.equal(value);
+		expect(change.changedDatabase[testID][testKey]).to.beNil();
 	});
 
 	it(@"should send the database after the transaction's completed", ^{
-		static NSString * const testKey = @"some-key";
-		static NSString * const testAttribute1 = @"attr1";
-		static NSString * const testAttribute2 = @"attr2";
+		static NSString * const testID = @"some-id";
+		static NSString * const testKey1 = @"key1";
+		static NSString * const testKey2 = @"key2";
 
-		BOOL success = [transactor addAttribute:testAttribute1 type:FRZAttributeTypeInteger collection:NO error:NULL];
+		BOOL success = [transactor addKey:testKey1 type:FRZTypeInteger collection:NO error:NULL];
 		expect(success).to.beTruthy();
 
-		success = [transactor addAttribute:testAttribute2 type:FRZAttributeTypeInteger collection:NO error:NULL];
+		success = [transactor addKey:testKey2 type:FRZTypeInteger collection:NO error:NULL];
 		expect(success).to.beTruthy();
 
 		__block FRZDatabase *database;
@@ -154,26 +154,26 @@ describe(@"changes", ^{
 		}];
 
 		[transactor performChangesWithError:NULL block:^(NSError **error) {
-			BOOL success = [transactor addValue:@42 forAttribute:testAttribute1 key:testKey error:NULL];
+			BOOL success = [transactor addValue:@42 forKey:testKey1 ID:testID error:NULL];
 			expect(success).to.beTruthy();
 
-			success = [transactor addValue:@7 forAttribute:testAttribute2 key:testKey error:NULL];
+			success = [transactor addValue:@7 forKey:testKey2 ID:testID error:NULL];
 			expect(success).to.beTruthy();
 
 			return YES;
 		}];
 
 		NSDictionary *expected = @{
-			testAttribute1: @42,
-			testAttribute2: @7,
+			testKey1: @42,
+			testKey2: @7,
 		};
-		expect(database[testKey]).to.equal(expected);
+		expect(database[testID]).to.equal(expected);
 	});
 });
 
 describe(@"trimming", ^{
-	static NSString * const testAttribute = @"test-attr";
 	static NSString * const testKey = @"test-key";
+	static NSString * const testID = @"test-id";
 	const id testValue = @42;
 
 	__block FRZStore *store;
@@ -183,18 +183,18 @@ describe(@"trimming", ^{
 		store = [[FRZStore alloc] initInMemory:NULL];
 		transactor = [store transactor];
 
-		BOOL success = [transactor addAttribute:testAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
+		BOOL success = [transactor addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
 		expect(success).to.beTruthy();
 	});
 
 	it(@"should remove deleted entries", ^{
 		long long int startingEntryCount = [store entryCount];
 
-		BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
+		BOOL success = [transactor addValue:testValue forKey:testKey ID:testID error:NULL];
 		expect(success).to.beTruthy();
 		expect([store entryCount]).to.beGreaterThan(startingEntryCount);
 
-		success = [transactor removeValue:testValue forAttribute:testAttribute key:testKey error:NULL];
+		success = [transactor removeValue:testValue forKey:testKey ID:testID error:NULL];
 		expect(success).to.beTruthy();
 
 		success = [transactor trim:NULL];
@@ -204,7 +204,7 @@ describe(@"trimming", ^{
 	});
 
 	it(@"should remove old entries", ^{
-		BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
+		BOOL success = [transactor addValue:testValue forKey:testKey ID:testID error:NULL];
 		expect(success).to.beTruthy();
 
 		success = [transactor trim:NULL];
@@ -212,7 +212,7 @@ describe(@"trimming", ^{
 
 		long long int startingEntryCount = [store entryCount];
 
-		success = [transactor addValue:@43 forAttribute:testAttribute key:testKey error:NULL];
+		success = [transactor addValue:@43 forKey:testKey ID:testID error:NULL];
 		expect(success).to.beTruthy();
 		expect([store entryCount]).to.beGreaterThan(startingEntryCount);
 
@@ -223,17 +223,17 @@ describe(@"trimming", ^{
 	});
 
 	it(@"shouldn't trim the latest values", ^{
-		BOOL success = [transactor addValue:testValue forAttribute:testAttribute key:testKey error:NULL];
+		BOOL success = [transactor addValue:testValue forKey:testKey ID:testID error:NULL];
 		expect(success).to.beTruthy();
 
 		const id latest = @43;
-		success = [transactor addValue:latest forAttribute:testAttribute key:testKey error:NULL];
+		success = [transactor addValue:latest forKey:testKey ID:testID error:NULL];
 		expect(success).to.beTruthy();
 
 		success = [transactor trim:NULL];
 		expect(success).to.beTruthy();
 
-		expect([store currentDatabase][testKey][testAttribute]).to.equal(latest);
+		expect([store currentDatabase][testID][testKey]).to.equal(latest);
 	});
 });
 

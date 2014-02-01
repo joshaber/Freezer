@@ -26,6 +26,6 @@
 // take     - The take limit. 0 means unlimited.
 //
 // Returns the initialized object.
-- (id)initWithDatabase:(FRZDatabase *)database filter:(BOOL (^)(NSString *key, NSString *attribute, id value))filter take:(NSUInteger)take;
+- (id)initWithDatabase:(FRZDatabase *)database filter:(BOOL (^)(NSString *ID, NSString *key, id value))filter take:(NSUInteger)take;
 
 @end

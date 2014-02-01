@@ -45,16 +45,16 @@
 
 #pragma mark Lookup
 
-- (NSSet *)allAttributes {
-	return [self keysWithAttribute:FRZStoreAttributeTypeAttribute];
+- (NSSet *)allKeys {
+	return [self IDsWithKey:FRZStoreKeyTypeKey];
 }
 
-- (id)singleValueForAttribute:(NSString *)attribute key:(NSString *)key resolveRef:(BOOL)resolveRef inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error {
-	NSParameterAssert(attribute != nil);
+- (id)singleValueForKey:(NSString *)key ID:(NSString *)ID resolveRef:(BOOL)resolveRef inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error {
 	NSParameterAssert(key != nil);
+	NSParameterAssert(ID != nil);
 	NSParameterAssert(database != nil);
 
-	FMResultSet *set = [database executeQuery:@"SELECT value FROM data WHERE key = ? AND attribute = ? AND tx_id <= ? ORDER BY tx_id DESC LIMIT 1", key, attribute, @(self.headID)];
+	FMResultSet *set = [database executeQuery:@"SELECT value FROM data WHERE frz_id = ? AND key = ? AND tx_id <= ? ORDER BY tx_id DESC LIMIT 1", ID, key, @(self.headID)];
 	if (set == nil) {
 		if (error != NULL) *error = database.lastError;
 		if (success != NULL) *success = NO;
@@ -65,40 +65,41 @@
 
 	if (![set next]) return nil;
 
-	FRZAttributeType type = [self typeForAttribute:attribute];
-	id value = [self unpackedValueFromData:set[0] type:type resolveRef:resolveRef];
+	FRZType type = [self typeForKey:key];
+	BOOL isCollection = [self isCollectionKey:key];
+	id value = [self unpackedValueFromData:set[0] type:type isCollection:isCollection resolveRef:resolveRef];
 	if (value == NSNull.null) return nil;
 
 	return value;
 }
 
-- (id)valueForAttribute:(NSString *)attribute key:(NSString *)key inDatabase:(FMDatabase *)database resolveReferences:(BOOL)resolveReferences success:(BOOL *)success error:(NSError **)error {
-	NSParameterAssert(attribute != nil);
+- (id)valueForKey:(NSString *)key ID:(NSString *)ID inDatabase:(FMDatabase *)database resolveReferences:(BOOL)resolveReferences success:(BOOL *)success error:(NSError **)error {
 	NSParameterAssert(key != nil);
+	NSParameterAssert(ID != nil);
 	NSParameterAssert(database != nil);
 
-	return [self singleValueForAttribute:attribute key:key resolveRef:resolveReferences inDatabase:database success:success error:error];
+	return [self singleValueForKey:key ID:ID resolveRef:resolveReferences inDatabase:database success:success error:error];
 }
 
-- (NSDictionary *)objectForKeyedSubscript:(NSString *)key {
-	NSParameterAssert(key != nil);
+- (NSDictionary *)objectForKeyedSubscript:(NSString *)ID {
+	NSParameterAssert(ID != nil);
 
-	return [self valueForKey:key];
+	return [self valueForID:ID];
 }
 
-- (NSDictionary *)valuesForKey:(NSString *)key attributes:(NSArray *)attributes {
-	NSParameterAssert(key != nil);
-	NSParameterAssert(attributes != nil);
+- (NSDictionary *)valuesForID:(NSString *)ID keys:(NSArray *)keys {
+	NSParameterAssert(ID != nil);
+	NSParameterAssert(keys != nil);
 
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
-		for (NSString *attribute in attributes) {
+		for (NSString *key in keys) {
 			BOOL success = YES;
-			id value = [self valueForAttribute:attribute key:key inDatabase:database resolveReferences:YES success:&success error:error];
+			id value = [self valueForKey:key ID:ID inDatabase:database resolveReferences:YES success:&success error:error];
 			if (value == nil && !success) return NO;
 			if (value == nil) continue;
 
-			result[attribute] = value;
+			result[key] = value;
 		}
 
 		return YES;
@@ -107,25 +108,26 @@
 	return (result.count > 0 ? result : nil);
 }
 
-- (id)valueForKey:(NSString *)key {
-	NSParameterAssert(key != nil);
+- (id)valueForID:(NSString *)ID {
+	NSParameterAssert(ID != nil);
 
-	id cachedValue = [self.lookupCache objectForKey:key];
+	id cachedValue = [self.lookupCache objectForKey:ID];
 	if (cachedValue != nil) return cachedValue;
 
 	NSMutableDictionary *results = [NSMutableDictionary dictionary];
 	BOOL success = [self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
-		FMResultSet *set = [database executeQuery:@"SELECT attribute, value FROM data WHERE key = ? AND tx_id <= ? GROUP BY attribute ORDER BY tx_id DESC", key, @(self.headID)];
+		FMResultSet *set = [database executeQuery:@"SELECT key, value FROM data WHERE frz_id = ? AND tx_id <= ? GROUP BY key ORDER BY tx_id DESC", ID, @(self.headID)];
 		if (set == nil) return NO;
 
 		while ([set next]) {
 			NSData *data = set[1];
-			id attribute = set[0];
-			FRZAttributeType type = [self typeForAttribute:attribute];
-			id value = [self unpackedValueFromData:data type:type resolveRef:YES];
+			id key = set[0];
+			FRZType type = [self typeForKey:key];
+			BOOL isCollection = [self isCollectionKey:key];
+			id value = [self unpackedValueFromData:data type:type isCollection:isCollection resolveRef:YES];
 			if (value == NSNull.null) continue;
 
-			results[attribute] = value;
+			results[key] = value;
 		}
 
 		return YES;
@@ -135,17 +137,17 @@
 	if (results.count < 1) return nil;
 
 	if (results != nil) {
-		[self.lookupCache setObject:results forKey:key];
+		[self.lookupCache setObject:results forKey:ID];
 	}
 
 	return results;
 }
 
-- (NSSet *)allKeys {
+- (NSSet *)allIDs {
 	NSMutableSet *results = [NSMutableSet set];
 	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
-		for (NSString *attribute in self.allAttributes) {
-			FMResultSet *set = [database executeQuery:@"SELECT key, value FROM data WHERE tx_id <= ? GROUP BY key ORDER BY tx_id DESC", @(self.headID)];
+		for (NSString *key in self.allKeys) {
+			FMResultSet *set = [database executeQuery:@"SELECT frz_id, value FROM data WHERE tx_id <= ? GROUP BY frz_id ORDER BY tx_id DESC", @(self.headID)];
 			if (set == nil) {
 				if (error != NULL) *error = database.lastError;
 				return NO;
@@ -153,7 +155,7 @@
 
 			while ([set next]) {
 				NSData *data = set[1];
-				id value = [self unpackedValueFromData:data type:FRZAttributeTypeBlob resolveRef:NO];
+				id value = [self unpackedValueFromData:data type:FRZTypeBlob isCollection:NO resolveRef:NO];
 				if (value == NSNull.null) continue;
 
 				id key = set[0];
@@ -167,17 +169,17 @@
 	return results;
 }
 
-- (NSSet *)keysWithAttribute:(NSString *)attribute {
-	NSParameterAssert(attribute != nil);
+- (NSSet *)IDsWithKey:(NSString *)key {
+	NSParameterAssert(key != nil);
 
 	NSMutableSet *results = [NSMutableSet set];
 	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
-		FMResultSet *set = [database executeQuery:@"SELECT key, value FROM data WHERE attribute = ? AND tx_id <= ? GROUP BY key ORDER BY tx_id DESC", attribute, @(self.headID)];
+		FMResultSet *set = [database executeQuery:@"SELECT frz_id, value FROM data WHERE key = ? AND tx_id <= ? GROUP BY frz_id ORDER BY tx_id DESC", key, @(self.headID)];
 		if (set == nil) return NO;
 
 		while ([set next]) {
 			NSData *data = set[1];
-			id value = [self unpackedValueFromData:data type:FRZAttributeTypeBlob resolveRef:NO];
+			id value = [self unpackedValueFromData:data type:FRZTypeBlob isCollection:NO resolveRef:NO];
 			if (value == NSNull.null) continue;
 
 			id key = set[0];
@@ -190,25 +192,25 @@
 	return results;
 }
 
-- (id)valueForKey:(NSString *)key attribute:(NSString *)attribute {
+- (id)valueForID:(NSString *)ID key:(NSString *)key {
+	NSParameterAssert(ID != nil);
 	NSParameterAssert(key != nil);
-	NSParameterAssert(attribute != nil);
 
-	return [self valueForKey:key attribute:attribute resolveReferences:YES];
+	return [self valueForID:ID key:key resolveReferences:YES];
 }
 
-- (id)valueForKey:(NSString *)key attribute:(NSString *)attribute resolveReferences:(BOOL)resolveReferences {
+- (id)valueForID:(NSString *)ID key:(NSString *)key resolveReferences:(BOOL)resolveReferences {
+	NSParameterAssert(ID != nil);
 	NSParameterAssert(key != nil);
-	NSParameterAssert(attribute != nil);
 
-	NSString *cacheKey = [NSString stringWithFormat:@"%@-%@-%d", key, attribute, resolveReferences];
+	NSString *cacheKey = [NSString stringWithFormat:@"%@-%@-%d", ID, key, resolveReferences];
 	id cachedValue = [self.lookupCache objectForKey:cacheKey];
 	if (cachedValue != nil) return cachedValue;
 
 	__block id result;
 	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
 		BOOL success = NO;
-		result = [self valueForAttribute:attribute key:key inDatabase:database resolveReferences:resolveReferences success:&success error:error];
+		result = [self valueForKey:key ID:ID inDatabase:database resolveReferences:resolveReferences success:&success error:error];
 		return success;
 	}];
 
@@ -219,35 +221,45 @@
 	return result;
 }
 
-- (NSArray *)defaultAttributes {
++ (NSArray *)defaultKeys {
 	return @[
-		FRZStoreAttributeTypeAttribute,
-		FRZStoreAttributeIsCollectionAttribute,
+		FRZStoreKeyTypeKey,
+		FRZStoreKeyIsCollectionKey,
 	];
 }
 
-- (BOOL)isCollectionAttribute:(NSString *)attribute {
-	NSParameterAssert(attribute != nil);
+- (BOOL)isCollectionKey:(NSString *)key {
+	NSParameterAssert(key != nil);
 
-	if ([self.defaultAttributes containsObject:attribute]) return NO;
+	if ([self.class.defaultKeys containsObject:key]) return NO;
 
-	return [[self valueForKey:attribute attribute:FRZStoreAttributeIsCollectionAttribute] boolValue];
+	return [[self valueForID:key key:FRZStoreKeyIsCollectionKey] boolValue];
 }
 
-- (FRZAttributeType)typeForAttribute:(NSString *)attribute {
-	NSParameterAssert(attribute != nil);
+- (FRZType)typeForKey:(NSString *)key {
+	NSParameterAssert(key != nil);
 
-	if ([self.defaultAttributes containsObject:attribute]) return 0;
+	if ([self.class.defaultKeys containsObject:key]) return 0;
 
-	return [[self valueForKey:attribute attribute:FRZStoreAttributeTypeAttribute] integerValue];
+	return [[self valueForID:key key:FRZStoreKeyTypeKey] integerValue];
 }
 
-- (id)unpackedValueFromData:(NSData *)data type:(FRZAttributeType)type resolveRef:(BOOL)resolveRef {
+- (id)unpackedValueFromData:(NSData *)data type:(FRZType)type isCollection:(BOOL)isCollection resolveRef:(BOOL)resolveRef {
 	NSParameterAssert(data != nil);
 
 	id value = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-	if (type == FRZAttributeTypeRef && resolveRef) {
-		return self[value];
+	if (type == FRZTypeRef && resolveRef) {
+		if (isCollection) {
+			NSMutableSet *set = [NSMutableSet set];
+			for (NSString *ID in value) {
+				id nestedValue = self[ID];
+				if (nestedValue != nil) [set addObject:nestedValue];
+			}
+
+			return set;
+		} else {
+			return self[value];
+		}
 	}
 
 	return value;

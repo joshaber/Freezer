@@ -9,17 +9,17 @@
 #import "FRZStore.h"
 #import <sqlite3.h>
 
-// The head transaction ID attribute.
-extern NSString * const FRZStoreHeadTransactionAttribute;
+// The head transaction ID key.
+extern NSString * const FRZStoreHeadTransactionKey;
 
-// The transaction date attribute.
-extern NSString * const FRZStoreTransactionDateAttribute;
+// The transaction date key.
+extern NSString * const FRZStoreTransactionDateKey;
 
-// The attribute's type.
-extern NSString * const FRZStoreAttributeTypeAttribute;
+// The key's type.
+extern NSString * const FRZStoreKeyTypeKey;
 
-// Is the attribute a collection?
-extern NSString * const FRZStoreAttributeIsCollectionAttribute;
+// Is the key a collection?
+extern NSString * const FRZStoreKeyIsCollectionKey;
 
 // The type of transaction to use.
 //
