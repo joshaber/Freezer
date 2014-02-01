@@ -30,74 +30,76 @@
 }
 
 - (void)testStuff {
-	static NSString * const firstNameAttribute = @"user/first-name";
-	static NSString * const lastNameAttribute = @"user/last-name";
-	static NSString * const hubbersAttribute = @"user/hubbers";
+	static NSString * const firstNameKey = @"user/first-name";
+	static NSString * const lastNameKey = @"user/last-name";
+	static NSString * const hubbersKey = @"user/hubbers";
 
 	FRZTransactor *transactor = [self.store transactor];
-	NSString *hubbersKey = [transactor generateNewKey];
+	NSString *hubbersID = [transactor generateNewID];
 	[[[self.store.changes
-	   filter:^ BOOL (FRZChange *change) {
-		   return change.type == FRZChangeTypeAdd && [change.key isEqual:hubbersKey];
-	   }]
-	  map:^(FRZChange *change) {
-		  NSString *keyInserted = change.delta;
-		  return change.changedDatabase[keyInserted];
-	  }]
-	 subscribeNext:^(NSDictionary *x) {
-		 NSLog(@"%@ is a GitHubber!", x[firstNameAttribute]);
-	 }];
+		filter:^ BOOL (FRZChange *change) {
+			return change.type == FRZChangeTypeAdd && [change.ID isEqual:hubbersID];
+		}]
+		map:^(FRZChange *change) {
+			NSString *keyInserted = change.delta;
+			return change.changedDatabase[keyInserted];
+		}]
+		subscribeNext:^(NSDictionary *x) {
+			NSLog(@"%@ is a GitHubber!", x[firstNameKey]);
+		}];
 
-	[transactor addAttribute:firstNameAttribute type:FRZAttributeTypeString collection:NO error:NULL];
-	[transactor addAttribute:lastNameAttribute type:FRZAttributeTypeString collection:NO error:NULL];
-	[transactor addAttribute:hubbersAttribute type:FRZAttributeTypeRef collection:YES error:NULL];
+	[transactor addKey:firstNameKey type:FRZTypeString collection:NO error:NULL];
+	[transactor addKey:lastNameKey type:FRZTypeString collection:NO error:NULL];
+	[transactor addKey:hubbersKey type:FRZTypeRef collection:YES error:NULL];
 
-	NSString *joshKey = [transactor generateNewKey];
-	[transactor addValuesWithKey:joshKey error:NULL block:^(FRZSingleKeyTransactor *transactor, NSError **error) {
-		[transactor addValue:@"Josh" forAttribute:firstNameAttribute error:error];
-		[transactor addValue:@"Abernathy" forAttribute:lastNameAttribute error:error];
+	NSString *joshID = [transactor generateNewID];
+	[transactor addValuesWithID:joshID error:NULL block:^(FRZSingleIDTransactor *transactor, NSError **error) {
+		[transactor addValue:@"Josh" forKey:firstNameKey error:error];
+		[transactor addValue:@"Abernathy" forKey:lastNameKey error:error];
 		return YES;
 	}];
 
-	[transactor addValue:joshKey forAttribute:hubbersAttribute key:hubbersKey error:NULL];
+	[transactor addValue:joshID forKey:hubbersKey ID:hubbersID error:NULL];
 
-	NSString *dannyKey = [transactor generateNewKey];
-	[transactor addValuesWithKey:dannyKey error:NULL block:^(FRZSingleKeyTransactor *transactor, NSError **error) {
-		[transactor addValue:@"Danny" forAttribute:firstNameAttribute error:error];
-		[transactor addValue:@"Greg" forAttribute:lastNameAttribute error:error];
+	NSString *dannyID = [transactor generateNewID];
+	[transactor addValuesWithID:dannyID error:NULL block:^(FRZSingleIDTransactor *transactor, NSError **error) {
+		[transactor addValue:@"Danny" forKey:firstNameKey error:error];
+		[transactor addValue:@"Greg" forKey:lastNameKey error:error];
 		return YES;
 	}];
 
-	[transactor addValue:dannyKey forAttribute:hubbersAttribute key:hubbersKey error:NULL];
+	[transactor addValue:dannyID forKey:hubbersKey ID:hubbersID error:NULL];
 
-	[transactor addValuesWithKey:[transactor generateNewKey] error:NULL block:^(FRZSingleKeyTransactor *transactor, NSError **error) {
-		[transactor addValue:@"John" forAttribute:firstNameAttribute error:error];
-		[transactor addValue:@"Smith" forAttribute:lastNameAttribute error:error];
+	[transactor addValuesWithID:[transactor generateNewID] error:NULL block:^(FRZSingleIDTransactor *transactor, NSError **error) {
+		[transactor addValue:@"John" forKey:firstNameKey error:error];
+		[transactor addValue:@"Smith" forKey:lastNameKey error:error];
 		return YES;
 	}];
 
 	FRZDatabase *database = [self.store currentDatabase];
 	NSLog(@" ");
 	NSLog(@"Hubbers:");
-	NSSet *hubbers = [database valueForKey:hubbersKey attribute:hubbersAttribute];
+	NSSet *hubbers = [database valueForID:hubbersID key:hubbersKey];
 	for (NSDictionary *hubber in hubbers) {
-		NSLog(@"* %@ %@", hubber[firstNameAttribute], hubber[lastNameAttribute]);
+		NSLog(@"* %@ %@", hubber[firstNameKey], hubber[lastNameKey]);
 	}
 
-	NSString *jssKey = [transactor generateNewKey];
-	[transactor addValuesWithKey:jssKey error:NULL block:^(FRZSingleKeyTransactor *transactor, NSError **error) {
-		[transactor addValue:@"Justin" forAttribute:firstNameAttribute error:error];
-		[transactor addValue:@"Spahr-Summers" forAttribute:lastNameAttribute error:error];
+	NSLog(@" ");
+
+	NSString *jssID = [transactor generateNewID];
+	[transactor addValuesWithID:jssID error:NULL block:^(FRZSingleIDTransactor *transactor, NSError **error) {
+		[transactor addValue:@"Justin" forKey:firstNameKey error:error];
+		[transactor addValue:@"Spahr-Summers" forKey:lastNameKey error:error];
 		return YES;
 	}];
 
-	[transactor addValue:jssKey forAttribute:hubbersAttribute key:hubbersKey error:NULL];
+	[transactor addValue:jssID forKey:hubbersKey ID:hubbersID error:NULL];
 }
 
 - (void)testPerformance {
-	static NSString * const testAttribute = @"testAttribute";
+	static NSString * const testKey = @"testKey";
 	FRZTransactor *transactor = [self.store transactor];
-	[transactor addAttribute:testAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
+	[transactor addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
 
 	NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 	__block NSUInteger writes = 0;
@@ -105,7 +107,7 @@
 		while (YES) {
 			if ([NSDate timeIntervalSinceReferenceDate] - start > 5) break;
 
-			[transactor addValue:@42 forAttribute:testAttribute key:[transactor generateNewKey] error:NULL];
+			[transactor addValue:@42 forKey:testKey ID:[transactor generateNewID] error:NULL];
 
 			writes++;
 		}
@@ -137,16 +139,17 @@
 - (void)testQuery {
 	FRZTransactor *transactor = [self.store transactor];
 
-	static NSString * const testAttribute = @"test-attr";
-	[transactor addAttribute:testAttribute type:FRZAttributeTypeInteger collection:NO error:NULL];
-
 	static NSString * const testKey = @"test-key";
-	[transactor addValue:@42 forAttribute:testAttribute key:testKey error:NULL];
+	[transactor addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
 
-	FRZQuery *query = [[[self.store currentDatabase] query] filter:^(NSString *key, NSString *attribute, id value) {
+	[transactor addValue:@42 forKey:testKey ID:@"test-id-1" error:NULL];
+	[transactor addValue:@43 forKey:testKey ID:@"test-id-2" error:NULL];
+	[transactor addValue:@42 forKey:testKey ID:@"test-id-3" error:NULL];
+
+	FRZQuery *query = [[[self.store currentDatabase] query] filter:^(NSString *ID, NSString *key, id value) {
 		return [value isEqual:@42];
 	}];
-	NSLog(@"%@", [query allKeys]);
+	NSLog(@"%@", [query allIDs]);
 }
 
 @end
