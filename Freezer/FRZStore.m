@@ -30,9 +30,8 @@ NSString * const FRZStoreKeyIsCollectionKey = @"Freezer/key/is-collection";
 
 @property (nonatomic, readonly, strong) RACSubject *changesSubject;
 
-// The lock for using `changesSubject`. It should be held whenever
-// `changesSubject` sends.
-@property (nonatomic, readonly, strong) NSLock *changesSubjectLock;
+// The scheduler on which events for `changes` will be sent.
+@property (nonatomic, readonly, strong) RACScheduler *changesScheduler;
 
 @property (nonatomic, readonly, copy) NSString *databasePath;
 
@@ -55,9 +54,10 @@ NSString * const FRZStoreKeyIsCollectionKey = @"Freezer/key/is-collection";
 #pragma mark Lifecycle
 
 - (void)dealloc {
-	[_changesSubjectLock lock];
-	[_changesSubject sendCompleted];
-	[_changesSubjectLock unlock];
+	RACSubject *changesSubject = _changesSubject;
+	[_changesScheduler schedule:^{
+		[changesSubject sendCompleted];
+	}];
 
 	pthread_key_delete(_activeTransactionCountKey);
 	pthread_key_delete(_queuedChangesKey);
@@ -78,9 +78,9 @@ NSString * const FRZStoreKeyIsCollectionKey = @"Freezer/key/is-collection";
 	FMDatabase *database = [self createDatabase:error];
 	if (database == nil) return nil;
 
-	_changesSubjectLock = [[NSLock alloc] init];
-	_changesSubjectLock.name = @"com.Freezer.changesSubjectLock";
 	_changesSubject = [RACSubject subject];
+
+	_changesScheduler = [RACScheduler schedulerWithPriority:RACSchedulerPriorityDefault name:@"com.Freezer.FRZStore.changesScheduler"];
 
 	pthread_key_create(&_activeTransactionCountKey, FRZStoreMallocDestructor);
 	pthread_key_create(&_queuedChangesKey, FRZStoreReleaseDestructor);
@@ -361,13 +361,13 @@ void FRZStoreReleaseDestructor(void *data) {
 			FRZDatabase *previousDatabase = self.databaseBeforeTransaction;
 			NSArray *queuedChanges = [self.queuedChanges copy];
 			[self.queuedChanges removeAllObjects];
-			for (FRZChange *change in queuedChanges) {
-				change.previousDatabase = previousDatabase;
-				change.changedDatabase = changedDatabase;
-				[self.changesSubjectLock lock];
-				[self.changesSubject sendNext:change];
-				[self.changesSubjectLock unlock];
-			}
+			[self.changesScheduler schedule:^{
+				for (FRZChange *change in queuedChanges) {
+					change.previousDatabase = previousDatabase;
+					change.changedDatabase = changedDatabase;
+					[self.changesSubject sendNext:change];
+				}
+			}];
 
 			cleanUp = YES;
 		}
@@ -393,29 +393,22 @@ void FRZStoreReleaseDestructor(void *data) {
 - (RACSignal *)valuesAndChangesForID:(NSString *)ID {
 	NSParameterAssert(ID != nil);
 
-	RACSignal *furtherChanges = [RACSignal createSignal:^(id<RACSubscriber> subscriber) {
-		RACDisposable *disposable = [[[self.changes
-			filter:^BOOL(FRZChange *change) {
-				return change.ID == ID;
-			}]
-			map:^(FRZChange *change) {
-				return RACTuplePack(change.changedDatabase[ID], change);
-			}]
-			subscribe:subscriber];
+	RACSignal *subsequentChanges = [[self.changes
+		filter:^ BOOL (FRZChange *change) {
+			return change.ID == ID;
+		}]
+		map:^(FRZChange *change) {
+			return RACTuplePack(change.changedDatabase[ID], change);
+		}];
 
-		[self.changesSubjectLock unlock];
-
-		return disposable;
-	}];
-
-	return [[RACSignal
+	return [[[RACSignal
 		defer:^{
-			[self.changesSubjectLock lock];
 			FRZDatabase *database = [self currentDatabase];
 			NSDictionary *currentValue = database[ID];
 			return [RACSignal return:RACTuplePack(currentValue, nil)];
 		}]
-		concat:furtherChanges];
+		concat:subsequentChanges]
+		subscribeOn:self.changesScheduler];
 }
 
 @end
