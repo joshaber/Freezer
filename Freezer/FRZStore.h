@@ -55,4 +55,8 @@ extern const NSInteger FRZErrorInvalidValue;
 // Returns the transactor.
 - (FRZTransactor *)transactor;
 
+// Finds the current values for the given ID and sends those, and then sends any
+// changes that occur to the ID.
+- (RACSignal *)valuesAndChangesForID:(NSString *)ID;
+
 @end

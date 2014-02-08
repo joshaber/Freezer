@@ -48,6 +48,19 @@
 			NSLog(@"%@ is a GitHubber!", x[firstNameKey]);
 		}];
 
+	[[[self.store valuesAndChangesForID:hubbersID] reduceEach:^(NSDictionary *value, id _) {
+		return value;
+	}] subscribeNext:^(NSDictionary *hubbersInfo) {
+		NSArray *hubbers = hubbersInfo[hubbersKey];
+		NSLog(@" ");
+		NSLog(@"Hubbers:");
+		for (NSDictionary *hubber in hubbers) {
+			NSLog(@"* %@ %@", hubber[firstNameKey], hubber[lastNameKey]);
+		}
+
+		NSLog(@" ");
+	}];
+
 	[transactor addKey:firstNameKey type:FRZTypeString collection:NO error:NULL];
 	[transactor addKey:lastNameKey type:FRZTypeString collection:NO error:NULL];
 	[transactor addKey:hubbersKey type:FRZTypeRef collection:YES error:NULL];
@@ -76,15 +89,15 @@
 		return YES;
 	}];
 
-	FRZDatabase *database = [self.store currentDatabase];
-	NSLog(@" ");
-	NSLog(@"Hubbers:");
-	NSSet *hubbers = [database valueForID:hubbersID key:hubbersKey];
-	for (NSDictionary *hubber in hubbers) {
-		NSLog(@"* %@ %@", hubber[firstNameKey], hubber[lastNameKey]);
-	}
-
-	NSLog(@" ");
+//	FRZDatabase *database = [self.store currentDatabase];
+//	NSLog(@" ");
+//	NSLog(@"Hubbers:");
+//	NSSet *hubbers = [database valueForID:hubbersID key:hubbersKey];
+//	for (NSDictionary *hubber in hubbers) {
+//		NSLog(@"* %@ %@", hubber[firstNameKey], hubber[lastNameKey]);
+//	}
+//
+//	NSLog(@" ");
 
 	NSString *jssID = [transactor generateNewID];
 	[transactor addValuesWithID:jssID error:NULL block:^(FRZSingleIDTransactor *transactor, NSError **error) {
