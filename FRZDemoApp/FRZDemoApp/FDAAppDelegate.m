@@ -90,17 +90,7 @@
 		[transactor addValue:@"Smith" forKey:lastNameKey error:error];
 		return YES;
 	}];
-
-//	FRZDatabase *database = [self.store currentDatabase];
-//	NSLog(@" ");
-//	NSLog(@"Hubbers:");
-//	NSSet *hubbers = [database valueForID:hubbersID key:hubbersKey];
-//	for (NSDictionary *hubber in hubbers) {
-//		NSLog(@"* %@ %@", hubber[firstNameKey], hubber[lastNameKey]);
-//	}
-//
-//	NSLog(@" ");
-
+	
 	NSString *jssID = [transactor generateNewID];
 	[transactor addValuesWithID:jssID error:NULL block:^(FRZSingleIDTransactor *transactor, NSError **error) {
 		[transactor addValue:@"Justin" forKey:firstNameKey error:error];
