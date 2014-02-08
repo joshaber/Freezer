@@ -61,6 +61,15 @@ typedef enum : NSInteger {
 // Returns whether the adds were successful.
 - (BOOL)addValuesWithID:(NSString *)ID error:(NSError **)error block:(BOOL (^)(FRZSingleIDTransactor *transactor, NSError **error))block;
 
+// Add all the key-value pairs in `keyedValues` to `ID`.
+//
+// keyedValues - The key-value pairs to add. Cannot be nil.
+// ID          - The ID for the key-value pairs. Cannot be nil.
+// error       - The error if one occurred.
+//
+// Returns whether the add was successful.
+- (BOOL)addValues:(NSDictionary *)keyedValues forID:(NSString *)ID error:(NSError **)error;
+
 // Removes the value for the given key and ID, but only if the given value
 // matches the current value. If the current value does not match the given
 // value, then the method returns NO and the error code will be
