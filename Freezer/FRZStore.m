@@ -30,6 +30,10 @@ NSString * const FRZStoreKeyIsCollectionKey = @"Freezer/key/is-collection";
 
 @property (nonatomic, readonly, strong) RACSubject *changesSubject;
 
+// The lock for using `changesSubject`. It should be held whenever
+// `changesSubject` sends.
+@property (nonatomic, readonly, strong) NSLock *changesSubjectLock;
+
 @property (nonatomic, readonly, copy) NSString *databasePath;
 
 @property (nonatomic, readonly, assign) pthread_key_t activeTransactionCountKey;
@@ -51,7 +55,9 @@ NSString * const FRZStoreKeyIsCollectionKey = @"Freezer/key/is-collection";
 #pragma mark Lifecycle
 
 - (void)dealloc {
+	[_changesSubjectLock lock];
 	[_changesSubject sendCompleted];
+	[_changesSubjectLock unlock];
 
 	pthread_key_delete(_activeTransactionCountKey);
 	pthread_key_delete(_queuedChangesKey);
@@ -72,6 +78,8 @@ NSString * const FRZStoreKeyIsCollectionKey = @"Freezer/key/is-collection";
 	FMDatabase *database = [self createDatabase:error];
 	if (database == nil) return nil;
 
+	_changesSubjectLock = [[NSLock alloc] init];
+	_changesSubjectLock.name = @"com.Freezer.changesSubjectLock";
 	_changesSubject = [RACSubject subject];
 
 	pthread_key_create(&_activeTransactionCountKey, FRZStoreMallocDestructor);
@@ -356,7 +364,9 @@ void FRZStoreReleaseDestructor(void *data) {
 			for (FRZChange *change in queuedChanges) {
 				change.previousDatabase = previousDatabase;
 				change.changedDatabase = changedDatabase;
+				[self.changesSubjectLock lock];
 				[self.changesSubject sendNext:change];
+				[self.changesSubjectLock unlock];
 			}
 
 			cleanUp = YES;
@@ -378,6 +388,34 @@ void FRZStoreReleaseDestructor(void *data) {
 
 - (FRZDatabase *)databaseBeforeTransaction {
 	return (__bridge id)pthread_getspecific(self.previousDatabaseKey);
+}
+
+- (RACSignal *)valuesAndChangesForID:(NSString *)ID {
+	NSParameterAssert(ID != nil);
+
+	RACSignal *furtherChanges = [RACSignal createSignal:^(id<RACSubscriber> subscriber) {
+		RACDisposable *disposable = [[[self.changes
+			filter:^BOOL(FRZChange *change) {
+				return change.ID == ID;
+			}]
+			map:^(FRZChange *change) {
+				return RACTuplePack(change.changedDatabase[ID], change);
+			}]
+			subscribe:subscriber];
+
+		[self.changesSubjectLock unlock];
+
+		return disposable;
+	}];
+
+	return [[RACSignal
+		defer:^{
+			[self.changesSubjectLock lock];
+			FRZDatabase *database = [self currentDatabase];
+			NSDictionary *currentValue = database[ID];
+			return [RACSignal return:RACTuplePack(currentValue, nil)];
+		}]
+		concat:furtherChanges];
 }
 
 @end
