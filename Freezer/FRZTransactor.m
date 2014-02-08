@@ -134,6 +134,20 @@
 	}];
 }
 
+- (BOOL)addValues:(NSDictionary *)keyedValues forID:(NSString *)ID error:(NSError **)error {
+	NSParameterAssert(keyedValues != nil);
+	NSParameterAssert(ID != nil);
+
+	return [self addValuesWithID:ID error:error block:^(FRZSingleIDTransactor *transactor, NSError **error) {
+		for (NSString *key in keyedValues) {
+			BOOL success = [transactor addValue:keyedValues[key] forKey:key error:error];
+			if (!success) return NO;
+		}
+
+		return YES;
+	}];
+}
+
 - (BOOL)removeValue:(id)value forKey:(NSString *)key ID:(NSString *)ID error:(NSError **)error {
 	NSParameterAssert(value != nil);
 	NSParameterAssert(key != nil);

@@ -63,41 +63,22 @@
 			NSLog(@" ");
 		}];
 
-	[transactor addKey:firstNameKey type:FRZTypeString collection:NO error:NULL];
-	[transactor addKey:lastNameKey type:FRZTypeString collection:NO error:NULL];
 	[transactor addKey:hubbersKey type:FRZTypeRef collection:YES error:NULL];
 
 	NSString *joshID = [transactor generateNewID];
-	[transactor addValuesWithID:joshID error:NULL block:^(FRZSingleIDTransactor *transactor, NSError **error) {
-		[transactor addValue:@"Josh" forKey:firstNameKey error:error];
-		[transactor addValue:@"Abernathy" forKey:lastNameKey error:error];
-		return YES;
-	}];
+	[transactor addValues:@{ firstNameKey: @"Josh", lastNameKey: @"Abernathy" } forID:joshID error:NULL];
 
 	[transactor addValue:joshID forKey:hubbersKey ID:hubbersID error:NULL];
 
 	NSString *dannyID = [transactor generateNewID];
-	[transactor addValuesWithID:dannyID error:NULL block:^(FRZSingleIDTransactor *transactor, NSError **error) {
-		[transactor addValue:@"Danny" forKey:firstNameKey error:error];
-		[transactor addValue:@"Greg" forKey:lastNameKey error:error];
-		return YES;
-	}];
+	[transactor addValues:@{ firstNameKey: @"Danny", lastNameKey: @"Greg" } forID:dannyID error:NULL];
 
 	[transactor addValue:dannyID forKey:hubbersKey ID:hubbersID error:NULL];
 
-	[transactor addValuesWithID:[transactor generateNewID] error:NULL block:^(FRZSingleIDTransactor *transactor, NSError **error) {
-		[transactor addValue:@"John" forKey:firstNameKey error:error];
-		[transactor addValue:@"Smith" forKey:lastNameKey error:error];
-		return YES;
-	}];
+	[transactor addValues:@{ firstNameKey: @"John", lastNameKey: @"Smith" } forID:[transactor generateNewID] error:NULL];
 	
 	NSString *jssID = [transactor generateNewID];
-	[transactor addValuesWithID:jssID error:NULL block:^(FRZSingleIDTransactor *transactor, NSError **error) {
-		[transactor addValue:@"Justin" forKey:firstNameKey error:error];
-		[transactor addValue:@"Spahr-Summers" forKey:lastNameKey error:error];
-		return YES;
-	}];
-
+	[transactor addValues:@{ firstNameKey: @"Justin", lastNameKey: @"Spahr-Summers" } forID:jssID error:NULL];
 	[transactor addValue:jssID forKey:hubbersKey ID:hubbersID error:NULL];
 }
 
