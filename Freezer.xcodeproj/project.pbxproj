@@ -7,6 +7,55 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		880D5A5818B998FE00A7AAA6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8884947418063DDA00477836 /* Cocoa.framework */; };
+		880D5A8718B9993000A7AAA6 /* FRZStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953818063F4000477836 /* FRZStore.m */; };
+		880D5A8818B9993000A7AAA6 /* FRZDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953B18063F4600477836 /* FRZDatabase.m */; };
+		880D5A8918B9993000A7AAA6 /* FRZTransactor.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953E18063F5300477836 /* FRZTransactor.m */; };
+		880D5A8A18B9993000A7AAA6 /* FRZSingleIDTransactor.m in Sources */ = {isa = PBXBuildFile; fileRef = 88EFB67E182D9BC500DF807A /* FRZSingleIDTransactor.m */; };
+		880D5A8B18B9993000A7AAA6 /* FRZChange.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B3F8ED182AE14B00C0415E /* FRZChange.m */; };
+		880D5A8C18B9993000A7AAA6 /* FRZQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 88287C9F186E78CA0085B2D2 /* FRZQuery.m */; };
+		880D5A9118B9997400A7AAA6 /* Freezer.h in Headers */ = {isa = PBXBuildFile; fileRef = 88FD30A7182B25A8004CFDD4 /* Freezer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		880D5A9218B9997400A7AAA6 /* FRZStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 8884953718063F4000477836 /* FRZStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		880D5A9318B9997400A7AAA6 /* FRZDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 8884953A18063F4600477836 /* FRZDatabase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		880D5A9418B9997400A7AAA6 /* FRZTransactor.h in Headers */ = {isa = PBXBuildFile; fileRef = 8884953D18063F5300477836 /* FRZTransactor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		880D5A9518B9997400A7AAA6 /* FRZSingleIDTransactor.h in Headers */ = {isa = PBXBuildFile; fileRef = 88EFB67D182D9BC500DF807A /* FRZSingleIDTransactor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		880D5A9618B9997400A7AAA6 /* FRZChange.h in Headers */ = {isa = PBXBuildFile; fileRef = 88B3F8EC182AE14B00C0415E /* FRZChange.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		880D5A9718B9997400A7AAA6 /* FRZQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 88287C9E186E78CA0085B2D2 /* FRZQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		880D5B3918B99E7400A7AAA6 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 880D5B1F18B99E7400A7AAA6 /* .gitignore */; };
+		880D5B3A18B99E7400A7AAA6 /* CHANGES_AND_TODO_LIST.txt in Resources */ = {isa = PBXBuildFile; fileRef = 880D5B2018B99E7400A7AAA6 /* CHANGES_AND_TODO_LIST.txt */; };
+		880D5B3B18B99E7400A7AAA6 /* CONTRIBUTORS.txt in Resources */ = {isa = PBXBuildFile; fileRef = 880D5B2118B99E7400A7AAA6 /* CONTRIBUTORS.txt */; };
+		880D5B3C18B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.h in Headers */ = {isa = PBXBuildFile; fileRef = 880D5B2318B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.h */; };
+		880D5B3D18B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.h in Headers */ = {isa = PBXBuildFile; fileRef = 880D5B2318B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.h */; };
+		880D5B3E18B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B2418B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.m */; };
+		880D5B3F18B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B2418B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.m */; };
+		880D5B4018B99E7400A7AAA6 /* fmdb.1 in Resources */ = {isa = PBXBuildFile; fileRef = 880D5B2518B99E7400A7AAA6 /* fmdb.1 */; };
+		880D5B4118B99E7400A7AAA6 /* fmdb.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 880D5B2618B99E7400A7AAA6 /* fmdb.podspec */; };
+		880D5B4218B99E7400A7AAA6 /* fmdb_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 880D5B2A18B99E7400A7AAA6 /* fmdb_Prefix.pch */; };
+		880D5B4318B99E7400A7AAA6 /* fmdb_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 880D5B2A18B99E7400A7AAA6 /* fmdb_Prefix.pch */; };
+		880D5B4418B99E7400A7AAA6 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 880D5B2B18B99E7400A7AAA6 /* LICENSE.txt */; };
+		880D5B4518B99E7400A7AAA6 /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 880D5B2C18B99E7400A7AAA6 /* README.markdown */; };
+		880D5B4618B99E7400A7AAA6 /* FMDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 880D5B2E18B99E7400A7AAA6 /* FMDatabase.h */; };
+		880D5B4718B99E7400A7AAA6 /* FMDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 880D5B2E18B99E7400A7AAA6 /* FMDatabase.h */; };
+		880D5B4818B99E7400A7AAA6 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B2F18B99E7400A7AAA6 /* FMDatabase.m */; };
+		880D5B4918B99E7400A7AAA6 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B2F18B99E7400A7AAA6 /* FMDatabase.m */; };
+		880D5B4A18B99E7400A7AAA6 /* FMDatabaseAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 880D5B3018B99E7400A7AAA6 /* FMDatabaseAdditions.h */; };
+		880D5B4B18B99E7400A7AAA6 /* FMDatabaseAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 880D5B3018B99E7400A7AAA6 /* FMDatabaseAdditions.h */; };
+		880D5B4C18B99E7400A7AAA6 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B3118B99E7400A7AAA6 /* FMDatabaseAdditions.m */; };
+		880D5B4D18B99E7400A7AAA6 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B3118B99E7400A7AAA6 /* FMDatabaseAdditions.m */; };
+		880D5B4E18B99E7400A7AAA6 /* FMDatabasePool.h in Headers */ = {isa = PBXBuildFile; fileRef = 880D5B3218B99E7400A7AAA6 /* FMDatabasePool.h */; };
+		880D5B4F18B99E7400A7AAA6 /* FMDatabasePool.h in Headers */ = {isa = PBXBuildFile; fileRef = 880D5B3218B99E7400A7AAA6 /* FMDatabasePool.h */; };
+		880D5B5018B99E7400A7AAA6 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B3318B99E7400A7AAA6 /* FMDatabasePool.m */; };
+		880D5B5118B99E7400A7AAA6 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B3318B99E7400A7AAA6 /* FMDatabasePool.m */; };
+		880D5B5218B99E7400A7AAA6 /* FMDatabaseQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 880D5B3418B99E7400A7AAA6 /* FMDatabaseQueue.h */; };
+		880D5B5318B99E7400A7AAA6 /* FMDatabaseQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 880D5B3418B99E7400A7AAA6 /* FMDatabaseQueue.h */; };
+		880D5B5418B99E7400A7AAA6 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B3518B99E7400A7AAA6 /* FMDatabaseQueue.m */; };
+		880D5B5518B99E7400A7AAA6 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B3518B99E7400A7AAA6 /* FMDatabaseQueue.m */; };
+		880D5B5618B99E7400A7AAA6 /* fmdb.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B3618B99E7400A7AAA6 /* fmdb.m */; settings = {COMPILER_FLAGS = "-w"; }; };
+		880D5B5718B99E7400A7AAA6 /* fmdb.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B3618B99E7400A7AAA6 /* fmdb.m */; settings = {COMPILER_FLAGS = "-w"; }; };
+		880D5B5818B99E7400A7AAA6 /* FMResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 880D5B3718B99E7400A7AAA6 /* FMResultSet.h */; };
+		880D5B5918B99E7400A7AAA6 /* FMResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 880D5B3718B99E7400A7AAA6 /* FMResultSet.h */; };
+		880D5B5A18B99E7400A7AAA6 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B3818B99E7400A7AAA6 /* FMResultSet.m */; };
+		880D5B5B18B99E7400A7AAA6 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B3818B99E7400A7AAA6 /* FMResultSet.m */; };
 		88287CA0186E78CA0085B2D2 /* FRZQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 88287C9E186E78CA0085B2D2 /* FRZQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		88287CA1186E78CA0085B2D2 /* FRZQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 88287C9F186E78CA0085B2D2 /* FRZQuery.m */; };
 		88AF6387187130B300EB5E29 /* FRZQuerySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AF6386187130B300EB5E29 /* FRZQuerySpec.m */; };
@@ -18,7 +67,6 @@
 		88FD30B3182B25A8004CFDD4 /* Freezer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88FD309E182B25A8004CFDD4 /* Freezer.framework */; };
 		88FD30B9182B25A8004CFDD4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 88FD30B7182B25A8004CFDD4 /* InfoPlist.strings */; };
 		88FD30CE182B2630004CFDD4 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8859764C18178AE500A8FC72 /* ReactiveCocoa.framework */; };
-		88FD30CF182B2635004CFDD4 /* libFMDB.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 885115421811D77A00E00B2B /* libFMDB.a */; };
 		88FD30D0182B265C004CFDD4 /* FRZStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953818063F4000477836 /* FRZStore.m */; };
 		88FD30D1182B265C004CFDD4 /* FRZDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953B18063F4600477836 /* FRZDatabase.m */; };
 		88FD30D2182B265C004CFDD4 /* FRZTransactor.m in Sources */ = {isa = PBXBuildFile; fileRef = 8884953E18063F5300477836 /* FRZTransactor.m */; };
@@ -38,16 +86,23 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		8851153F1811D77A00E00B2B /* PBXContainerItemProxy */ = {
+		880D5AD718B99AE100A7AAA6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8851153A1811D77A00E00B2B /* fmdb.xcodeproj */;
+			containerPortal = 8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 88F440AA153DAC820097B4C3;
+			remoteInfo = "ReactiveCocoa-iOS";
+		};
+		880D5B5E18B99E7400A7AAA6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 880D5B2718B99E7400A7AAA6 /* fmdb.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 8DD76FA10486AA7600D96B5E;
 			remoteInfo = fmdb;
 		};
-		885115411811D77A00E00B2B /* PBXContainerItemProxy */ = {
+		880D5B6018B99E7400A7AAA6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8851153A1811D77A00E00B2B /* fmdb.xcodeproj */;
+			containerPortal = 880D5B2718B99E7400A7AAA6 /* fmdb.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = EE4290EF12B42F870088BD94;
 			remoteInfo = FMDB;
@@ -114,13 +169,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 88037F8215056328001A5B19;
 			remoteInfo = ReactiveCocoa;
-		};
-		88FD30C9182B261D004CFDD4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8851153A1811D77A00E00B2B /* fmdb.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = EE4290EE12B42F870088BD94;
-			remoteInfo = FMDB;
 		};
 		88FD30E1182B26F9004CFDD4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -202,10 +250,32 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		880D5A5718B998FE00A7AAA6 /* libFreezer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFreezer.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		880D5B1F18B99E7400A7AAA6 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		880D5B2018B99E7400A7AAA6 /* CHANGES_AND_TODO_LIST.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGES_AND_TODO_LIST.txt; sourceTree = "<group>"; };
+		880D5B2118B99E7400A7AAA6 /* CONTRIBUTORS.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CONTRIBUTORS.txt; sourceTree = "<group>"; };
+		880D5B2318B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FMDatabase+InMemoryOnDiskIO.h"; sourceTree = "<group>"; };
+		880D5B2418B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "FMDatabase+InMemoryOnDiskIO.m"; sourceTree = "<group>"; };
+		880D5B2518B99E7400A7AAA6 /* fmdb.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; path = fmdb.1; sourceTree = "<group>"; };
+		880D5B2618B99E7400A7AAA6 /* fmdb.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fmdb.podspec; sourceTree = "<group>"; };
+		880D5B2718B99E7400A7AAA6 /* fmdb.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = fmdb.xcodeproj; sourceTree = "<group>"; };
+		880D5B2A18B99E7400A7AAA6 /* fmdb_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fmdb_Prefix.pch; sourceTree = "<group>"; };
+		880D5B2B18B99E7400A7AAA6 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
+		880D5B2C18B99E7400A7AAA6 /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.markdown; sourceTree = "<group>"; };
+		880D5B2E18B99E7400A7AAA6 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
+		880D5B2F18B99E7400A7AAA6 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
+		880D5B3018B99E7400A7AAA6 /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		880D5B3118B99E7400A7AAA6 /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		880D5B3218B99E7400A7AAA6 /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabasePool.h; sourceTree = "<group>"; };
+		880D5B3318B99E7400A7AAA6 /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabasePool.m; sourceTree = "<group>"; };
+		880D5B3418B99E7400A7AAA6 /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseQueue.h; sourceTree = "<group>"; };
+		880D5B3518B99E7400A7AAA6 /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseQueue.m; sourceTree = "<group>"; };
+		880D5B3618B99E7400A7AAA6 /* fmdb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fmdb.m; sourceTree = "<group>"; };
+		880D5B3718B99E7400A7AAA6 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
+		880D5B3818B99E7400A7AAA6 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
 		88287C9E186E78CA0085B2D2 /* FRZQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZQuery.h; sourceTree = "<group>"; };
 		88287C9F186E78CA0085B2D2 /* FRZQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZQuery.m; sourceTree = "<group>"; };
 		88287CB0186E79020085B2D2 /* FRZQuery+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZQuery+Private.h"; sourceTree = "<group>"; };
-		8851153A1811D77A00E00B2B /* fmdb.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = fmdb.xcodeproj; path = External/fmdb/fmdb.xcodeproj; sourceTree = "<group>"; };
 		8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactiveCocoa.xcodeproj; path = External/ReactiveCocoa/ReactiveCocoaFramework/ReactiveCocoa.xcodeproj; sourceTree = "<group>"; };
 		886D1996181240030044BD2F /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		8884947418063DDA00477836 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -263,12 +333,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		880D5A5418B998FE00A7AAA6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				880D5A5818B998FE00A7AAA6 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		88FD309A182B25A8004CFDD4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				88FD30D9182B26C2004CFDD4 /* libsqlite3.dylib in Frameworks */,
-				88FD30CF182B2635004CFDD4 /* libFMDB.a in Frameworks */,
 				88FD30CE182B2630004CFDD4 /* ReactiveCocoa.framework in Frameworks */,
 				88FD309F182B25A8004CFDD4 /* Cocoa.framework in Frameworks */,
 			);
@@ -290,13 +367,59 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8851153B1811D77A00E00B2B /* Products */ = {
+		880D5B1E18B99E7400A7AAA6 /* fmdb */ = {
 			isa = PBXGroup;
 			children = (
-				885115401811D77A00E00B2B /* fmdb */,
-				885115421811D77A00E00B2B /* libFMDB.a */,
+				880D5B1F18B99E7400A7AAA6 /* .gitignore */,
+				880D5B2018B99E7400A7AAA6 /* CHANGES_AND_TODO_LIST.txt */,
+				880D5B2118B99E7400A7AAA6 /* CONTRIBUTORS.txt */,
+				880D5B2218B99E7400A7AAA6 /* extra */,
+				880D5B2518B99E7400A7AAA6 /* fmdb.1 */,
+				880D5B2618B99E7400A7AAA6 /* fmdb.podspec */,
+				880D5B2718B99E7400A7AAA6 /* fmdb.xcodeproj */,
+				880D5B2A18B99E7400A7AAA6 /* fmdb_Prefix.pch */,
+				880D5B2B18B99E7400A7AAA6 /* LICENSE.txt */,
+				880D5B2C18B99E7400A7AAA6 /* README.markdown */,
+				880D5B2D18B99E7400A7AAA6 /* src */,
+			);
+			name = fmdb;
+			path = External/fmdb;
+			sourceTree = "<group>";
+		};
+		880D5B2218B99E7400A7AAA6 /* extra */ = {
+			isa = PBXGroup;
+			children = (
+				880D5B2318B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.h */,
+				880D5B2418B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.m */,
+			);
+			path = extra;
+			sourceTree = "<group>";
+		};
+		880D5B2818B99E7400A7AAA6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				880D5B5F18B99E7400A7AAA6 /* fmdb */,
+				880D5B6118B99E7400A7AAA6 /* libFMDB.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		880D5B2D18B99E7400A7AAA6 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				880D5B2E18B99E7400A7AAA6 /* FMDatabase.h */,
+				880D5B2F18B99E7400A7AAA6 /* FMDatabase.m */,
+				880D5B3018B99E7400A7AAA6 /* FMDatabaseAdditions.h */,
+				880D5B3118B99E7400A7AAA6 /* FMDatabaseAdditions.m */,
+				880D5B3218B99E7400A7AAA6 /* FMDatabasePool.h */,
+				880D5B3318B99E7400A7AAA6 /* FMDatabasePool.m */,
+				880D5B3418B99E7400A7AAA6 /* FMDatabaseQueue.h */,
+				880D5B3518B99E7400A7AAA6 /* FMDatabaseQueue.m */,
+				880D5B3618B99E7400A7AAA6 /* fmdb.m */,
+				880D5B3718B99E7400A7AAA6 /* FMResultSet.h */,
+				880D5B3818B99E7400A7AAA6 /* FMResultSet.m */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 		8859763918178AE500A8FC72 /* Products */ = {
@@ -329,6 +452,7 @@
 			children = (
 				88FD309E182B25A8004CFDD4 /* Freezer.framework */,
 				88FD30AE182B25A8004CFDD4 /* FreezerTests.octest */,
+				880D5A5718B998FE00A7AAA6 /* libFreezer.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -336,10 +460,10 @@
 		8884947318063DDA00477836 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				880D5B1E18B99E7400A7AAA6 /* fmdb */,
 				88FD310A182B282A004CFDD4 /* SenTestingKit.framework */,
 				886D1996181240030044BD2F /* libsqlite3.dylib */,
 				8859763818178AE500A8FC72 /* ReactiveCocoa.xcodeproj */,
-				8851153A1811D77A00E00B2B /* fmdb.xcodeproj */,
 				8884947418063DDA00477836 /* Cocoa.framework */,
 				8884949318063DDA00477836 /* XCTest.framework */,
 				8884947618063DDA00477836 /* Other Frameworks */,
@@ -508,23 +632,69 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		880D5A5518B998FE00A7AAA6 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				880D5B4F18B99E7400A7AAA6 /* FMDatabasePool.h in Headers */,
+				880D5B5918B99E7400A7AAA6 /* FMResultSet.h in Headers */,
+				880D5A9118B9997400A7AAA6 /* Freezer.h in Headers */,
+				880D5A9218B9997400A7AAA6 /* FRZStore.h in Headers */,
+				880D5A9318B9997400A7AAA6 /* FRZDatabase.h in Headers */,
+				880D5B4B18B99E7400A7AAA6 /* FMDatabaseAdditions.h in Headers */,
+				880D5A9418B9997400A7AAA6 /* FRZTransactor.h in Headers */,
+				880D5A9518B9997400A7AAA6 /* FRZSingleIDTransactor.h in Headers */,
+				880D5A9618B9997400A7AAA6 /* FRZChange.h in Headers */,
+				880D5B5318B99E7400A7AAA6 /* FMDatabaseQueue.h in Headers */,
+				880D5B3D18B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.h in Headers */,
+				880D5A9718B9997400A7AAA6 /* FRZQuery.h in Headers */,
+				880D5B4718B99E7400A7AAA6 /* FMDatabase.h in Headers */,
+				880D5B4318B99E7400A7AAA6 /* fmdb_Prefix.pch in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		88FD309B182B25A8004CFDD4 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				880D5B4E18B99E7400A7AAA6 /* FMDatabasePool.h in Headers */,
+				880D5B5818B99E7400A7AAA6 /* FMResultSet.h in Headers */,
 				88FD30D8182B266F004CFDD4 /* Freezer.h in Headers */,
 				88FD30D4182B2669004CFDD4 /* FRZStore.h in Headers */,
 				88FD30D5182B2669004CFDD4 /* FRZDatabase.h in Headers */,
+				880D5B4A18B99E7400A7AAA6 /* FMDatabaseAdditions.h in Headers */,
 				88FD30D6182B2669004CFDD4 /* FRZTransactor.h in Headers */,
 				88287CA0186E78CA0085B2D2 /* FRZQuery.h in Headers */,
 				88EFB67F182D9BC500DF807A /* FRZSingleIDTransactor.h in Headers */,
+				880D5B5218B99E7400A7AAA6 /* FMDatabaseQueue.h in Headers */,
+				880D5B3C18B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.h in Headers */,
 				88FD30D7182B2669004CFDD4 /* FRZChange.h in Headers */,
+				880D5B4618B99E7400A7AAA6 /* FMDatabase.h in Headers */,
+				880D5B4218B99E7400A7AAA6 /* fmdb_Prefix.pch in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		880D5A5618B998FE00A7AAA6 /* Freezer-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 880D5A8518B998FE00A7AAA6 /* Build configuration list for PBXNativeTarget "Freezer-iOS" */;
+			buildPhases = (
+				880D5A5318B998FE00A7AAA6 /* Sources */,
+				880D5A5418B998FE00A7AAA6 /* Frameworks */,
+				880D5A5518B998FE00A7AAA6 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				880D5AD818B99AE100A7AAA6 /* PBXTargetDependency */,
+			);
+			name = "Freezer-iOS";
+			productName = "Freezer-iOS";
+			productReference = 880D5A5718B998FE00A7AAA6 /* libFreezer.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		88FD309D182B25A8004CFDD4 /* Freezer */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 88FD30BC182B25A9004CFDD4 /* Build configuration list for PBXNativeTarget "Freezer" */;
@@ -537,7 +707,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				88FD30CA182B261D004CFDD4 /* PBXTargetDependency */,
 				88FD30C8182B2611004CFDD4 /* PBXTargetDependency */,
 			);
 			name = Freezer;
@@ -597,8 +766,8 @@
 					ProjectRef = 88FD30E9182B26FE004CFDD4 /* Expecta.xcodeproj */;
 				},
 				{
-					ProductGroup = 8851153B1811D77A00E00B2B /* Products */;
-					ProjectRef = 8851153A1811D77A00E00B2B /* fmdb.xcodeproj */;
+					ProductGroup = 880D5B2818B99E7400A7AAA6 /* Products */;
+					ProjectRef = 880D5B2718B99E7400A7AAA6 /* fmdb.xcodeproj */;
 				},
 				{
 					ProductGroup = 8859763918178AE500A8FC72 /* Products */;
@@ -613,23 +782,24 @@
 			targets = (
 				88FD309D182B25A8004CFDD4 /* Freezer */,
 				88FD30AD182B25A8004CFDD4 /* FreezerTests */,
+				880D5A5618B998FE00A7AAA6 /* Freezer-iOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		885115401811D77A00E00B2B /* fmdb */ = {
+		880D5B5F18B99E7400A7AAA6 /* fmdb */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.executable";
 			path = fmdb;
-			remoteRef = 8851153F1811D77A00E00B2B /* PBXContainerItemProxy */;
+			remoteRef = 880D5B5E18B99E7400A7AAA6 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		885115421811D77A00E00B2B /* libFMDB.a */ = {
+		880D5B6118B99E7400A7AAA6 /* libFMDB.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libFMDB.a;
-			remoteRef = 885115411811D77A00E00B2B /* PBXContainerItemProxy */;
+			remoteRef = 880D5B6018B99E7400A7AAA6 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		8859764C18178AE500A8FC72 /* ReactiveCocoa.framework */ = {
@@ -751,6 +921,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				880D5B4418B99E7400A7AAA6 /* LICENSE.txt in Resources */,
+				880D5B4118B99E7400A7AAA6 /* fmdb.podspec in Resources */,
+				880D5B3B18B99E7400A7AAA6 /* CONTRIBUTORS.txt in Resources */,
+				880D5B3A18B99E7400A7AAA6 /* CHANGES_AND_TODO_LIST.txt in Resources */,
+				880D5B4518B99E7400A7AAA6 /* README.markdown in Resources */,
+				880D5B4018B99E7400A7AAA6 /* fmdb.1 in Resources */,
+				880D5B3918B99E7400A7AAA6 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -765,6 +942,26 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		880D5A5318B998FE00A7AAA6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				880D5A8718B9993000A7AAA6 /* FRZStore.m in Sources */,
+				880D5A8818B9993000A7AAA6 /* FRZDatabase.m in Sources */,
+				880D5A8918B9993000A7AAA6 /* FRZTransactor.m in Sources */,
+				880D5B3F18B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.m in Sources */,
+				880D5A8A18B9993000A7AAA6 /* FRZSingleIDTransactor.m in Sources */,
+				880D5B4D18B99E7400A7AAA6 /* FMDatabaseAdditions.m in Sources */,
+				880D5B5B18B99E7400A7AAA6 /* FMResultSet.m in Sources */,
+				880D5A8B18B9993000A7AAA6 /* FRZChange.m in Sources */,
+				880D5B5118B99E7400A7AAA6 /* FMDatabasePool.m in Sources */,
+				880D5B5518B99E7400A7AAA6 /* FMDatabaseQueue.m in Sources */,
+				880D5A8C18B9993000A7AAA6 /* FRZQuery.m in Sources */,
+				880D5B5718B99E7400A7AAA6 /* fmdb.m in Sources */,
+				880D5B4918B99E7400A7AAA6 /* FMDatabase.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		88FD3099182B25A8004CFDD4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -772,9 +969,16 @@
 				88FD30D0182B265C004CFDD4 /* FRZStore.m in Sources */,
 				88287CA1186E78CA0085B2D2 /* FRZQuery.m in Sources */,
 				88EFB680182D9BC500DF807A /* FRZSingleIDTransactor.m in Sources */,
+				880D5B3E18B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.m in Sources */,
 				88FD30D1182B265C004CFDD4 /* FRZDatabase.m in Sources */,
+				880D5B4C18B99E7400A7AAA6 /* FMDatabaseAdditions.m in Sources */,
+				880D5B5A18B99E7400A7AAA6 /* FMResultSet.m in Sources */,
 				88FD30D2182B265C004CFDD4 /* FRZTransactor.m in Sources */,
+				880D5B5018B99E7400A7AAA6 /* FMDatabasePool.m in Sources */,
+				880D5B5418B99E7400A7AAA6 /* FMDatabaseQueue.m in Sources */,
 				88FD30D3182B265C004CFDD4 /* FRZChange.m in Sources */,
+				880D5B5618B99E7400A7AAA6 /* fmdb.m in Sources */,
+				880D5B4818B99E7400A7AAA6 /* FMDatabase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -792,6 +996,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		880D5AD818B99AE100A7AAA6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "ReactiveCocoa-iOS";
+			targetProxy = 880D5AD718B99AE100A7AAA6 /* PBXContainerItemProxy */;
+		};
 		88FD30B2182B25A8004CFDD4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 88FD309D182B25A8004CFDD4 /* Freezer */;
@@ -801,11 +1010,6 @@
 			isa = PBXTargetDependency;
 			name = ReactiveCocoa;
 			targetProxy = 88FD30C7182B2611004CFDD4 /* PBXContainerItemProxy */;
-		};
-		88FD30CA182B261D004CFDD4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = FMDB;
-			targetProxy = 88FD30C9182B261D004CFDD4 /* PBXContainerItemProxy */;
 		};
 		88FD30FC182B2703004CFDD4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -867,8 +1071,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx10.8;
-				VALID_ARCHS = x86_64;
 			};
 			name = Profile;
 		};
@@ -914,6 +1116,46 @@
 			};
 			name = Profile;
 		};
+		880D5A7118B998FE00A7AAA6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 888494B618063E6100477836 /* iOS-StaticLibrary.xcconfig */;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Freezer/Freezer-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = Freezer;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		880D5A7218B998FE00A7AAA6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 888494B618063E6100477836 /* iOS-StaticLibrary.xcconfig */;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Freezer/Freezer-Prefix.pch";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = Freezer;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		880D5A7318B998FE00A7AAA6 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 888494B618063E6100477836 /* iOS-StaticLibrary.xcconfig */;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Freezer/Freezer-Prefix.pch";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = Freezer;
+				SDKROOT = macosx;
+			};
+			name = Profile;
+		};
 		888494A018063DDA00477836 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 888494AC18063E6100477836 /* Debug.xcconfig */;
@@ -947,9 +1189,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx10.8;
-				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -981,8 +1220,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx10.8;
-				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};
@@ -1081,6 +1318,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		880D5A8518B998FE00A7AAA6 /* Build configuration list for PBXNativeTarget "Freezer-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				880D5A7118B998FE00A7AAA6 /* Debug */,
+				880D5A7218B998FE00A7AAA6 /* Release */,
+				880D5A7318B998FE00A7AAA6 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8884946C18063DDA00477836 /* Build configuration list for PBXProject "Freezer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

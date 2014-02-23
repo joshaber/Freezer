@@ -315,7 +315,7 @@ void FRZStoreReleaseDestructor(void *data) {
 		};
 
 		NSString *transactionTypeName = transactionTypeToName[@(transactionType)];
-		NSAssert(transactionTypeName != nil, @"Unrecognized transaction type: %ld", transactionType);
+		NSAssert(transactionTypeName != nil, @"Unrecognized transaction type: %ld", (long)transactionType);
 		[database executeUpdate:[NSString stringWithFormat:@"BEGIN %@ TRANSACTION", transactionTypeName]];
 
 		FRZDatabase *previousDatabase = [self currentDatabase];

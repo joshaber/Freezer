@@ -167,7 +167,7 @@ describe(@"changes", ^{
 			testKey1: @42,
 			testKey2: @7,
 		};
-		expect(database[testID]).to.equal(expected);
+		expect(database[testID]).will.equal(expected);
 	});
 });
 
