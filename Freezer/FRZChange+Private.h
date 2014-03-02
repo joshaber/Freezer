@@ -10,9 +10,9 @@
 
 @interface FRZChange ()
 
-@property (nonatomic, readwrite, copy) FRZDatabase *previousDatabase;
+@property (atomic, readwrite, copy) FRZDatabase *previousDatabase;
 
-@property (nonatomic, readwrite, copy) FRZDatabase *changedDatabase;
+@property (atomic, readwrite, copy) FRZDatabase *changedDatabase;
 
 // Initializes the receiver with the given values.
 //

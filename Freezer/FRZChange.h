@@ -33,10 +33,10 @@ typedef enum : NSInteger {
 
 // The database before the change was applied. This may be nil if the addition
 // was the first value added to the store.
-@property (nonatomic, readonly, copy) FRZDatabase *previousDatabase;
+@property (atomic, readonly, copy) FRZDatabase *previousDatabase;
 
 // The database after the change was applied.
-@property (nonatomic, readonly, copy) FRZDatabase *changedDatabase;
+@property (atomic, readonly, copy) FRZDatabase *changedDatabase;
 
 // Initializes the receiver with the given properties.
 //
