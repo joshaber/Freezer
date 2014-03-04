@@ -192,14 +192,14 @@ describe(@"special types", ^{
 		expect([valueDate timeIntervalSinceDate:date]).to.beLessThan(0.001);
 	});
 
-	pending(@"should support collections", ^{
+	it(@"should support collections", ^{
 		static NSString *collectionKey = @"lots";
 		static NSString *collectionItemID = @"things";
 
-		BOOL success = [transactor addValue:@"first-key" forKey:collectionKey ID:collectionItemID error:NULL];
+		BOOL success = [transactor pushValue:@"first-key" forKey:collectionKey ID:collectionItemID error:NULL];
 		expect(success).to.beTruthy();
 
-		success = [transactor addValue:@"second-key" forKey:collectionKey ID:collectionItemID error:NULL];
+		success = [transactor pushValue:@"second-key" forKey:collectionKey ID:collectionItemID error:NULL];
 		expect(success).to.beTruthy();
 
 		FRZDatabase *database = [store currentDatabase];
@@ -221,18 +221,18 @@ describe(@"special types", ^{
 		expect(value).to.contain(@"second-key");
 	});
 
-	pending(@"should keep collections separate based on parent key", ^{
+	it(@"should keep collections separate based on parent key", ^{
 		static NSString *collectionKey = @"lots";
 		static NSString *collectionItemID = @"things";
 
-		BOOL success = [transactor addValue:@"first-key" forKey:collectionKey ID:collectionItemID error:NULL];
+		BOOL success = [transactor pushValue:@"first-key" forKey:collectionKey ID:collectionItemID error:NULL];
 		expect(success).to.beTruthy();
 
-		success = [transactor addValue:@"second-key" forKey:collectionKey ID:collectionItemID error:NULL];
+		success = [transactor pushValue:@"second-key" forKey:collectionKey ID:collectionItemID error:NULL];
 		expect(success).to.beTruthy();
 
 		static NSString * const someOtherID = @"some-other-id";
-		success = [transactor addValue:@"third-key" forKey:collectionKey ID:someOtherID error:NULL];
+		success = [transactor pushValue:@"third-key" forKey:collectionKey ID:someOtherID error:NULL];
 		expect(success).to.beTruthy();
 
 		FRZDatabase *database = [store currentDatabase];

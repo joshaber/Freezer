@@ -41,6 +41,21 @@
 //
 // Returns whether the removal was successful.
 - (BOOL)removeValueForKey:(NSString *)key ID:(NSString *)ID error:(NSError **)error;
+
+// Pushes a new value on to the set for the given key, associated with the given
+// ID.
+//
+// value - The value to add to the set. Cannot be nil.
+// key   - The key whose set will be pushed to. Cannot be nil.
+// ID    - The ID to associate with the key and value. Cannot be nil.
+// error - The error if one occurs.
+//
+// Returns whether the push was successful.
+- (BOOL)pushValue:(id<NSCoding>)value forKey:(NSString *)key ID:(NSString *)ID error:(NSError **)error;
+
+// Removes the value from the set for the given key and ID.
+//
+// value - The value to remove from the set. Cannot be nil.
 // key   - The key whose value should be removed. Cannot be nil.
 // ID    - The ID whose associated key will be removed. Cannot be nil.
 // error - The error if one occurs.
