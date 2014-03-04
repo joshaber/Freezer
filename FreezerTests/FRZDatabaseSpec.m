@@ -22,10 +22,7 @@ beforeEach(^{
 	store = [[FRZStore alloc] initInMemory:NULL];
 
 	FRZTransactor *transactor = [store transactor];
-	BOOL success = [transactor addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
-	expect(success).to.beTruthy();
-
-	success = [transactor addValue:testValue forKey:testKey ID:testID error:NULL];
+	BOOL success = [transactor addValue:testValue forKey:testKey ID:testID error:NULL];
 	expect(success).to.beTruthy();
 });
 
@@ -137,9 +134,6 @@ describe(@"-IDsWithKey:", ^{
 		expect(database).notTo.beNil();
 
 		static NSString * const randomKey = @"some bullshit";
-		BOOL success = [[store transactor] addKey:randomKey type:FRZTypeInteger collection:NO error:NULL];
-		expect(success).to.beTruthy();
-
 		NSSet *IDs = [database IDsWithKey:randomKey];
 		expect(IDs.count).to.equal(0);
 	});
@@ -171,9 +165,6 @@ describe(@"-valueForID:key:", ^{
 		expect(database).notTo.beNil();
 
 		static NSString * const randomKey = @"some bullshit";
-		BOOL success = [[store transactor] addKey:randomKey type:FRZTypeInteger collection:NO error:NULL];
-		expect(success).to.beTruthy();
-
 		id value = [database valueForID:testID key:randomKey];
 		expect(value).to.beNil();
 	});
@@ -189,11 +180,9 @@ describe(@"special types", ^{
 
 	it(@"should be able to add and get dates", ^{
 		static NSString * const dateKey = @"date";
-		BOOL success = [transactor addKey:dateKey type:FRZTypeDate collection:NO error:NULL];
-		expect(success).to.beTruthy();
 
 		NSDate *date = [NSDate date];
-		success = [transactor addValue:date forKey:dateKey ID:testID error:NULL];
+		BOOL success = [transactor addValue:date forKey:dateKey ID:testID error:NULL];
 		expect(success).to.beTruthy();
 
 		FRZDatabase *database = [store currentDatabase];
@@ -203,33 +192,11 @@ describe(@"special types", ^{
 		expect([valueDate timeIntervalSinceDate:date]).to.beLessThan(0.001);
 	});
 
-	it(@"should be able to add and get refs", ^{
-		static NSString * const refKey = @"ref";
-		BOOL success = [transactor addKey:refKey type:FRZTypeRef collection:NO error:NULL];
-		expect(success).to.beTruthy();
-
-		success = [transactor addValue:testValue forKey:testKey ID:testID error:NULL];
-		expect(success).to.beTruthy();
-
-		NSString *ID = [transactor generateNewID];
-		success = [transactor addValue:testID forKey:refKey ID:ID error:NULL];
-		expect(success).to.beTruthy();
-
-		FRZDatabase *database = [store currentDatabase];
-		expect(database).notTo.beNil();
-
-		NSDictionary *expected = @{ testKey: testValue };
-		id value = [database valueForID:ID key:refKey];
-		expect(value).to.equal(expected);
-	});
-
-	it(@"should support collections", ^{
+	pending(@"should support collections", ^{
 		static NSString *collectionKey = @"lots";
 		static NSString *collectionItemID = @"things";
-		BOOL success = [transactor addKey:collectionKey type:FRZTypeString collection:YES error:NULL];
-		expect(success).to.beTruthy();
 
-		success = [transactor addValue:@"first-key" forKey:collectionKey ID:collectionItemID error:NULL];
+		BOOL success = [transactor addValue:@"first-key" forKey:collectionKey ID:collectionItemID error:NULL];
 		expect(success).to.beTruthy();
 
 		success = [transactor addValue:@"second-key" forKey:collectionKey ID:collectionItemID error:NULL];
@@ -254,13 +221,11 @@ describe(@"special types", ^{
 		expect(value).to.contain(@"second-key");
 	});
 
-	it(@"should keep collections separate based on parent key", ^{
+	pending(@"should keep collections separate based on parent key", ^{
 		static NSString *collectionKey = @"lots";
 		static NSString *collectionItemID = @"things";
-		BOOL success = [transactor addKey:collectionKey type:FRZTypeString collection:YES error:NULL];
-		expect(success).to.beTruthy();
 
-		success = [transactor addValue:@"first-key" forKey:collectionKey ID:collectionItemID error:NULL];
+		BOOL success = [transactor addValue:@"first-key" forKey:collectionKey ID:collectionItemID error:NULL];
 		expect(success).to.beTruthy();
 
 		success = [transactor addValue:@"second-key" forKey:collectionKey ID:collectionItemID error:NULL];

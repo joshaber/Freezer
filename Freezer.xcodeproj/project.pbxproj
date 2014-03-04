@@ -57,6 +57,10 @@
 		88287CA0186E78CA0085B2D2 /* FRZQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 88287C9E186E78CA0085B2D2 /* FRZQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		88287CA1186E78CA0085B2D2 /* FRZQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 88287C9F186E78CA0085B2D2 /* FRZQuery.m */; };
 		88AF6387187130B300EB5E29 /* FRZQuerySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AF6386187130B300EB5E29 /* FRZQuerySpec.m */; };
+		88C8BE9D18C5682900824884 /* FRZDeletedSentinel.h in Headers */ = {isa = PBXBuildFile; fileRef = 88C8BE9B18C5682900824884 /* FRZDeletedSentinel.h */; };
+		88C8BE9E18C5682900824884 /* FRZDeletedSentinel.h in Headers */ = {isa = PBXBuildFile; fileRef = 88C8BE9B18C5682900824884 /* FRZDeletedSentinel.h */; };
+		88C8BE9F18C5682900824884 /* FRZDeletedSentinel.m in Sources */ = {isa = PBXBuildFile; fileRef = 88C8BE9C18C5682900824884 /* FRZDeletedSentinel.m */; };
+		88C8BEA018C5682900824884 /* FRZDeletedSentinel.m in Sources */ = {isa = PBXBuildFile; fileRef = 88C8BE9C18C5682900824884 /* FRZDeletedSentinel.m */; };
 		88FD309F182B25A8004CFDD4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8884947418063DDA00477836 /* Cocoa.framework */; };
 		88FD30AF182B25A8004CFDD4 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8884949318063DDA00477836 /* XCTest.framework */; };
 		88FD30B0182B25A8004CFDD4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8884947418063DDA00477836 /* Cocoa.framework */; };
@@ -311,6 +315,8 @@
 		88B3F8EC182AE14B00C0415E /* FRZChange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZChange.h; sourceTree = "<group>"; };
 		88B3F8ED182AE14B00C0415E /* FRZChange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZChange.m; sourceTree = "<group>"; };
 		88B3F8EF182AE1B700C0415E /* FRZChange+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZChange+Private.h"; sourceTree = "<group>"; };
+		88C8BE9B18C5682900824884 /* FRZDeletedSentinel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZDeletedSentinel.h; sourceTree = "<group>"; };
+		88C8BE9C18C5682900824884 /* FRZDeletedSentinel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZDeletedSentinel.m; sourceTree = "<group>"; };
 		88FD309E182B25A8004CFDD4 /* Freezer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Freezer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		88FD30A7182B25A8004CFDD4 /* Freezer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Freezer.h; sourceTree = "<group>"; };
 		88FD30AE182B25A8004CFDD4 /* FreezerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FreezerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -487,6 +493,8 @@
 				8884953D18063F5300477836 /* FRZTransactor.h */,
 				888495411806431400477836 /* FRZTransactor+Private.h */,
 				8884953E18063F5300477836 /* FRZTransactor.m */,
+				88C8BE9B18C5682900824884 /* FRZDeletedSentinel.h */,
+				88C8BE9C18C5682900824884 /* FRZDeletedSentinel.m */,
 				88B3F8EC182AE14B00C0415E /* FRZChange.h */,
 				88B3F8EF182AE1B700C0415E /* FRZChange+Private.h */,
 				88B3F8ED182AE14B00C0415E /* FRZChange.m */,
@@ -633,6 +641,7 @@
 				880D5A9318B9997400A7AAA6 /* FRZDatabase.h in Headers */,
 				880D5B4B18B99E7400A7AAA6 /* FMDatabaseAdditions.h in Headers */,
 				880D5A9418B9997400A7AAA6 /* FRZTransactor.h in Headers */,
+				88C8BE9E18C5682900824884 /* FRZDeletedSentinel.h in Headers */,
 				880D5A9618B9997400A7AAA6 /* FRZChange.h in Headers */,
 				880D5B5318B99E7400A7AAA6 /* FMDatabaseQueue.h in Headers */,
 				880D5B3D18B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.h in Headers */,
@@ -653,6 +662,7 @@
 				88FD30D5182B2669004CFDD4 /* FRZDatabase.h in Headers */,
 				880D5B4A18B99E7400A7AAA6 /* FMDatabaseAdditions.h in Headers */,
 				88FD30D6182B2669004CFDD4 /* FRZTransactor.h in Headers */,
+				88C8BE9D18C5682900824884 /* FRZDeletedSentinel.h in Headers */,
 				88287CA0186E78CA0085B2D2 /* FRZQuery.h in Headers */,
 				880D5B5218B99E7400A7AAA6 /* FMDatabaseQueue.h in Headers */,
 				880D5B3C18B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.h in Headers */,
@@ -944,6 +954,7 @@
 				880D5B5118B99E7400A7AAA6 /* FMDatabasePool.m in Sources */,
 				880D5B5518B99E7400A7AAA6 /* FMDatabaseQueue.m in Sources */,
 				880D5A8C18B9993000A7AAA6 /* FRZQuery.m in Sources */,
+				88C8BEA018C5682900824884 /* FRZDeletedSentinel.m in Sources */,
 				880D5B5718B99E7400A7AAA6 /* fmdb.m in Sources */,
 				880D5B4918B99E7400A7AAA6 /* FMDatabase.m in Sources */,
 			);
@@ -963,6 +974,7 @@
 				880D5B5018B99E7400A7AAA6 /* FMDatabasePool.m in Sources */,
 				880D5B5418B99E7400A7AAA6 /* FMDatabaseQueue.m in Sources */,
 				88FD30D3182B265C004CFDD4 /* FRZChange.m in Sources */,
+				88C8BE9F18C5682900824884 /* FRZDeletedSentinel.m in Sources */,
 				880D5B5618B99E7400A7AAA6 /* fmdb.m in Sources */,
 				880D5B4818B99E7400A7AAA6 /* FMDatabase.m in Sources */,
 			);

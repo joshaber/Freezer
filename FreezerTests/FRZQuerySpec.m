@@ -26,9 +26,6 @@ beforeEach(^{
 	transactor = [store transactor];
 	expect(transactor).notTo.beNil();
 
-	BOOL success = [transactor addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
-	expect(success).to.beTruthy();
-
 	for (int i = 0; i < 10; i++) {
 		NSString *ID = [NSString stringWithFormat:@"%d", i];
 		[transactor addValue:@(i) forKey:testKey ID:ID error:NULL];

@@ -40,12 +40,10 @@ it(@"should have a nil database before anything's been added", ^{
 it(@"should keep in-memory stores separate", ^{
 	FRZStore *store1 = [[FRZStore alloc] initInMemory:NULL];
 	static NSString *testKey = @"blah";
-	BOOL success = [[store1 transactor] addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
-	expect(success).to.beTruthy();
 
 	FRZStore *store2 = [[FRZStore alloc] initInMemory:NULL];
 
-	success = [[store1 transactor] addValue:@42 forKey:testKey ID:@"test?" error:NULL];
+	BOOL success = [[store1 transactor] addValue:@42 forKey:testKey ID:@"test?" error:NULL];
 	expect(success).to.beTruthy();
 
 	FRZDatabase *database = [store2 currentDatabase];
@@ -56,10 +54,8 @@ it(@"should have a consistent database in different threads", ^{
 	static NSString * const testKey = @"blah";
 	static NSString * const testID = @"test?";
 	FRZStore *store = [[FRZStore alloc] initInMemory:NULL];
-	BOOL success = [[store transactor] addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
-	expect(success).to.beTruthy();
 
-	success = [[store transactor] addValue:@42 forKey:testKey ID:testID error:NULL];
+	BOOL success = [[store transactor] addValue:@42 forKey:testKey ID:testID error:NULL];
 	expect(success).to.beTruthy();
 
 	FRZDatabase *database = [store currentDatabase];
@@ -90,9 +86,6 @@ describe(@"changes", ^{
 
 		transactor = [store transactor];
 		expect(transactor).notTo.beNil();
-
-		BOOL success = [transactor addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
-		expect(success).to.beTruthy();
 	});
 
 	it(@"should send adds as they occur", ^{
@@ -142,12 +135,6 @@ describe(@"changes", ^{
 		static NSString * const testKey1 = @"key1";
 		static NSString * const testKey2 = @"key2";
 
-		BOOL success = [transactor addKey:testKey1 type:FRZTypeInteger collection:NO error:NULL];
-		expect(success).to.beTruthy();
-
-		success = [transactor addKey:testKey2 type:FRZTypeInteger collection:NO error:NULL];
-		expect(success).to.beTruthy();
-
 		__block FRZDatabase *database;
 		[store.changes subscribeNext:^(FRZChange *change) {
 			database = change.changedDatabase;
@@ -182,23 +169,27 @@ describe(@"trimming", ^{
 	beforeEach(^{
 		store = [[FRZStore alloc] initInMemory:NULL];
 		transactor = [store transactor];
-
-		BOOL success = [transactor addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
-		expect(success).to.beTruthy();
 	});
 
 	it(@"should remove deleted entries", ^{
+		void (^addAndDelete)(void) = ^{
+			BOOL success = [transactor addValue:testValue forKey:testKey ID:testID error:NULL];
+			expect(success).to.beTruthy();
+
+			success = [transactor removeValue:testValue forKey:testKey ID:testID error:NULL];
+			expect(success).to.beTruthy();
+
+			success = [transactor trim:NULL];
+			expect(success).to.beTruthy();
+		};
+
+		// The first add will create the head, and we don't want that to count
+		// against us. So do an add and delete to prime the pump, and then test.
+		addAndDelete();
+
 		long long int startingEntryCount = [store entryCount];
 
-		BOOL success = [transactor addValue:testValue forKey:testKey ID:testID error:NULL];
-		expect(success).to.beTruthy();
-		expect([store entryCount]).to.beGreaterThan(startingEntryCount);
-
-		success = [transactor removeValue:testValue forKey:testKey ID:testID error:NULL];
-		expect(success).to.beTruthy();
-
-		success = [transactor trim:NULL];
-		expect(success).to.beTruthy();
+		addAndDelete();
 
 		expect([store entryCount]).to.equal(startingEntryCount);
 	});

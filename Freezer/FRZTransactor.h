@@ -8,36 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@class FRZSingleIDTransactor;
-
-// The valid key types.
-//   FRZTypeInteger - Integer type.
-//   FRZTypeReal    - Real numbers type.
-//   FRZTypeString  - String type.
-//   FRZTypeBlob    - Data blob type.
-//   FRZTypeDate    - Date type.
-//   FRZTypeRef     - Reference to another key.
-typedef enum : NSInteger {
-	FRZTypeInteger = 1,
-	FRZTypeReal = 2,
-	FRZTypeString = 3,
-	FRZTypeBlob = 4,
-	FRZTypeDate = 5,
-	FRZTypeRef = 6,
-} FRZType;
-
 // The transactor is responsible for effecting change to the store.
 @interface FRZTransactor : NSObject
-
-// Add an key of the given type to the store.
-//
-// key        - The name of the key to add. Cannot be nil.
-// type       - The type of the key.
-// collection - Is the key a collection of values?
-// error      - The error if one occurred.
-//
-// Returns whether the key addition was successful.
-- (BOOL)addKey:(NSString *)key type:(FRZType)type collection:(BOOL)collection error:(NSError **)error;
 
 // Generate a new ID to use for adding new values.
 - (NSString *)generateNewID;
