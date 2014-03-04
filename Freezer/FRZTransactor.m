@@ -12,7 +12,6 @@
 #import "FRZStore+Private.h"
 #import "FMDatabase.h"
 #import "FRZChange+Private.h"
-#import "FRZSingleIDTransactor+Private.h"
 
 @interface FRZTransactor ()
 
@@ -124,23 +123,14 @@
 	return [self insertIntoDatabase:database value:@(ID) forKey:FRZStoreHeadTransactionKey ID:@"head" transactionID:0 error:error];
 }
 
-- (BOOL)addValuesWithID:(NSString *)ID error:(NSError **)error block:(BOOL (^)(FRZSingleIDTransactor *transactor, NSError **error))block {
-	NSParameterAssert(ID != nil);
-	NSParameterAssert(block != NULL);
-
-	FRZSingleIDTransactor *transactor = [[FRZSingleIDTransactor alloc] initWithTransactor:self ID:ID];
-	return [self performChangesWithError:error block:^(NSError **error) {
-		return block(transactor, error);
-	}];
-}
-
 - (BOOL)addValues:(NSDictionary *)keyedValues forID:(NSString *)ID error:(NSError **)error {
 	NSParameterAssert(keyedValues != nil);
 	NSParameterAssert(ID != nil);
 
-	return [self addValuesWithID:ID error:error block:^(FRZSingleIDTransactor *transactor, NSError **error) {
+	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
 		for (NSString *key in keyedValues) {
-			BOOL success = [transactor addValue:keyedValues[key] forKey:key error:error];
+			id value = keyedValues[key];
+			BOOL success = [self addValue:value forKey:key ID:ID error:error];
 			if (!success) return NO;
 		}
 
