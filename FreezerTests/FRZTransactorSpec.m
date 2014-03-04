@@ -10,7 +10,6 @@
 #import "FRZStore.h"
 #import "FRZDatabase.h"
 #import "SPTReporter.h"
-#import "FRZSingleIDTransactor.h"
 
 SpecBegin(FRZTransactor)
 
@@ -114,40 +113,6 @@ it(@"should only apply changes when the outermost transaction is completed", ^{
 	}];
 
 	expect(changes.count).will.equal(2);
-});
-
-describe(@"-addValuesWithID:error:block:", ^{
-	it(@"should add the values to the ID", ^{
-		BOOL success = [transactor addValuesWithID:testID error:NULL block:^(FRZSingleIDTransactor *transactor, NSError **error) {
-			[transactor addValue:testValue forKey:testKey error:NULL];
-			return YES;
-		}];
-		expect(success).to.beTruthy();
-
-		FRZDatabase *database = [store currentDatabase];
-		expect(database).notTo.beNil();
-		expect([database valueForID:testID key:testKey]).to.equal(testValue);
-	});
-
-	it(@"should generate changes only after the block ends", ^{
-		NSMutableArray *changes = [NSMutableArray array];
-		[store.changes subscribeNext:^(id x) {
-			[changes addObject:x];
-		}];
-
-		BOOL success = [transactor addValuesWithID:testID error:NULL block:^(FRZSingleIDTransactor *transactor, NSError **error) {
-			[transactor addValue:testValue forKey:testKey error:NULL];
-			expect(changes.count).to.equal(0);
-
-			[transactor addValue:@7 forKey:testKey error:NULL];
-			expect(changes.count).to.equal(0);
-
-			return YES;
-		}];
-		expect(success).to.beTruthy();
-
-		expect(changes.count).will.equal(2);
-	});
 });
 
 it(@"should support collections", ^{
