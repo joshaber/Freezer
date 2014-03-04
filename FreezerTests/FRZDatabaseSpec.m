@@ -38,7 +38,7 @@ describe(@"ID lookup", ^{
 
 	it(@"shouldn't contain any IDs after it's been removed", ^{
 		FRZTransactor *transactor = [store transactor];
-		BOOL success = [transactor removeValue:testValue forKey:testKey ID:testID error:NULL];
+		BOOL success = [transactor removeValueForKey:testKey ID:testID error:NULL];
 		expect(success).to.beTruthy();
 
 		FRZDatabase *database = [store currentDatabase];
@@ -99,7 +99,7 @@ describe(@"-allIDs", ^{
 
 	it(@"shouldn't contain an ID after it's been removed", ^{
 		FRZTransactor *transactor = [store transactor];
-		BOOL success = [transactor removeValue:testValue forKey:testKey ID:testID error:NULL];
+		BOOL success = [transactor removeValueForKey:testKey ID:testID error:NULL];
 		expect(success).to.beTruthy();
 
 		FRZDatabase *database = [store currentDatabase];
@@ -119,7 +119,7 @@ describe(@"-IDsWithKey:", ^{
 
 	it(@"shouldn't contain any IDs after it's been removed", ^{
 		FRZTransactor *transactor = [store transactor];
-		BOOL success = [transactor removeValue:testValue forKey:testKey ID:testID error:NULL];
+		BOOL success = [transactor removeValueForKey:testKey ID:testID error:NULL];
 		expect(success).to.beTruthy();
 
 		FRZDatabase *database = [store currentDatabase];
@@ -150,7 +150,7 @@ describe(@"-valueForID:key:", ^{
 
 	it(@"shouldn't contain the value after it's been removed", ^{
 		FRZTransactor *transactor = [store transactor];
-		BOOL success = [transactor removeValue:testValue forKey:testKey ID:testID error:NULL];
+		BOOL success = [transactor removeValueForKey:testKey ID:testID error:NULL];
 		expect(success).to.beTruthy();
 
 		FRZDatabase *database = [store currentDatabase];

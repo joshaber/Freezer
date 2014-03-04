@@ -12,13 +12,6 @@
 // The domain for all general errors coming out of Freezer.
 extern NSString * const FRZErrorDomain;
 
-// The error code if the key involved is invalid, i.e., hasn't been added to the
-// store.
-extern const NSInteger FRZErrorInvalidKey;
-
-// The error code if the value given is invalid.
-extern const NSInteger FRZErrorInvalidValue;
-
 @class FRZDatabase;
 @class FRZTransactor;
 

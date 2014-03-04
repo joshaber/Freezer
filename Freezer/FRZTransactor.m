@@ -50,13 +50,6 @@
 	}];
 }
 
-- (NSError *)invalidKeyErrorWithError:(NSError *)error {
-	NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-	userInfo[NSLocalizedDescriptionKey] = NSLocalizedString(@"Invalid key", @"");
-	if (error != nil) userInfo[NSUnderlyingErrorKey] = error;
-	return [NSError errorWithDomain:FRZErrorDomain code:FRZErrorInvalidKey userInfo:userInfo];
-}
-
 - (BOOL)insertIntoDatabase:(FMDatabase *)database value:(id)value forKey:(NSString *)key ID:(NSString *)ID transactionID:(long long int)transactionID error:(NSError **)error {
 	NSParameterAssert(database != nil);
 	NSParameterAssert(value != nil);

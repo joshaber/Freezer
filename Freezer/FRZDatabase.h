@@ -42,15 +42,6 @@
 // Returns the value.
 - (id)valueForID:(NSString *)ID key:(NSString *)key;
 
-// Find the value for the given key of the given ID.
-//
-// ID                - The ID whose key should be looked up. Cannot be nil.
-// key               - The key to look up. Cannot be nil.
-// resolveReferences - Should references be resolved?
-//
-// Returns the value.
-- (id)valueForID:(NSString *)key key:(NSString *)key resolveReferences:(BOOL)resolveReferences;
-
 // Find the values for the given keys of the given ID.
 //
 // ID   - The ID whose key should be looked up. Cannot be nil.

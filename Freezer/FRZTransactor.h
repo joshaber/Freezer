@@ -33,12 +33,14 @@
 // Returns whether the add was successful.
 - (BOOL)addValues:(NSDictionary *)keyedValues forID:(NSString *)ID error:(NSError **)error;
 
-// Removes the value for the given key and ID, but only if the given value
-// matches the current value. If the current value does not match the given
-// value, then the method returns NO and the error code will be
-// FRZErrorInvalidValue.
+// Removes the value for the given key and ID.
 //
-// value - The value which should be removed. Cannot be nil.
+// key   - The key whose value should be removed. Cannot be nil.
+// ID    - The ID whose associated key will be removed. Cannot be nil.
+// error - The error if one occurs.
+//
+// Returns whether the removal was successful.
+- (BOOL)removeValueForKey:(NSString *)key ID:(NSString *)ID error:(NSError **)error;
 // key   - The key whose value should be removed. Cannot be nil.
 // ID    - The ID whose associated key will be removed. Cannot be nil.
 // error - The error if one occurs.
