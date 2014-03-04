@@ -12,6 +12,7 @@
 #import "FRZStore+Private.h"
 #import "FMDatabase.h"
 #import "FRZChange+Private.h"
+#import "FRZDeletedSentinel.h"
 
 @interface FRZTransactor ()
 
@@ -32,19 +33,6 @@
 	_store = store;
 
 	return self;
-}
-
-#pragma mark Keys
-
-- (BOOL)addKey:(NSString *)key type:(FRZType)type collection:(BOOL)collection error:(NSError **)error {
-	NSParameterAssert(key != nil);
-
-	return [self.store performTransactionType:FRZStoreTransactionTypeExclusive withNewTransaction:YES error:error block:^(FMDatabase *database, long long txID, NSError **error) {
-		BOOL success = [self insertIntoDatabase:database value:@(type) forKey:FRZStoreKeyTypeKey ID:key transactionID:txID error:error];
-		if (!success) return NO;
-
-		return [self insertIntoDatabase:database value:@(collection) forKey:FRZStoreKeyIsCollectionKey ID:key transactionID:txID error:error];
-	}];
 }
 
 #pragma mark Changing
@@ -100,16 +88,8 @@
 	NSParameterAssert(ID != nil);
 
 	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
-		BOOL isCollection = [self.store.databaseBeforeTransaction isCollectionKey:key];
-		if (isCollection) {
-			NSSet *existingValue = [self.store.databaseBeforeTransaction valueForID:ID key:key resolveReferences:NO] ?: [NSSet set];
-			NSSet *newValue = [existingValue setByAddingObject:value];
-			BOOL success = [self insertIntoDatabase:database value:newValue forKey:key ID:ID transactionID:txID error:error];
-			if (!success) return NO;
-		} else {
-			BOOL success = [self insertIntoDatabase:database value:value forKey:key ID:ID transactionID:txID error:error];
-			if (!success) return NO;
-		}
+		BOOL success = [self insertIntoDatabase:database value:value forKey:key ID:ID transactionID:txID error:error];
+		if (!success) return NO;
 
 		[self.store.queuedChanges addObject:[[FRZChange alloc] initWithType:FRZChangeTypeAdd ID:ID key:key delta:value]];
 
@@ -145,16 +125,8 @@
 
 	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
 		FRZDatabase *previousDatabase = self.store.databaseBeforeTransaction;
-		BOOL isCollection = [previousDatabase isCollectionKey:key];
 		id currentValue = [previousDatabase valueForID:ID key:key resolveReferences:NO];
-		
-		BOOL validRemoval = NO;
-		if (isCollection) {
-			validRemoval = [currentValue containsObject:value];
-		} else {
-			validRemoval = [currentValue isEqual:value];
-		}
-
+		BOOL validRemoval = [currentValue isEqual:value];
 		if (!validRemoval) {
 			NSString *description = [NSString stringWithFormat:NSLocalizedString(@"Given value (%@) does not match current value (%@)", @""), value, currentValue];
 			NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: description };
@@ -162,22 +134,8 @@
 			return NO;
 		}
 
-		if (isCollection) {
-			NSMutableSet *newSet = [currentValue mutableCopy];
-			[newSet removeObject:value];
-			id newValue;
-			if (newSet.count < 1) {
-				newValue = NSNull.null;
-			} else {
-				newValue = newSet;
-			}
-
-			BOOL success = [self insertIntoDatabase:database value:newValue forKey:key ID:ID transactionID:txID error:error];
-			if (!success) return NO;
-		} else {
-			BOOL success = [self insertIntoDatabase:database value:NSNull.null forKey:key ID:ID transactionID:txID error:error];
-			if (!success) return NO;
-		}
+		BOOL success = [self insertIntoDatabase:database value:FRZDeletedSentinel.deletedSentinel forKey:key ID:ID transactionID:txID error:error];
+		if (!success) return NO;
 
 		[self.store.queuedChanges addObject:[[FRZChange alloc] initWithType:FRZChangeTypeRemove ID:ID key:key delta:value]];
 

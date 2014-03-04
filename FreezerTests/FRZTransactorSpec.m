@@ -26,9 +26,6 @@ beforeEach(^{
 
 	transactor = [store transactor];
 	expect(transactor).notTo.beNil();
-
-	BOOL success = [transactor addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
-	expect(success).to.beTruthy();
 });
 
 it(@"should be able to generate a new ID", ^{
@@ -37,9 +34,6 @@ it(@"should be able to generate a new ID", ^{
 });
 
 it(@"", ^{
-	BOOL success = [transactor addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
-	expect(success).to.beTruthy();
-
 	NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 	__block NSUInteger writes = 0;
 	[transactor performChangesWithError:NULL block:^(NSError **error) {
@@ -84,9 +78,6 @@ it(@"should be able to remove values", ^{
 it(@"should only apply changes when the outermost transaction is completed", ^{
 	const id testValue = @42;
 
-	BOOL success = [transactor addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
-	expect(success).to.beTruthy();
-
 	NSMutableArray *changes = [NSMutableArray array];
 	[store.changes subscribeNext:^(id x) {
 		[changes addObject:x];
@@ -118,10 +109,7 @@ it(@"should only apply changes when the outermost transaction is completed", ^{
 it(@"should support collections", ^{
 	static NSString *collectionKey = @"lots";
 	static NSString *collectionID = @"things";
-	BOOL success = [transactor addKey:collectionKey type:FRZTypeString collection:YES error:NULL];
-	expect(success).to.beTruthy();
-
-	success = [transactor addValue:@"other-key" forKey:collectionKey ID:collectionID error:NULL];
+	BOOL success = [transactor addValue:@"other-key" forKey:collectionKey ID:collectionID error:NULL];
 	expect(success).to.beTruthy();
 
 	success = [transactor removeValue:@"other-key" forKey:collectionKey ID:collectionID error:NULL];

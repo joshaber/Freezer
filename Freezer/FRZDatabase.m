@@ -12,6 +12,7 @@
 #import "FRZStore+Private.h"
 #import "FRZTransactor+Private.h"
 #import "FRZQuery+Private.h"
+#import "FRZDeletedSentinel.h"
 
 @interface FRZDatabase ()
 
@@ -65,10 +66,8 @@
 
 	if (![set next]) return nil;
 
-	FRZType type = [self typeForKey:key];
-	BOOL isCollection = [self isCollectionKey:key];
-	id value = [self unpackedValueFromData:set[0] type:type isCollection:isCollection resolveRef:resolveRef];
-	if (value == NSNull.null) return nil;
+	id value = [self unpackedValueFromData:set[0]];
+	if (value == FRZDeletedSentinel.deletedSentinel) return nil;
 
 	return value;
 }
@@ -122,10 +121,8 @@
 		while ([set next]) {
 			NSData *data = set[1];
 			id key = set[0];
-			FRZType type = [self typeForKey:key];
-			BOOL isCollection = [self isCollectionKey:key];
-			id value = [self unpackedValueFromData:data type:type isCollection:isCollection resolveRef:YES];
-			if (value == NSNull.null) continue;
+			id value = [self unpackedValueFromData:data];
+			if (value == FRZDeletedSentinel.deletedSentinel) continue;
 
 			results[key] = value;
 		}
@@ -155,8 +152,8 @@
 
 			while ([set next]) {
 				NSData *data = set[1];
-				id value = [self unpackedValueFromData:data type:FRZTypeBlob isCollection:NO resolveRef:NO];
-				if (value == NSNull.null) continue;
+				id value = [self unpackedValueFromData:data];
+				if (value == FRZDeletedSentinel.deletedSentinel) continue;
 
 				id key = set[0];
 				[results addObject:key];
@@ -179,8 +176,8 @@
 
 		while ([set next]) {
 			NSData *data = set[1];
-			id value = [self unpackedValueFromData:data type:FRZTypeBlob isCollection:NO resolveRef:NO];
-			if (value == NSNull.null) continue;
+			id value = [self unpackedValueFromData:data];
+			if (value == FRZDeletedSentinel.deletedSentinel) continue;
 
 			id key = set[0];
 			[results addObject:key];
@@ -221,48 +218,10 @@
 	return result;
 }
 
-+ (NSArray *)defaultKeys {
-	return @[
-		FRZStoreKeyTypeKey,
-		FRZStoreKeyIsCollectionKey,
-	];
-}
-
-- (BOOL)isCollectionKey:(NSString *)key {
-	NSParameterAssert(key != nil);
-
-	if ([self.class.defaultKeys containsObject:key]) return NO;
-
-	return [[self valueForID:key key:FRZStoreKeyIsCollectionKey] boolValue];
-}
-
-- (FRZType)typeForKey:(NSString *)key {
-	NSParameterAssert(key != nil);
-
-	if ([self.class.defaultKeys containsObject:key]) return 0;
-
-	return [[self valueForID:key key:FRZStoreKeyTypeKey] integerValue];
-}
-
-- (id)unpackedValueFromData:(NSData *)data type:(FRZType)type isCollection:(BOOL)isCollection resolveRef:(BOOL)resolveRef {
+- (id)unpackedValueFromData:(NSData *)data {
 	NSParameterAssert(data != nil);
 
-	id value = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-	if (type == FRZTypeRef && resolveRef) {
-		if (isCollection) {
-			NSMutableSet *set = [NSMutableSet set];
-			for (NSString *ID in value) {
-				id nestedValue = self[ID];
-				if (nestedValue != nil) [set addObject:nestedValue];
-			}
-
-			return set;
-		} else {
-			return self[value];
-		}
-	}
-
-	return value;
+	return [NSKeyedUnarchiver unarchiveObjectWithData:data];
 }
 
 - (FRZQuery *)query {

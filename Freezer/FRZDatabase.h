@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FRZTransactor.h"
 
 @class FRZQuery;
 
@@ -62,20 +61,6 @@
 
 // Get all the keys in the database.
 - (NSSet *)allKeys;
-
-// Get the type for the given key.
-//
-// key - The key whose type should be found. Cannot be nil.
-//
-// Returns the key's type.
-- (FRZType)typeForKey:(NSString *)key;
-
-// Is the key a collection?
-//
-// key - The key to check. Cannot be nil.
-//
-// Returns whether the key stores a collection.
-- (BOOL)isCollectionKey:(NSString *)key;
 
 // Create and return a new query to search the database.
 - (FRZQuery *)query;
