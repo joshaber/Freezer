@@ -23,8 +23,7 @@ arbitrary string.
 ## Keys
 
 Freezer does not store objects. Instead, it stores an arbitrary collection of 
-key-value pairs, grouped by an ID. Keys have a fixed type and must
-be added to the store before being used. (See `-[FRZStore addKey:type:collection:error:]`.)
+key-value pairs, grouped by an ID.
 
 A collection of keys, grouped by ID, may be transformed into, for example,
 a [Mantle](https://github.com/github/Mantle) model object. But note that model 
