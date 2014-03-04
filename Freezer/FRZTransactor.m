@@ -181,8 +181,8 @@
 	// 1. Get the IDs for all the latest values for the keys.
 	// 2. Delete any entries with an ID not in that set.
 	FRZDatabase *currentDatabase = self.store.databaseBeforeTransaction;
-	for (NSString *key in currentDatabase.allIDs) {
-		FMResultSet *set = [database executeQuery:@"SELECT id FROM data WHERE key = ? GROUP BY frz_id ORDER BY tx_id DESC", key];
+	for (NSString *ID in currentDatabase.allIDs) {
+		FMResultSet *set = [database executeQuery:@"SELECT id FROM data WHERE frz_id = ? GROUP BY key ORDER BY tx_id DESC", ID];
 		if (set == nil) {
 			if (error != NULL) *error = database.lastError;
 			return NO;
@@ -194,8 +194,8 @@
 			[IDs addObject:ID];
 		}
 
-		NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM data WHERE key = ? AND id NOT IN (%@)", [self placeholderWithCount:IDs.count]];
-		BOOL success = [database executeUpdate:deleteQuery withArgumentsInArray:[@[ key ] arrayByAddingObjectsFromArray:IDs]];
+		NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM data WHERE frz_id = ? AND id NOT IN (%@)", [self placeholderWithCount:IDs.count]];
+		BOOL success = [database executeUpdate:deleteQuery withArgumentsInArray:[@[ ID ] arrayByAddingObjectsFromArray:IDs]];
 		if (!success) {
 			if (error != NULL) *error = database.lastError;
 			return NO;

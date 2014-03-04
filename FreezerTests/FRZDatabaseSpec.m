@@ -192,25 +192,7 @@ describe(@"special types", ^{
 		expect([valueDate timeIntervalSinceDate:date]).to.beLessThan(0.001);
 	});
 
-	it(@"should be able to add and get refs", ^{
-		static NSString * const refKey = @"ref";
-
-		BOOL success = [transactor addValue:testValue forKey:testKey ID:testID error:NULL];
-		expect(success).to.beTruthy();
-
-		NSString *ID = [transactor generateNewID];
-		success = [transactor addValue:testID forKey:refKey ID:ID error:NULL];
-		expect(success).to.beTruthy();
-
-		FRZDatabase *database = [store currentDatabase];
-		expect(database).notTo.beNil();
-
-		NSDictionary *expected = @{ testKey: testValue };
-		id value = [database valueForID:ID key:refKey];
-		expect(value).to.equal(expected);
-	});
-
-	it(@"should support collections", ^{
+	pending(@"should support collections", ^{
 		static NSString *collectionKey = @"lots";
 		static NSString *collectionItemID = @"things";
 
@@ -239,7 +221,7 @@ describe(@"special types", ^{
 		expect(value).to.contain(@"second-key");
 	});
 
-	it(@"should keep collections separate based on parent key", ^{
+	pending(@"should keep collections separate based on parent key", ^{
 		static NSString *collectionKey = @"lots";
 		static NSString *collectionItemID = @"things";
 

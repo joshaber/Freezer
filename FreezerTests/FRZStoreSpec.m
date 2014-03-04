@@ -172,17 +172,24 @@ describe(@"trimming", ^{
 	});
 
 	it(@"should remove deleted entries", ^{
+		void (^addAndDelete)(void) = ^{
+			BOOL success = [transactor addValue:testValue forKey:testKey ID:testID error:NULL];
+			expect(success).to.beTruthy();
+
+			success = [transactor removeValue:testValue forKey:testKey ID:testID error:NULL];
+			expect(success).to.beTruthy();
+
+			success = [transactor trim:NULL];
+			expect(success).to.beTruthy();
+		};
+
+		// The first add will create the head, and we don't want that to count
+		// against us. So do an add and delete to prime the pump, and then test.
+		addAndDelete();
+
 		long long int startingEntryCount = [store entryCount];
 
-		BOOL success = [transactor addValue:testValue forKey:testKey ID:testID error:NULL];
-		expect(success).to.beTruthy();
-		expect([store entryCount]).to.beGreaterThan(startingEntryCount);
-
-		success = [transactor removeValue:testValue forKey:testKey ID:testID error:NULL];
-		expect(success).to.beTruthy();
-
-		success = [transactor trim:NULL];
-		expect(success).to.beTruthy();
+		addAndDelete();
 
 		expect([store entryCount]).to.equal(startingEntryCount);
 	});

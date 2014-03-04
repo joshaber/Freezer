@@ -143,21 +143,19 @@
 - (NSSet *)allIDs {
 	NSMutableSet *results = [NSMutableSet set];
 	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
-		for (NSString *key in self.allKeys) {
-			FMResultSet *set = [database executeQuery:@"SELECT frz_id, value FROM data WHERE tx_id <= ? GROUP BY frz_id ORDER BY tx_id DESC", @(self.headID)];
-			if (set == nil) {
-				if (error != NULL) *error = database.lastError;
-				return NO;
-			}
+		FMResultSet *set = [database executeQuery:@"SELECT frz_id, value FROM data WHERE tx_id <= ? GROUP BY frz_id ORDER BY tx_id DESC", @(self.headID)];
+		if (set == nil) {
+			if (error != NULL) *error = database.lastError;
+			return NO;
+		}
 
-			while ([set next]) {
-				NSData *data = set[1];
-				id value = [self unpackedValueFromData:data];
-				if (value == FRZDeletedSentinel.deletedSentinel) continue;
+		while ([set next]) {
+			NSData *data = set[1];
+			id value = [self unpackedValueFromData:data];
+			if (value == FRZDeletedSentinel.deletedSentinel) continue;
 
-				id key = set[0];
-				[results addObject:key];
-			}
+			id key = set[0];
+			[results addObject:key];
 		}
 
 		return YES;
