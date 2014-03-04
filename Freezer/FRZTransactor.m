@@ -50,13 +50,6 @@
 	}];
 }
 
-- (NSError *)invalidKeyErrorWithError:(NSError *)error {
-	NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-	userInfo[NSLocalizedDescriptionKey] = NSLocalizedString(@"Invalid key", @"");
-	if (error != nil) userInfo[NSUnderlyingErrorKey] = error;
-	return [NSError errorWithDomain:FRZErrorDomain code:FRZErrorInvalidKey userInfo:userInfo];
-}
-
 - (BOOL)insertIntoDatabase:(FMDatabase *)database value:(id)value forKey:(NSString *)key ID:(NSString *)ID transactionID:(long long int)transactionID error:(NSError **)error {
 	NSParameterAssert(database != nil);
 	NSParameterAssert(value != nil);
@@ -97,12 +90,6 @@
 	}];
 }
 
-- (BOOL)updateHeadInDatabase:(FMDatabase *)database toID:(long long int)ID error:(NSError **)error {
-	NSParameterAssert(database != nil);
-
-	return [self insertIntoDatabase:database value:@(ID) forKey:FRZStoreHeadTransactionKey ID:@"head" transactionID:0 error:error];
-}
-
 - (BOOL)addValues:(NSDictionary *)keyedValues forID:(NSString *)ID error:(NSError **)error {
 	NSParameterAssert(keyedValues != nil);
 	NSParameterAssert(ID != nil);
@@ -118,6 +105,34 @@
 	}];
 }
 
+- (BOOL)removeValueForKey:(NSString *)key ID:(NSString *)ID error:(NSError **)error {
+	NSParameterAssert(key != nil);
+	NSParameterAssert(ID != nil);
+
+	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
+		FRZDatabase *previousDatabase = self.store.databaseBeforeTransaction;
+		BOOL success = [self insertIntoDatabase:database value:FRZDeletedSentinel.deletedSentinel forKey:key ID:ID transactionID:txID error:error];
+		if (!success) return NO;
+
+		id value = [previousDatabase valueForID:ID key:key];
+		[self.store.queuedChanges addObject:[[FRZChange alloc] initWithType:FRZChangeTypeRemove ID:ID key:key delta:value]];
+
+		return YES;
+	}];
+}
+
+- (BOOL)pushValue:(id<NSCoding>)value forKey:(NSString *)key ID:(NSString *)ID error:(NSError **)error {
+	NSParameterAssert(value != nil);
+	NSParameterAssert(key != nil);
+	NSParameterAssert(ID != nil);
+
+	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
+		NSSet *existingSet = self.store.databaseBeforeTransaction[ID][key] ?: [NSSet set];
+		NSSet *newSet = [existingSet setByAddingObject:value];
+		return [self addValue:newSet forKey:key ID:ID error:error];
+	}];
+}
+
 - (BOOL)removeValue:(id)value forKey:(NSString *)key ID:(NSString *)ID error:(NSError **)error {
 	NSParameterAssert(value != nil);
 	NSParameterAssert(key != nil);
@@ -125,22 +140,23 @@
 
 	return [self.store performWriteTransactionWithError:error block:^(FMDatabase *database, long long txID, NSError **error) {
 		FRZDatabase *previousDatabase = self.store.databaseBeforeTransaction;
-		id currentValue = [previousDatabase valueForID:ID key:key resolveReferences:NO];
-		BOOL validRemoval = [currentValue isEqual:value];
-		if (!validRemoval) {
-			NSString *description = [NSString stringWithFormat:NSLocalizedString(@"Given value (%@) does not match current value (%@)", @""), value, currentValue];
-			NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: description };
-			if (error != NULL) *error = [NSError errorWithDomain:FRZErrorDomain code:FRZErrorInvalidValue userInfo:userInfo];
-			return NO;
-		}
+		NSSet *existingSet = [previousDatabase valueForID:ID key:key];
+		NSMutableSet *newSet = [existingSet mutableCopy];
+		[newSet removeObject:value];
 
-		BOOL success = [self insertIntoDatabase:database value:FRZDeletedSentinel.deletedSentinel forKey:key ID:ID transactionID:txID error:error];
+		BOOL success = [self insertIntoDatabase:database value:newSet forKey:key ID:ID transactionID:txID error:error];
 		if (!success) return NO;
 
 		[self.store.queuedChanges addObject:[[FRZChange alloc] initWithType:FRZChangeTypeRemove ID:ID key:key delta:value]];
 
 		return YES;
 	}];
+}
+
+- (BOOL)updateHeadInDatabase:(FMDatabase *)database toID:(long long int)ID error:(NSError **)error {
+	NSParameterAssert(database != nil);
+
+	return [self insertIntoDatabase:database value:@(ID) forKey:FRZStoreHeadTransactionKey ID:@"head" transactionID:0 error:error];
 }
 
 #pragma mark Trimming

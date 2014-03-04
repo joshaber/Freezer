@@ -15,12 +15,6 @@ extern NSString * const FRZStoreHeadTransactionKey;
 // The transaction date key.
 extern NSString * const FRZStoreTransactionDateKey;
 
-// The key's type.
-extern NSString * const FRZStoreKeyTypeKey;
-
-// Is the key a collection?
-extern NSString * const FRZStoreKeyIsCollectionKey;
-
 // The type of transaction to use.
 //
 //   FRZStoreTransactionTypeDeferred  - Defer lock acquisition until it is

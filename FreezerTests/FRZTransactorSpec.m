@@ -69,7 +69,7 @@ it(@"should be able to remove values", ^{
 	expect(database).notTo.beNil();
 	expect([database valueForID:testID key:testKey]).to.equal(testValue);
 
-	[transactor removeValue:testValue forKey:testKey ID:testID error:NULL];
+	[transactor removeValueForKey:testKey ID:testID error:NULL];
 	database = [store currentDatabase];
 	expect(database).notTo.beNil();
 	expect([database valueForID:testID key:testKey]).to.beNil();
@@ -112,7 +112,7 @@ it(@"should support collections", ^{
 	BOOL success = [transactor addValue:@"other-key" forKey:collectionKey ID:collectionID error:NULL];
 	expect(success).to.beTruthy();
 
-	success = [transactor removeValue:@"other-key" forKey:collectionKey ID:collectionID error:NULL];
+	success = [transactor removeValueForKey:collectionKey ID:collectionID error:NULL];
 	expect(success).to.beTruthy();
 
 	NSDictionary *value = [store currentDatabase][collectionKey];

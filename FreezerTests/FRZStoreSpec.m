@@ -118,7 +118,7 @@ describe(@"changes", ^{
 		const id value = @42;
 		static NSString * const testID = @"test-id";
 		[transactor addValue:value forKey:testKey ID:testID error:NULL];
-		[transactor removeValue:value forKey:testKey ID:testID error:NULL];
+		[transactor removeValueForKey:testKey ID:testID error:NULL];
 		expect(changes.count).will.equal(2);
 
 		FRZChange *change = changes.lastObject;
@@ -176,7 +176,7 @@ describe(@"trimming", ^{
 			BOOL success = [transactor addValue:testValue forKey:testKey ID:testID error:NULL];
 			expect(success).to.beTruthy();
 
-			success = [transactor removeValue:testValue forKey:testKey ID:testID error:NULL];
+			success = [transactor removeValueForKey:testKey ID:testID error:NULL];
 			expect(success).to.beTruthy();
 
 			success = [transactor trim:NULL];

@@ -47,10 +47,27 @@
 #pragma mark Lookup
 
 - (NSSet *)allKeys {
-	return [self IDsWithKey:FRZStoreKeyTypeKey];
+	NSMutableSet *results = [NSMutableSet set];
+	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
+		FMResultSet *set = [database executeQuery:@"SELECT key, value FROM data WHERE tx_id <= ? GROUP BY frz_id ORDER BY tx_id DESC", @(self.headID)];
+		if (set == nil) return NO;
+
+		while ([set next]) {
+			NSData *data = set[1];
+			id value = [self unpackedValueFromData:data];
+			if (value == FRZDeletedSentinel.deletedSentinel) continue;
+
+			id key = set[0];
+			[results addObject:key];
+		}
+
+		return YES;
+	}];
+
+	return results;
 }
 
-- (id)singleValueForKey:(NSString *)key ID:(NSString *)ID resolveRef:(BOOL)resolveRef inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error {
+- (id)singleValueForKey:(NSString *)key ID:(NSString *)ID inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error {
 	NSParameterAssert(key != nil);
 	NSParameterAssert(ID != nil);
 	NSParameterAssert(database != nil);
@@ -72,12 +89,12 @@
 	return value;
 }
 
-- (id)valueForKey:(NSString *)key ID:(NSString *)ID inDatabase:(FMDatabase *)database resolveReferences:(BOOL)resolveReferences success:(BOOL *)success error:(NSError **)error {
+- (id)valueForKey:(NSString *)key ID:(NSString *)ID inDatabase:(FMDatabase *)database success:(BOOL *)success error:(NSError **)error {
 	NSParameterAssert(key != nil);
 	NSParameterAssert(ID != nil);
 	NSParameterAssert(database != nil);
 
-	return [self singleValueForKey:key ID:ID resolveRef:resolveReferences inDatabase:database success:success error:error];
+	return [self singleValueForKey:key ID:ID inDatabase:database success:success error:error];
 }
 
 - (NSDictionary *)objectForKeyedSubscript:(NSString *)ID {
@@ -94,7 +111,7 @@
 	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
 		for (NSString *key in keys) {
 			BOOL success = YES;
-			id value = [self valueForKey:key ID:ID inDatabase:database resolveReferences:YES success:&success error:error];
+			id value = [self valueForKey:key ID:ID inDatabase:database success:&success error:error];
 			if (value == nil && !success) return NO;
 			if (value == nil) continue;
 
@@ -191,21 +208,14 @@
 	NSParameterAssert(ID != nil);
 	NSParameterAssert(key != nil);
 
-	return [self valueForID:ID key:key resolveReferences:YES];
-}
-
-- (id)valueForID:(NSString *)ID key:(NSString *)key resolveReferences:(BOOL)resolveReferences {
-	NSParameterAssert(ID != nil);
-	NSParameterAssert(key != nil);
-
-	NSString *cacheKey = [NSString stringWithFormat:@"%@-%@-%d", ID, key, resolveReferences];
+	NSString *cacheKey = [NSString stringWithFormat:@"%@-%@", ID, key];
 	id cachedValue = [self.lookupCache objectForKey:cacheKey];
 	if (cachedValue != nil) return cachedValue;
 
 	__block id result;
 	[self.store performReadTransactionWithError:NULL block:^(FMDatabase *database, NSError **error) {
 		BOOL success = NO;
-		result = [self valueForKey:key ID:ID inDatabase:database resolveReferences:resolveReferences success:&success error:error];
+		result = [self valueForKey:key ID:ID inDatabase:database success:&success error:error];
 		return success;
 	}];
 

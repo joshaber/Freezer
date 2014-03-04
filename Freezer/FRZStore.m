@@ -17,14 +17,8 @@
 
 NSString * const FRZErrorDomain = @"FRZErrorDomain";
 
-const NSInteger FRZErrorInvalidKey = -1;
-const NSInteger FRZErrorInvalidValue = -2;
-
 NSString * const FRZStoreHeadTransactionKey = @"Freezer/tx/head";
 NSString * const FRZStoreTransactionDateKey = @"Freezer/tx/date";
-
-NSString * const FRZStoreKeyTypeKey = @"Freezer/key/type";
-NSString * const FRZStoreKeyIsCollectionKey = @"Freezer/key/is-collection";
 
 @interface FRZStore ()
 
