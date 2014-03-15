@@ -22,7 +22,8 @@
 	_path = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSUUID UUID] UUIDString]];
 	_store = [[FRZStore alloc] initWithURL:[NSURL fileURLWithPath:self.path] error:NULL];
 
-	[self testStuff];
+	[self testPerformance];
+//	[self testStuff];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification {
@@ -63,8 +64,6 @@
 			NSLog(@" ");
 		}];
 
-	[transactor addKey:hubbersKey type:FRZTypeRef collection:YES error:NULL];
-
 	NSString *joshID = [transactor generateNewID];
 	[transactor addValues:@{ firstNameKey: @"Josh", lastNameKey: @"Abernathy" } forID:joshID error:NULL];
 
@@ -85,15 +84,17 @@
 - (void)testPerformance {
 	static NSString * const testKey = @"testKey";
 	FRZTransactor *transactor = [self.store transactor];
-	[transactor addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
+
+	NSTimeInterval duration = 5;
 
 	NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 	__block NSUInteger writes = 0;
+	NSString *ID = [transactor generateNewID];
 	[transactor performChangesWithError:NULL block:^(NSError **error) {
 		while (YES) {
-			if ([NSDate timeIntervalSinceReferenceDate] - start > 5) break;
+			if ([NSDate timeIntervalSinceReferenceDate] - start > duration) break;
 
-			[transactor addValue:@42 forKey:testKey ID:[transactor generateNewID] error:NULL];
+			[transactor addValue:@42 forKey:testKey ID:ID error:NULL];
 
 			writes++;
 		}
@@ -101,7 +102,7 @@
 		return YES;
 	}];
 
-	NSLog(@"Writes/sec: %lu", writes);
+	NSLog(@"Writes/sec: %lu", (NSUInteger)(writes / duration));
 
 	FRZDatabase *database = [self.store currentDatabase];
 	NSString *key = [self.store currentDatabase].allKeys.anyObject;
@@ -109,7 +110,7 @@
 	__block NSUInteger reads = 0;
 	[transactor performChangesWithError:NULL block:^(NSError **error) {
 		while (YES) {
-			if ([NSDate timeIntervalSinceReferenceDate] - start > 5) break;
+			if ([NSDate timeIntervalSinceReferenceDate] - start > duration) break;
 
 			id value __unused = database[key];
 
@@ -119,14 +120,13 @@
 		return YES;
 	}];
 
-	NSLog(@"Reads/sec: %lu", reads);
+	NSLog(@"Reads/sec: %lu", (NSUInteger)(reads / duration));
 }
 
 - (void)testQuery {
 	FRZTransactor *transactor = [self.store transactor];
 
 	static NSString * const testKey = @"test-key";
-	[transactor addKey:testKey type:FRZTypeInteger collection:NO error:NULL];
 
 	[transactor addValue:@42 forKey:testKey ID:@"test-id-1" error:NULL];
 	[transactor addValue:@43 forKey:testKey ID:@"test-id-2" error:NULL];
