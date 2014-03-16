@@ -19,8 +19,9 @@ extern NSString * const FRZErrorDomain;
 // transactor, for effecting change to the store.
 @interface FRZStore : NSObject
 
-// A signal of FRZChange items, one for each change done by a transactor. These
-// will be sent on a private scheduler.
+// A signal of NSArrays of FRZChange items, one for each change done by a
+// transactor. These will be sent on a private scheduler after a transaction has
+// been committed.
 @property (nonatomic, readonly, strong) RACSignal *changes;
 
 // Initializes the store to exist in memory only.

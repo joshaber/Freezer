@@ -37,9 +37,16 @@
 
 	FRZTransactor *transactor = [self.store transactor];
 	NSString *hubbersID = [transactor generateNewID];
-	[[[self.store.changes
-		filter:^ BOOL (FRZChange *change) {
-			return change.type == FRZChangeTypeAdd && [change.ID isEqual:hubbersID];
+	[[[[self.store.changes
+	   map:^(NSArray *changes) {
+		   return [[changes.rac_sequence
+				filter:^ BOOL (FRZChange *change) {
+					return change.type == FRZChangeTypeAdd && [change.ID isEqual:hubbersID];
+				}]
+				array];
+		}]
+		filter:^ BOOL (NSArray *changes) {
+			return changes.count > 0;
 		}]
 		map:^(FRZChange *change) {
 			NSString *keyInserted = change.delta;

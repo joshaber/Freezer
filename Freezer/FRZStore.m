@@ -355,13 +355,16 @@ void FRZStoreReleaseDestructor(void *data) {
 			FRZDatabase *previousDatabase = self.databaseBeforeTransaction;
 			NSArray *queuedChanges = [self.queuedChanges copy];
 			[self.queuedChanges removeAllObjects];
-			[self.changesScheduler schedule:^{
-				for (FRZChange *change in queuedChanges) {
-					change.previousDatabase = previousDatabase;
-					change.changedDatabase = changedDatabase;
-					[self.changesSubject sendNext:change];
-				}
-			}];
+			if (queuedChanges.count > 0) {
+				[self.changesScheduler schedule:^{
+					for (FRZChange *change in queuedChanges) {
+						change.previousDatabase = previousDatabase;
+						change.changedDatabase = changedDatabase;
+					}
+
+					[self.changesSubject sendNext:queuedChanges];
+				}];
+			}
 
 			cleanUp = YES;
 		}
@@ -387,9 +390,16 @@ void FRZStoreReleaseDestructor(void *data) {
 - (RACSignal *)valuesAndChangesForID:(NSString *)ID {
 	NSParameterAssert(ID != nil);
 
-	RACSignal *subsequentChanges = [[self.changes
-		filter:^ BOOL (FRZChange *change) {
-			return change.ID == ID;
+	RACSignal *subsequentChanges = [[[self.changes
+		map:^(NSArray *changes) {
+			return [[changes.rac_sequence
+				filter:^ BOOL (FRZChange *change) {
+					return change.ID == ID;
+				}]
+				array];
+		}]
+		filter:^ BOOL (NSArray *changes) {
+			return changes.count > 0;
 		}]
 		map:^(FRZChange *change) {
 			return RACTuplePack(change.changedDatabase[ID], change);

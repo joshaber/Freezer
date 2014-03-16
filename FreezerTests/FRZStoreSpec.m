@@ -89,18 +89,18 @@ describe(@"changes", ^{
 	});
 
 	it(@"should send adds as they occur", ^{
-		NSMutableArray *changes = [NSMutableArray array];
-		[store.changes subscribeNext:^(FRZChange *change) {
-			[changes addObject:change];
+		NSMutableArray *allChanges = [NSMutableArray array];
+		[store.changes subscribeNext:^(NSArray *changes) {
+			[allChanges addObject:changes.firstObject];
 		}];
 
 		const id value = @42;
 		static NSString * const testID = @"test-id";
 		[transactor addValue:@41 forKey:testKey ID:testID error:NULL];
 		[transactor addValue:value forKey:testKey ID:testID error:NULL];
-		expect(changes.count).will.equal(2);
+		expect(allChanges.count).will.equal(2);
 
-		FRZChange *change = changes.lastObject;
+		FRZChange *change = allChanges.lastObject;
 		expect(change.type).to.equal(FRZChangeTypeAdd);
 		expect(change.delta).to.equal(value);
 		expect(change.ID).to.equal(testID);
@@ -110,18 +110,18 @@ describe(@"changes", ^{
 	});
 
 	it(@"should send removes as they occur", ^{
-		NSMutableArray *changes = [NSMutableArray array];
-		[store.changes subscribeNext:^(FRZChange *change) {
-			[changes addObject:change];
+		NSMutableArray *allChanges = [NSMutableArray array];
+		[store.changes subscribeNext:^(NSArray *changes) {
+			[allChanges addObject:changes.firstObject];
 		}];
 
 		const id value = @42;
 		static NSString * const testID = @"test-id";
 		[transactor addValue:value forKey:testKey ID:testID error:NULL];
 		[transactor removeValueForKey:testKey ID:testID error:NULL];
-		expect(changes.count).will.equal(2);
+		expect(allChanges.count).will.equal(2);
 
-		FRZChange *change = changes.lastObject;
+		FRZChange *change = allChanges.lastObject;
 		expect(change.type).to.equal(FRZChangeTypeRemove);
 		expect(change.delta).to.equal(value);
 		expect(change.ID).to.equal(testID);
@@ -136,8 +136,8 @@ describe(@"changes", ^{
 		static NSString * const testKey2 = @"key2";
 
 		__block FRZDatabase *database;
-		[store.changes subscribeNext:^(FRZChange *change) {
-			database = change.changedDatabase;
+		[store.changes subscribeNext:^(NSArray *changes) {
+			database = [changes.firstObject changedDatabase];
 		}];
 
 		[transactor performChangesWithError:NULL block:^(NSError **error) {

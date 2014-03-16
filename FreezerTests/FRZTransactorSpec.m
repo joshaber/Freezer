@@ -79,7 +79,7 @@ it(@"should only apply changes when the outermost transaction is completed", ^{
 	const id testValue = @42;
 
 	NSMutableArray *changes = [NSMutableArray array];
-	[store.changes subscribeNext:^(id x) {
+	[store.changes subscribeNext:^(NSArray *x) {
 		[changes addObject:x];
 	}];
 
@@ -103,7 +103,7 @@ it(@"should only apply changes when the outermost transaction is completed", ^{
 		return YES;
 	}];
 
-	expect(changes.count).will.equal(2);
+	expect(changes.count).will.equal(1);
 });
 
 it(@"should support collections", ^{
