@@ -401,15 +401,20 @@ void FRZStoreReleaseDestructor(void *data) {
 		filter:^ BOOL (NSArray *changes) {
 			return changes.count > 0;
 		}]
-		map:^(FRZChange *change) {
-			return RACTuplePack(change.changedDatabase[ID], change);
+		map:^(NSArray *changes) {
+			return [[changes.rac_sequence
+				map:^(FRZChange *change) {
+					return RACTuplePack(change.changedDatabase[ID], change);
+				}]
+				array];
 		}];
 
 	return [[[RACSignal
 		defer:^{
 			FRZDatabase *database = [self currentDatabase];
+			FRZChange *dummyChange = [[FRZChange alloc] initWithType:FRZChangeTypeAdd ID:ID key:@"" delta:NSNull.null previousDatabase:nil changedDatabase:database];
 			NSDictionary *currentValue = database[ID];
-			return [RACSignal return:RACTuplePack(currentValue, nil)];
+			return [RACSignal return:@[ RACTuplePack(currentValue, dummyChange) ]];
 		}]
 		concat:subsequentChanges]
 		subscribeOn:self.changesScheduler];

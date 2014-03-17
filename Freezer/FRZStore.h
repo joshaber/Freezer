@@ -49,8 +49,9 @@ extern NSString * const FRZErrorDomain;
 // Returns the transactor.
 - (FRZTransactor *)transactor;
 
-// Finds the current values for the given ID and sends those, and then sends any
-// changes that occur to the ID.
+// Starts by sending an array of a tuple of the current value for the ID and
+// nil, and then sends a new array of value-change tuples each time a change is
+// done to the ID.
 - (RACSignal *)valuesAndChangesForID:(NSString *)ID;
 
 @end
