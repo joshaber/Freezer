@@ -9,7 +9,7 @@
 #import "FRZTransactor.h"
 #import "FRZStore.h"
 #import "FRZDatabase.h"
-#import "SPTReporter.h"
+//#import "SPTReporter.h"
 
 SpecBegin(FRZTransactor)
 
@@ -48,8 +48,8 @@ it(@"", ^{
 		return YES;
 	}];
 
-	[SPTReporter.sharedReporter printLine];
-	[SPTReporter.sharedReporter printLineWithFormat:@"%lu writes", writes];
+//	[SPTReporter.sharedReporter printLine];
+//	[SPTReporter.sharedReporter printLineWithFormat:@"%lu writes", writes];
 });
 
 it(@"should be able to add new values", ^{
