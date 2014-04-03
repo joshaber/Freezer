@@ -56,21 +56,6 @@
 		880D5B5B18B99E7400A7AAA6 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B3818B99E7400A7AAA6 /* FMResultSet.m */; };
 		88287CA0186E78CA0085B2D2 /* FRZQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 88287C9E186E78CA0085B2D2 /* FRZQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		88287CA1186E78CA0085B2D2 /* FRZQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 88287C9F186E78CA0085B2D2 /* FRZQuery.m */; };
-		88AA797C18DFC3E00042F610 /* Common.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 88AA796818DFC3E00042F610 /* Common.xcconfig */; };
-		88AA797D18DFC3E00042F610 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 88AA796A18DFC3E00042F610 /* Debug.xcconfig */; };
-		88AA797E18DFC3E00042F610 /* Profile.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 88AA796B18DFC3E00042F610 /* Profile.xcconfig */; };
-		88AA797F18DFC3E00042F610 /* Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 88AA796C18DFC3E00042F610 /* Release.xcconfig */; };
-		88AA798018DFC3E00042F610 /* Test.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 88AA796D18DFC3E00042F610 /* Test.xcconfig */; };
-		88AA798118DFC3E00042F610 /* Application.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 88AA796F18DFC3E00042F610 /* Application.xcconfig */; };
-		88AA798218DFC3E00042F610 /* StaticLibrary.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 88AA797018DFC3E00042F610 /* StaticLibrary.xcconfig */; };
-		88AA798318DFC3E00042F610 /* iOS-Application.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 88AA797218DFC3E00042F610 /* iOS-Application.xcconfig */; };
-		88AA798418DFC3E00042F610 /* iOS-Base.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 88AA797318DFC3E00042F610 /* iOS-Base.xcconfig */; };
-		88AA798518DFC3E00042F610 /* iOS-StaticLibrary.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 88AA797418DFC3E00042F610 /* iOS-StaticLibrary.xcconfig */; };
-		88AA798618DFC3E00042F610 /* Mac-Application.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 88AA797618DFC3E00042F610 /* Mac-Application.xcconfig */; };
-		88AA798718DFC3E00042F610 /* Mac-Base.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 88AA797718DFC3E00042F610 /* Mac-Base.xcconfig */; };
-		88AA798818DFC3E00042F610 /* Mac-DynamicLibrary.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 88AA797818DFC3E00042F610 /* Mac-DynamicLibrary.xcconfig */; };
-		88AA798918DFC3E00042F610 /* Mac-Framework.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 88AA797918DFC3E00042F610 /* Mac-Framework.xcconfig */; };
-		88AA798A18DFC3E00042F610 /* Mac-StaticLibrary.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 88AA797A18DFC3E00042F610 /* Mac-StaticLibrary.xcconfig */; };
 		88AA798B18DFC3E00042F610 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 88AA797B18DFC3E00042F610 /* README.md */; };
 		88AA7A1118DFD2C50042F610 /* libSpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88AA79F818DFD2B30042F610 /* libSpecta.a */; };
 		88AA7A1218DFD2C90042F610 /* libExpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88AA7A0618DFD2B30042F610 /* libExpecta.a */; };
@@ -747,7 +732,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = FRZ;
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Josh Abernathy";
 				TargetAttributes = {
 					88FD30AD182B25A8004CFDD4 = {
@@ -921,28 +906,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				880D5B4418B99E7400A7AAA6 /* LICENSE.txt in Resources */,
-				88AA798118DFC3E00042F610 /* Application.xcconfig in Resources */,
-				88AA798818DFC3E00042F610 /* Mac-DynamicLibrary.xcconfig in Resources */,
 				880D5B4118B99E7400A7AAA6 /* fmdb.podspec in Resources */,
-				88AA798418DFC3E00042F610 /* iOS-Base.xcconfig in Resources */,
 				880D5B3B18B99E7400A7AAA6 /* CONTRIBUTORS.txt in Resources */,
-				88AA798918DFC3E00042F610 /* Mac-Framework.xcconfig in Resources */,
 				880D5B3A18B99E7400A7AAA6 /* CHANGES_AND_TODO_LIST.txt in Resources */,
 				88AA798B18DFC3E00042F610 /* README.md in Resources */,
-				88AA798318DFC3E00042F610 /* iOS-Application.xcconfig in Resources */,
-				88AA798618DFC3E00042F610 /* Mac-Application.xcconfig in Resources */,
-				88AA797E18DFC3E00042F610 /* Profile.xcconfig in Resources */,
-				88AA798218DFC3E00042F610 /* StaticLibrary.xcconfig in Resources */,
-				88AA797F18DFC3E00042F610 /* Release.xcconfig in Resources */,
 				880D5B4518B99E7400A7AAA6 /* README.markdown in Resources */,
 				880D5B4018B99E7400A7AAA6 /* fmdb.1 in Resources */,
-				88AA798518DFC3E00042F610 /* iOS-StaticLibrary.xcconfig in Resources */,
-				88AA798A18DFC3E00042F610 /* Mac-StaticLibrary.xcconfig in Resources */,
-				88AA798018DFC3E00042F610 /* Test.xcconfig in Resources */,
 				880D5B3918B99E7400A7AAA6 /* .gitignore in Resources */,
-				88AA797C18DFC3E00042F610 /* Common.xcconfig in Resources */,
-				88AA797D18DFC3E00042F610 /* Debug.xcconfig in Resources */,
-				88AA798718DFC3E00042F610 /* Mac-Base.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1210,6 +1180,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
 		};
