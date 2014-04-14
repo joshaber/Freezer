@@ -56,6 +56,14 @@
 		880D5B5B18B99E7400A7AAA6 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D5B3818B99E7400A7AAA6 /* FMResultSet.m */; };
 		88287CA0186E78CA0085B2D2 /* FRZQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 88287C9E186E78CA0085B2D2 /* FRZQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		88287CA1186E78CA0085B2D2 /* FRZQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 88287C9F186E78CA0085B2D2 /* FRZQuery.m */; };
+		889A58A918EE08F4001BD630 /* FRZIDLense.h in Headers */ = {isa = PBXBuildFile; fileRef = 889A58A718EE08F4001BD630 /* FRZIDLense.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		889A58AA18EE08F4001BD630 /* FRZIDLense.h in Headers */ = {isa = PBXBuildFile; fileRef = 889A58A718EE08F4001BD630 /* FRZIDLense.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		889A58AB18EE08F4001BD630 /* FRZIDLense.m in Sources */ = {isa = PBXBuildFile; fileRef = 889A58A818EE08F4001BD630 /* FRZIDLense.m */; };
+		889A58AC18EE08F4001BD630 /* FRZIDLense.m in Sources */ = {isa = PBXBuildFile; fileRef = 889A58A818EE08F4001BD630 /* FRZIDLense.m */; };
+		889A58AF18EE090D001BD630 /* FRZKeyLense.h in Headers */ = {isa = PBXBuildFile; fileRef = 889A58AD18EE090D001BD630 /* FRZKeyLense.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		889A58B018EE090D001BD630 /* FRZKeyLense.h in Headers */ = {isa = PBXBuildFile; fileRef = 889A58AD18EE090D001BD630 /* FRZKeyLense.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		889A58B118EE090D001BD630 /* FRZKeyLense.m in Sources */ = {isa = PBXBuildFile; fileRef = 889A58AE18EE090D001BD630 /* FRZKeyLense.m */; };
+		889A58B218EE090D001BD630 /* FRZKeyLense.m in Sources */ = {isa = PBXBuildFile; fileRef = 889A58AE18EE090D001BD630 /* FRZKeyLense.m */; };
 		88AA798B18DFC3E00042F610 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 88AA797B18DFC3E00042F610 /* README.md */; };
 		88AA7A1118DFD2C50042F610 /* libSpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88AA79F818DFD2B30042F610 /* libSpecta.a */; };
 		88AA7A1218DFD2C90042F610 /* libExpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88AA7A0618DFD2B30042F610 /* libExpecta.a */; };
@@ -289,6 +297,12 @@
 		888495401806410700477836 /* FRZDatabase+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZDatabase+Private.h"; sourceTree = "<group>"; };
 		888495411806431400477836 /* FRZTransactor+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZTransactor+Private.h"; sourceTree = "<group>"; };
 		888495421806437D00477836 /* FRZStore+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZStore+Private.h"; sourceTree = "<group>"; };
+		889A58A718EE08F4001BD630 /* FRZIDLense.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZIDLense.h; sourceTree = "<group>"; };
+		889A58A818EE08F4001BD630 /* FRZIDLense.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZIDLense.m; sourceTree = "<group>"; };
+		889A58AD18EE090D001BD630 /* FRZKeyLense.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZKeyLense.h; sourceTree = "<group>"; };
+		889A58AE18EE090D001BD630 /* FRZKeyLense.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZKeyLense.m; sourceTree = "<group>"; };
+		889A58B318EE0C14001BD630 /* FRZIDLense+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZIDLense+Private.h"; sourceTree = "<group>"; };
+		889A58B418EE0C3F001BD630 /* FRZKeyLense+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZKeyLense+Private.h"; sourceTree = "<group>"; };
 		88AA796818DFC3E00042F610 /* Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		88AA796A18DFC3E00042F610 /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		88AA796B18DFC3E00042F610 /* Profile.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Profile.xcconfig; sourceTree = "<group>"; };
@@ -495,6 +509,12 @@
 				88287C9E186E78CA0085B2D2 /* FRZQuery.h */,
 				88287CB0186E79020085B2D2 /* FRZQuery+Private.h */,
 				88287C9F186E78CA0085B2D2 /* FRZQuery.m */,
+				889A58A718EE08F4001BD630 /* FRZIDLense.h */,
+				889A58B318EE0C14001BD630 /* FRZIDLense+Private.h */,
+				889A58A818EE08F4001BD630 /* FRZIDLense.m */,
+				889A58AD18EE090D001BD630 /* FRZKeyLense.h */,
+				889A58B418EE0C3F001BD630 /* FRZKeyLense+Private.h */,
+				889A58AE18EE090D001BD630 /* FRZKeyLense.m */,
 				8884947B18063DDA00477836 /* Supporting Files */,
 			);
 			path = Freezer;
@@ -631,6 +651,8 @@
 				880D5B5918B99E7400A7AAA6 /* FMResultSet.h in Headers */,
 				880D5A9118B9997400A7AAA6 /* Freezer.h in Headers */,
 				880D5A9218B9997400A7AAA6 /* FRZStore.h in Headers */,
+				889A58AA18EE08F4001BD630 /* FRZIDLense.h in Headers */,
+				889A58B018EE090D001BD630 /* FRZKeyLense.h in Headers */,
 				880D5A9318B9997400A7AAA6 /* FRZDatabase.h in Headers */,
 				880D5B4B18B99E7400A7AAA6 /* FMDatabaseAdditions.h in Headers */,
 				880D5A9418B9997400A7AAA6 /* FRZTransactor.h in Headers */,
@@ -652,6 +674,8 @@
 				880D5B5818B99E7400A7AAA6 /* FMResultSet.h in Headers */,
 				88FD30D8182B266F004CFDD4 /* Freezer.h in Headers */,
 				88FD30D4182B2669004CFDD4 /* FRZStore.h in Headers */,
+				889A58A918EE08F4001BD630 /* FRZIDLense.h in Headers */,
+				889A58AF18EE090D001BD630 /* FRZKeyLense.h in Headers */,
 				88FD30D5182B2669004CFDD4 /* FRZDatabase.h in Headers */,
 				880D5B4A18B99E7400A7AAA6 /* FMDatabaseAdditions.h in Headers */,
 				88FD30D6182B2669004CFDD4 /* FRZTransactor.h in Headers */,
@@ -936,7 +960,9 @@
 				880D5A8918B9993000A7AAA6 /* FRZTransactor.m in Sources */,
 				880D5B3F18B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.m in Sources */,
 				880D5B4D18B99E7400A7AAA6 /* FMDatabaseAdditions.m in Sources */,
+				889A58AC18EE08F4001BD630 /* FRZIDLense.m in Sources */,
 				880D5B5B18B99E7400A7AAA6 /* FMResultSet.m in Sources */,
+				889A58B218EE090D001BD630 /* FRZKeyLense.m in Sources */,
 				880D5A8B18B9993000A7AAA6 /* FRZChange.m in Sources */,
 				880D5B5118B99E7400A7AAA6 /* FMDatabasePool.m in Sources */,
 				880D5B5518B99E7400A7AAA6 /* FMDatabaseQueue.m in Sources */,
@@ -956,7 +982,9 @@
 				880D5B3E18B99E7400A7AAA6 /* FMDatabase+InMemoryOnDiskIO.m in Sources */,
 				88FD30D1182B265C004CFDD4 /* FRZDatabase.m in Sources */,
 				880D5B4C18B99E7400A7AAA6 /* FMDatabaseAdditions.m in Sources */,
+				889A58AB18EE08F4001BD630 /* FRZIDLense.m in Sources */,
 				880D5B5A18B99E7400A7AAA6 /* FMResultSet.m in Sources */,
+				889A58B118EE090D001BD630 /* FRZKeyLense.m in Sources */,
 				88FD30D2182B265C004CFDD4 /* FRZTransactor.m in Sources */,
 				880D5B5018B99E7400A7AAA6 /* FMDatabasePool.m in Sources */,
 				880D5B5418B99E7400A7AAA6 /* FMDatabaseQueue.m in Sources */,
