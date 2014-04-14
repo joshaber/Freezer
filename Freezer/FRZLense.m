@@ -73,4 +73,16 @@
 	return self.readBlock(self.database, &error);
 }
 
+- (FRZLense *)compose:(FRZLense *)lense {
+	return [[FRZLense alloc] initWithDatabase:self.database store:self.store removeBlock:^(id value, FRZTransactor *transactor, NSError **error) {
+		return self.removeBlock(lense.removeBlock(value, transactor, error), transactor, error);
+	} addBlock:^(id value, FRZTransactor *transactor, NSError **error) {
+		return self.addBlock(lense.addBlock(value, transactor, error), transactor, error);
+	} readBlock:^(FRZDatabase *database, NSError **error) {
+		NSDictionary *x = lense.readBlock(database, error);
+		id y = self.readBlock(database, error);
+		return x[y];
+	}];
+}
+
 @end

@@ -18,4 +18,6 @@
 
 - (id)remove:(id)value error:(NSError **)error;
 
+- (FRZLense *)compose:(FRZLense *)lense;
+
 @end
