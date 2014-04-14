@@ -16,4 +16,6 @@
 
 - (id)remove:(NSError **)error;
 
+- (id)remove:(id)value error:(NSError **)error;
+
 @end

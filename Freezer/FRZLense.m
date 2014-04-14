@@ -17,7 +17,7 @@
 
 @property (nonatomic, readonly, strong) FRZStore *store;
 
-@property (nonatomic, readonly, copy) id (^removeBlock)(FRZTransactor *, NSError **);
+@property (nonatomic, readonly, copy) id (^removeBlock)(id, FRZTransactor *, NSError **);
 
 @property (nonatomic, readonly, copy) id (^addBlock)(id, FRZTransactor *, NSError **);
 
@@ -29,7 +29,7 @@
 
 #pragma mark Lifecycle
 
-- (id)initWithDatabase:(FRZDatabase *)database store:(FRZStore *)store removeBlock:(id (^)(FRZTransactor *, NSError **))removeBlock addBlock:(id (^)(id, FRZTransactor *, NSError **))addBlock readBlock:(id (^)(FRZDatabase *, NSError **))readBlock {
+- (id)initWithDatabase:(FRZDatabase *)database store:(FRZStore *)store removeBlock:(id (^)(id, FRZTransactor *, NSError **))removeBlock addBlock:(id (^)(id, FRZTransactor *, NSError **))addBlock readBlock:(id (^)(FRZDatabase *, NSError **))readBlock {
 	NSParameterAssert(database != nil);
 	NSParameterAssert(store != nil);
 
@@ -57,7 +57,13 @@
 - (id)remove:(NSError **)error {
 	NSParameterAssert(self.removeBlock != NULL);
 
-	return self.removeBlock([self.store transactor], error);
+	return self.removeBlock(nil, [self.store transactor], error);
+}
+
+- (id)remove:(id)value error:(NSError **)error {
+	NSParameterAssert(self.removeBlock != NULL);
+
+	return self.removeBlock(value, [self.store transactor], error);
 }
 
 - (id)value {

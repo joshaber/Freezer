@@ -237,7 +237,7 @@
 	return [[FRZQuery alloc] initWithDatabase:self];
 }
 
-- (FRZLense *)lenseWithRead:(id (^)(FRZDatabase *, NSError **))read add:(id (^)(id, FRZTransactor *, NSError **))add remove:(id (^)(FRZTransactor *, NSError **))remove {
+- (FRZLense *)lenseWithRead:(id (^)(FRZDatabase *, NSError **))read add:(id (^)(id, FRZTransactor *, NSError **))add remove:(id (^)(id, FRZTransactor *, NSError **))remove {
 	return [[FRZLense alloc] initWithDatabase:self store:self.store removeBlock:remove addBlock:add readBlock:read];
 }
 

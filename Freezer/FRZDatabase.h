@@ -58,6 +58,6 @@
 // Create and return a new query to search the database.
 - (FRZQuery *)query;
 
-- (FRZLense *)lenseWithRead:(id (^)(FRZDatabase *, NSError **))read add:(id (^)(id, FRZTransactor *, NSError **))add remove:(id (^)(FRZTransactor *, NSError **))remove;
+- (FRZLense *)lenseWithRead:(id (^)(FRZDatabase *database, NSError **error))read add:(id (^)(id value, FRZTransactor *transactor, NSError **error))add remove:(id (^)(id value, FRZTransactor *transactor, NSError **error))remove;
 
 @end

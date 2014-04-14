@@ -14,6 +14,6 @@
 
 @interface FRZLense ()
 
-- (id)initWithDatabase:(FRZDatabase *)database store:(FRZStore *)store removeBlock:(id (^)(FRZTransactor *, NSError **))removeBlock addBlock:(id (^)(id, FRZTransactor *, NSError **))addBlock readBlock:(id (^)(FRZDatabase *, NSError **))readBlock;
+- (id)initWithDatabase:(FRZDatabase *)database store:(FRZStore *)store removeBlock:(id (^)(id, FRZTransactor *, NSError **))removeBlock addBlock:(id (^)(id, FRZTransactor *, NSError **))addBlock readBlock:(id (^)(FRZDatabase *, NSError **))readBlock;
 
 @end
