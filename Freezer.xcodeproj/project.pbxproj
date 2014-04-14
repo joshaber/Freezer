@@ -68,6 +68,10 @@
 		88AA7A1118DFD2C50042F610 /* libSpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88AA79F818DFD2B30042F610 /* libSpecta.a */; };
 		88AA7A1218DFD2C90042F610 /* libExpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88AA7A0618DFD2B30042F610 /* libExpecta.a */; };
 		88AF6387187130B300EB5E29 /* FRZQuerySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AF6386187130B300EB5E29 /* FRZQuerySpec.m */; };
+		88C1E61E18FB6E8600176387 /* FRZLense.h in Headers */ = {isa = PBXBuildFile; fileRef = 88C1E61C18FB6E8600176387 /* FRZLense.h */; };
+		88C1E61F18FB6E8600176387 /* FRZLense.h in Headers */ = {isa = PBXBuildFile; fileRef = 88C1E61C18FB6E8600176387 /* FRZLense.h */; };
+		88C1E62018FB6E8600176387 /* FRZLense.m in Sources */ = {isa = PBXBuildFile; fileRef = 88C1E61D18FB6E8600176387 /* FRZLense.m */; };
+		88C1E62118FB6E8600176387 /* FRZLense.m in Sources */ = {isa = PBXBuildFile; fileRef = 88C1E61D18FB6E8600176387 /* FRZLense.m */; };
 		88C8BE9D18C5682900824884 /* FRZDeletedSentinel.h in Headers */ = {isa = PBXBuildFile; fileRef = 88C8BE9B18C5682900824884 /* FRZDeletedSentinel.h */; };
 		88C8BE9E18C5682900824884 /* FRZDeletedSentinel.h in Headers */ = {isa = PBXBuildFile; fileRef = 88C8BE9B18C5682900824884 /* FRZDeletedSentinel.h */; };
 		88C8BE9F18C5682900824884 /* FRZDeletedSentinel.m in Sources */ = {isa = PBXBuildFile; fileRef = 88C8BE9C18C5682900824884 /* FRZDeletedSentinel.m */; };
@@ -325,6 +329,9 @@
 		88B3F8EC182AE14B00C0415E /* FRZChange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZChange.h; sourceTree = "<group>"; };
 		88B3F8ED182AE14B00C0415E /* FRZChange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZChange.m; sourceTree = "<group>"; };
 		88B3F8EF182AE1B700C0415E /* FRZChange+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZChange+Private.h"; sourceTree = "<group>"; };
+		88C1E61C18FB6E8600176387 /* FRZLense.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZLense.h; sourceTree = "<group>"; };
+		88C1E61D18FB6E8600176387 /* FRZLense.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZLense.m; sourceTree = "<group>"; };
+		88C1E63518FB6EAB00176387 /* FRZLense+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FRZLense+Private.h"; sourceTree = "<group>"; };
 		88C8BE9B18C5682900824884 /* FRZDeletedSentinel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRZDeletedSentinel.h; sourceTree = "<group>"; };
 		88C8BE9C18C5682900824884 /* FRZDeletedSentinel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRZDeletedSentinel.m; sourceTree = "<group>"; };
 		88FD309E182B25A8004CFDD4 /* Freezer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Freezer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -515,6 +522,9 @@
 				889A58AD18EE090D001BD630 /* FRZKeyLense.h */,
 				889A58B418EE0C3F001BD630 /* FRZKeyLense+Private.h */,
 				889A58AE18EE090D001BD630 /* FRZKeyLense.m */,
+				88C1E61C18FB6E8600176387 /* FRZLense.h */,
+				88C1E63518FB6EAB00176387 /* FRZLense+Private.h */,
+				88C1E61D18FB6E8600176387 /* FRZLense.m */,
 				8884947B18063DDA00477836 /* Supporting Files */,
 			);
 			path = Freezer;
@@ -654,6 +664,7 @@
 				889A58AA18EE08F4001BD630 /* FRZIDLense.h in Headers */,
 				889A58B018EE090D001BD630 /* FRZKeyLense.h in Headers */,
 				880D5A9318B9997400A7AAA6 /* FRZDatabase.h in Headers */,
+				88C1E61F18FB6E8600176387 /* FRZLense.h in Headers */,
 				880D5B4B18B99E7400A7AAA6 /* FMDatabaseAdditions.h in Headers */,
 				880D5A9418B9997400A7AAA6 /* FRZTransactor.h in Headers */,
 				88C8BE9E18C5682900824884 /* FRZDeletedSentinel.h in Headers */,
@@ -677,6 +688,7 @@
 				889A58A918EE08F4001BD630 /* FRZIDLense.h in Headers */,
 				889A58AF18EE090D001BD630 /* FRZKeyLense.h in Headers */,
 				88FD30D5182B2669004CFDD4 /* FRZDatabase.h in Headers */,
+				88C1E61E18FB6E8600176387 /* FRZLense.h in Headers */,
 				880D5B4A18B99E7400A7AAA6 /* FMDatabaseAdditions.h in Headers */,
 				88FD30D6182B2669004CFDD4 /* FRZTransactor.h in Headers */,
 				88C8BE9D18C5682900824884 /* FRZDeletedSentinel.h in Headers */,
@@ -969,6 +981,7 @@
 				880D5A8C18B9993000A7AAA6 /* FRZQuery.m in Sources */,
 				88C8BEA018C5682900824884 /* FRZDeletedSentinel.m in Sources */,
 				880D5B5718B99E7400A7AAA6 /* fmdb.m in Sources */,
+				88C1E62118FB6E8600176387 /* FRZLense.m in Sources */,
 				880D5B4918B99E7400A7AAA6 /* FMDatabase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -991,6 +1004,7 @@
 				88FD30D3182B265C004CFDD4 /* FRZChange.m in Sources */,
 				88C8BE9F18C5682900824884 /* FRZDeletedSentinel.m in Sources */,
 				880D5B5618B99E7400A7AAA6 /* fmdb.m in Sources */,
+				88C1E62018FB6E8600176387 /* FRZLense.m in Sources */,
 				880D5B4818B99E7400A7AAA6 /* FMDatabase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
