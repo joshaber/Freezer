@@ -68,8 +68,8 @@
 		88AA7A1118DFD2C50042F610 /* libSpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88AA79F818DFD2B30042F610 /* libSpecta.a */; };
 		88AA7A1218DFD2C90042F610 /* libExpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88AA7A0618DFD2B30042F610 /* libExpecta.a */; };
 		88AF6387187130B300EB5E29 /* FRZQuerySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AF6386187130B300EB5E29 /* FRZQuerySpec.m */; };
-		88C1E61E18FB6E8600176387 /* FRZLense.h in Headers */ = {isa = PBXBuildFile; fileRef = 88C1E61C18FB6E8600176387 /* FRZLense.h */; };
-		88C1E61F18FB6E8600176387 /* FRZLense.h in Headers */ = {isa = PBXBuildFile; fileRef = 88C1E61C18FB6E8600176387 /* FRZLense.h */; };
+		88C1E61E18FB6E8600176387 /* FRZLense.h in Headers */ = {isa = PBXBuildFile; fileRef = 88C1E61C18FB6E8600176387 /* FRZLense.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		88C1E61F18FB6E8600176387 /* FRZLense.h in Headers */ = {isa = PBXBuildFile; fileRef = 88C1E61C18FB6E8600176387 /* FRZLense.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		88C1E62018FB6E8600176387 /* FRZLense.m in Sources */ = {isa = PBXBuildFile; fileRef = 88C1E61D18FB6E8600176387 /* FRZLense.m */; };
 		88C1E62118FB6E8600176387 /* FRZLense.m in Sources */ = {isa = PBXBuildFile; fileRef = 88C1E61D18FB6E8600176387 /* FRZLense.m */; };
 		88C8BE9D18C5682900824884 /* FRZDeletedSentinel.h in Headers */ = {isa = PBXBuildFile; fileRef = 88C8BE9B18C5682900824884 /* FRZDeletedSentinel.h */; };

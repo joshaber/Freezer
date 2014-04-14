@@ -11,3 +11,4 @@
 #import <Freezer/FRZTransactor.h>
 #import <Freezer/FRZChange.h>
 #import <Freezer/FRZQuery.h>
+#import <Freezer/FRZLense.h>

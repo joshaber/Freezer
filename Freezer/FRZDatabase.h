@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @class FRZQuery;
+@class FRZLense;
+@class FRZTransactor;
 
 // A database as retrieved from a store.
 @interface FRZDatabase : NSObject <NSCopying>
@@ -55,5 +57,7 @@
 
 // Create and return a new query to search the database.
 - (FRZQuery *)query;
+
+- (FRZLense *)lenseWithRead:(id (^)(FRZDatabase *, NSError **))read add:(id (^)(id, FRZTransactor *, NSError **))add remove:(id (^)(FRZTransactor *, NSError **))remove;
 
 @end

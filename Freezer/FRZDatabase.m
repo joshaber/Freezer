@@ -13,6 +13,7 @@
 #import "FRZTransactor+Private.h"
 #import "FRZQuery+Private.h"
 #import "FRZDeletedSentinel.h"
+#import "FRZLense+Private.h"
 
 @interface FRZDatabase ()
 
@@ -234,6 +235,10 @@
 
 - (FRZQuery *)query {
 	return [[FRZQuery alloc] initWithDatabase:self];
+}
+
+- (FRZLense *)lenseWithRead:(id (^)(FRZDatabase *, NSError **))read add:(id (^)(id, FRZTransactor *, NSError **))add remove:(id (^)(FRZTransactor *, NSError **))remove {
+	return [[FRZLense alloc] initWithDatabase:self store:self.store removeBlock:remove addBlock:add readBlock:read];
 }
 
 @end
